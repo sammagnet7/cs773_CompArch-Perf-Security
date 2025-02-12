@@ -1,4 +1,5 @@
 #include "cacheutils.h"
+#include "common.h"
 #include <ctype.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -76,10 +77,66 @@ size_t onlyreload(void *addr) {
     size_t delta = rdtsc() - time;
     return delta;
 }
-#define TIME_MASK 0x1f
-#define SLOT_LENGTH 1500000
-#define SYNC_INTERVAL 15
-#define SEND_BIT 0
+
+char *base, *probe;
+
+void send_bit(int value) {
+    size_t start = rdtsc();
+    if (value)
+        while (rdtsc() - start < SLOT_LENGTH) {
+            flush((void *)probe);
+        }
+    else
+        while (rdtsc() - start < SLOT_LENGTH) {
+        }
+}
+
+void send_string(const char *str) {
+    for (int i = 0; i < START_SEQ_LEN; i++) {
+        send_bit(1);
+        send_bit(0);
+    }
+    int prev_bit = -1, curr_bit = -1;
+    while (*str) {
+        char c = *str++;
+        for (int i = ASCII_BITS - 1; i >= 0; i--) {
+            curr_bit = (c >> i) & 1;
+            if (prev_bit == 1 && curr_bit == 0) {
+                send_bit(1);
+                send_bit(0);
+            }
+            send_bit(curr_bit);
+            prev_bit = curr_bit;
+        }
+    }
+    for (int i = 0; i < START_SEQ_LEN; i++) {
+        send_bit(1);
+        send_bit(0);
+    }
+}
+
+void print_string(const char *str) {
+    printf("sbits: ");
+    // for (int i = 0; i < START_SEQ_LEN; i++) {
+    //     printf("1");
+    //     printf("0");
+    // }
+    int prev_bit = -1, curr_bit = -1;
+    while (*str) {
+        char c = *str++;
+        for (int i = ASCII_BITS - 1; i >= 0; i--) {
+            curr_bit = (c >> i) & 1;
+            // if (prev_bit == 1 && curr_bit == 0) {
+            //     printf("1");
+            //     printf("0");
+            // }
+            printf("%d", curr_bit);
+            prev_bit = curr_bit;
+        }
+    }
+    printf("\n");
+}
+
 int main() {
     int fd = open("./libshared.so", O_RDONLY);
     struct stat st;
@@ -95,23 +152,14 @@ int main() {
         st.st_size += 1;
     }
     // Memory map the shared library
-    char *base = (char *)mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
-    char *probe = base + 0x4020;
-    // while(1)
-    // touch();
-    while ((rdtsc() & TIME_MASK) > SYNC_INTERVAL) {
-    }
-    size_t time = rdtsc();
-    // printf("%u\n", shared_array[0]);
-    // printf("sender-SYNC %ld\n", time);
-    size_t delta = rdtsc() - time;
-    while (delta < SLOT_LENGTH) {
-        if (SEND_BIT)
-            flush((void *)probe);
-        else {
-        }
-        delta = rdtsc() - time;
-    }
-    printf("\nsender-slot end %ld\n", delta);
+    base = (char *)mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+    probe = base + 0x4020;
+    ull start = start_sync();
+    const char *test_string = "Hello, world!!";
+    send_string(test_string);
+    printf("S start: %ld\n", start);
+    print_string(test_string);
+    printf("S start: %ld\n", start);
+
     return 0;
 }
