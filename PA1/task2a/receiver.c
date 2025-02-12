@@ -1,15 +1,14 @@
-#include <unistd.h>
+#include "cacheutils.h"
+#include <dlfcn.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <dlfcn.h>
-#include "cacheutils.h"
+#include <unistd.h>
 
 #define MIN_CACHE_MISS_CYCLES 100
-size_t flushandreload(void *addr)
-{
+size_t flushandreload(void *addr) {
     size_t time = rdtsc();
     maccess(addr);
     size_t delta = rdtsc() - time;
@@ -17,8 +16,7 @@ size_t flushandreload(void *addr)
     return delta;
 }
 
-size_t onlyreload(void *addr)
-{
+size_t onlyreload(void *addr) {
     size_t time = rdtsc();
     maccess(addr);
     size_t delta = rdtsc() - time;
@@ -27,8 +25,7 @@ size_t onlyreload(void *addr)
 #define TIME_MASK 0x1f
 #define SLOT_LENGTH 1500000
 #define SYNC_INTERVAL 15
-int main()
-{
+int main() {
     int fd = open("./libshared.so", O_RDONLY);
     struct stat st;
     if (fstat(fd, &st) == -1) {
@@ -36,34 +33,27 @@ int main()
         return EXIT_FAILURE;
     }
 
-   
     // making the map_size page-aligned i.e. a multiple of 4 KB page
     // in order to grant the address space using mmap
-    if (st.st_size & 0xFFF != 0)
-    {
+    if (st.st_size & 0xFFF != 0) {
         st.st_size |= 0xFFF;
         st.st_size += 1;
     }
-     // Memory map the shared library
-    char *base = (char*)mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+    // Memory map the shared library
+    char *base = (char *)mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
 
-    while (rdtsc() & TIME_MASK > SYNC_INTERVAL)
-    {
+    while (rdtsc() & TIME_MASK > SYNC_INTERVAL) {
     }
     size_t time = rdtsc();
     size_t delta = rdtsc() - time;
-    void* probe = base + 0x4020;
+    void *probe = base + 0x4020;
     size_t hit = 0, miss = 0;
-    while (delta < SLOT_LENGTH)
-    {
+    while (delta < SLOT_LENGTH) {
         size_t reload_time = onlyreload(probe);
-        if (reload_time > MIN_CACHE_MISS_CYCLES)
-        {
+        if (reload_time > MIN_CACHE_MISS_CYCLES) {
             // printf("CACHE MISS %ld\n", reload_time);
             miss++;
-        }
-        else
-        {
+        } else {
             hit++;
             // printf("CACHE HIT %ld\n", reload_time);
         }
