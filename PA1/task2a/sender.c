@@ -80,7 +80,7 @@ size_t onlyreload(void *addr) {
 
 char *base, *probe;
 
-void send_bit(int value) {
+void __send_bit(int value) {
     size_t start = rdtsc();
     if (value)
         while (rdtsc() - start < SLOT_LENGTH) {
@@ -90,28 +90,34 @@ void send_bit(int value) {
         while (rdtsc() - start < SLOT_LENGTH) {
         }
 }
+void _send_bit(int value) {
+    for (int i = 0; i < BIT_REPEAT; i++)
+        __send_bit(value);
+}
+void send_bit(int value) {
+    static int prev_value = -1;
+    if (prev_value == 1 && value == 0) {
+        _send_bit(1);
+        _send_bit(0);
+    }
+    _send_bit(value);
+    prev_value = value;
+}
 
 void send_string(const char *str) {
     for (int i = 0; i < START_SEQ_LEN; i++) {
-        send_bit(1);
-        send_bit(0);
+        _send_bit(1);
+        _send_bit(0);
     }
-    int prev_bit = -1, curr_bit = -1;
     while (*str) {
         char c = *str++;
         for (int i = ASCII_BITS - 1; i >= 0; i--) {
-            curr_bit = (c >> i) & 1;
-            if (prev_bit == 1 && curr_bit == 0) {
-                send_bit(1);
-                send_bit(0);
-            }
-            send_bit(curr_bit);
-            prev_bit = curr_bit;
+            send_bit((c >> i) & 1);
         }
     }
     for (int i = 0; i < START_SEQ_LEN; i++) {
-        send_bit(1);
-        send_bit(0);
+        _send_bit(1);
+        _send_bit(0);
     }
 }
 
@@ -154,12 +160,16 @@ int main() {
     // Memory map the shared library
     base = (char *)mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
     probe = base + 0x4020;
-    ull start = start_sync();
     const char *test_string = "Hello, world!!";
-    send_string(test_string);
-    printf("S start: %ld\n", start);
-    print_string(test_string);
-    printf("S start: %ld\n", start);
+    // usleep(100);
+    for (int round = 0; round < ROUNDS; round++) {
+        start_sync();
+        send_string(test_string);
+        usleep(1000);
+    }
+    // printf("S start: %ld\n", start);
+    // print_string(test_string);
+    // printf("S start: %ld\n", start);
 
     return 0;
 }
