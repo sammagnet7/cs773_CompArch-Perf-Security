@@ -29,7 +29,6 @@ for ((i=0; i<n; i++)); do
     range_outputs+=("$outputB")  # Store in array
 
     # Once Program B exits, terminate Program A
-    echo "Program B exited, terminating Program A..."
     kill $pidA 2>/dev/null
 
     # Ensure Program A is fully stopped

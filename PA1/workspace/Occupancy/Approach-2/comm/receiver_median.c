@@ -1,7 +1,7 @@
 #include "receiver.h"
 
 volatile char **buckets;
-long long WINDOW_LEN; // will be calibrated
+long long WINDOW_LEN;
 size_t WINDOW_CYCLES;
 long SLEEP_CYCLE;
 void handle_sigterm(int sig);

@@ -9,7 +9,7 @@
 
 #define OUTPUT_FILE "received.txt"
 #define DEBUG_LOG_FILE "log.txt"
-#define MAX_DATA_COLLECTION_ROUNDS 200
+#define MAX_DATA_COLLECTION_ROUNDS 5000 // Sender can send for max 4096 rounds
 #define SAMPLE_SIZE (MAX_DATA_COLLECTION_ROUNDS * 5)
 
 #define WINDOW_TIME 50 * 1000 // 200 ms
