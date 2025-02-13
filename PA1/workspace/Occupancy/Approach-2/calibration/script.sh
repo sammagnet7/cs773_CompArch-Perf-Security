@@ -11,9 +11,6 @@ args=("0" "0.15" "0.4" "0.6" "1.0")  # Ensure n matches the number of arguments
 progA="taskset -c 4 ./thrash_cal"  # Replace with actual path
 progB="taskset -c 2 ./occ_cal"  # Replace with actual path
 
-# Directory to store outputs
-output_dir="output_logs"
-mkdir -p "$output_dir"
 # Array to store all Program B outputs
 declare -a range_outputs
 rm output.txt
@@ -45,6 +42,6 @@ echo "All iterations finished."
 
 echo "Processing all collected outputs from Program B..."
 
- echo "${range_outputs[@]}"
+echo "${range_outputs[@]}"
 
 # taskset -c 2 ./receiver ${range_outputs[@]}

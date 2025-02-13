@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "cmath": "cpp",
+        "sys_config.h": "c"
+    }
+}

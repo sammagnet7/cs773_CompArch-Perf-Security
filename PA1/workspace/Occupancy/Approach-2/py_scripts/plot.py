@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Read data from output.txt
-file_path = "output.txt"
+file_path = "../calibration/output.txt"
 
 # Initialize list to store data for each category
 data = []
@@ -40,7 +40,7 @@ for i, category in enumerate(categories):
     print(f"  Median (50th percentile): {median:.2f}")
     print(f"  Q3 (75th percentile): {q3:.2f}")
     print(f"  Max (whisker): {whisker_high:.2f}")
-    print(f"  Outliers: {len(outliers) if len(outliers) > 0 else 'None'}")
+    print(f"  Outliers: {outliers if len(outliers) > 0 else 'None'}")
     print("-" * 40)
 
 # Customization

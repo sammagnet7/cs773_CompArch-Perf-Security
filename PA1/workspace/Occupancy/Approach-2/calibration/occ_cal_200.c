@@ -5,11 +5,11 @@
 
 volatile char **buckets;
 
-#define WINDOW_TIME 50 * 1000 // 50 ms
+#define WINDOW_TIME 200 * 1000 // 50 ms
 #define SLEEP_TIME 50 * 1000   // 200 ms
 #define SAMPLING_ROUNDS 500
-#define SAMPLE_SIZE (SAMPLING_ROUNDS*5)
-#define MINI_ROUNDS 6
+#define SAMPLE_SIZE (SAMPLING_ROUNDS)
+
 long SLEEP_CYCLE;
 size_t WINDOW_CYCLES;
 
@@ -32,16 +32,6 @@ size_t count_window_cycles(long win_time)
     return end - start;
 }
 
-int compare(const void *a, const void *b) {
-    return (*(int*)a - *(int*)b);
-}
-
-// Function to compute the median of 4 elements
-long compute_median(long arr[], int size) {
-    qsort(arr, size, sizeof(long), compare);
-    return (arr[1] + arr[2]) / 2;  // Median of 4 sorted elements
-}
-
 int main()
 {
     // -------------------------- Array allocate -------------------------------------------
@@ -54,7 +44,6 @@ int main()
     // -------------------------------------------------------------------------------------
     // -------------------------- Init vars ------------------------------------------------
 
-    size_t NUM_LINES = CHUNK_SIZE / BLOCK_SIZE;
     WINDOW_CYCLES = 100000 * (count_window_cycles(WINDOW_TIME) / 100000);
     SLEEP_CYCLE = 100000 * (count_window_cycles(SLEEP_TIME) / 100000);
     long g_counter;
@@ -63,31 +52,31 @@ int main()
     while (thrash_rounds < SAMPLING_ROUNDS)
     {
         chunk = progress = mini_round = 0;
-        while (mini_round < MINI_ROUNDS)
+
+        // while (mini_round < 4)
+        // {
+        g_counter = chunk = 0;
+        start_window = rdtsc();
+        while (chunk < NUM_CHUNKS)
         {
-            chunk = g_counter = 0;
-            start_window = rdtsc();
-            while (chunk < NUM_CHUNKS)
+            i = 0;
+            while (i < NUM_LINES)
             {
-                i = 0;
-                while (i < NUM_LINES)
-                {
-                    buckets[chunk][i * BLOCK_SIZE] += 1; // Touch each cache line
-                    i++;
-                }
-                if (rdtsc() - start_window > WINDOW_CYCLES)
-                {
-                    break;
-                }
-                chunk = (chunk + 1) % NUM_CHUNKS;
-                // increment counter
-                g_counter++;
+                buckets[chunk][i * BLOCK_SIZE] += 1; // Touch each cache line
+                i++;
             }
-            if(mini_round != 0)
-            category_samples[index++] = g_counter;
-            mini_round++;
+            if (rdtsc() - start_window > WINDOW_CYCLES)
+            {
+                break;
+            }
+            chunk = (chunk + 1) % NUM_CHUNKS;
+            // increment counter
+            g_counter++;
         }
- 
+        category_samples[index++] = g_counter;
+        // mini_round++;
+        // }
+
         thrash_rounds++;
     }
     // Open file in binary mode for writing
@@ -98,16 +87,11 @@ int main()
         return 1;
     }
 
-    // Process elements in groups of 4
-    for (int i = 0; i < SAMPLE_SIZE; i += 5) {
-        if (i + 5 > SAMPLE_SIZE) break;  // Avoid out-of-bounds access
-
-        long temp[5] = {category_samples[i], category_samples[i+1], category_samples[i+2], category_samples[i+3], category_samples[i+4]};
-        long median = compute_median(temp, 5);
-
-        fprintf(file, "%ld ", median);
+    // Write the entire array to the file
+    for (size_t i = 0; i < SAMPLE_SIZE; i++)
+    {
+        fprintf(file, "%ld ", category_samples[i]); // Write each integer in a new line
     }
-
     fprintf(file, "\n");
     fclose(file);
 

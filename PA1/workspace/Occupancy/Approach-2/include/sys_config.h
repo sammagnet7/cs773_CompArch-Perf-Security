@@ -15,12 +15,8 @@
 #define NUM_BLOCKS_OCC (ARRAY_SIZE / BLOCK_SIZE)
 #define CALIBRATION_ROUNDS 1000
 #define WINDOW_ROUNDS 10
-
+#define NUM_LINES (CHUNK_SIZE / BLOCK_SIZE)
 // used in thrasher
-// 1.25 - 33000
-// 0.75 - 38000
-// 0.50 - 47000
-// 0.25 - 55000
 #define THRASH_SIZE (LLC_SIZE) // Thrash with 20x LLC size
 #define NUM_BLOCKS_THR (THRASH_SIZE / BLOCK_SIZE)
 
