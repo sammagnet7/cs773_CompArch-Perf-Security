@@ -13,11 +13,11 @@ receiver: receiver.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_la
 	$(CC) $(CFLAGS) -o receiver receiver.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
 
 calibrate: calibrate.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
-	$(CC) $(CFLAGS) -o calibrate calibrate.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
+	$(CC) $(CFLAGS)  -o calibrate calibrate.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o -L. -lshared -Wl,-rpath,.
 
 # Create shared library
-libshared.so: shared.o
-	$(CC) -g -fPIC -shared -o libshared.so shared.o
+libshared.so: shared.c
+	$(CC) -g -fPIC -shared -o libshared.so shared.c
 
 # Compile utils.c to utils.o
 utils/utils.o: utils/utils.c utils/utils.h
@@ -33,10 +33,6 @@ receiver.o: receiver.c
 
 calibrate.o: calibrate.c
 	$(CC) $(CFLAGS) -c calibrate.c -o calibrate.o
-
-# Compile shared.c to shared.o
-shared.o: shared.c
-	$(CC) $(CFLAGS) -fPIC -c shared.c -o shared.o
 
 # Compile transmit_layer.c to transmit_layer.o
 transmit_layer/transmit_layer.o: transmit_layer/transmit_layer.c transmit_layer/transmit_layer.h

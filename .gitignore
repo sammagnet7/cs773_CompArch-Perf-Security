@@ -37,3 +37,6 @@ calibrate
 msg.txt
 received.txt
 **/temp/
+PA1/task2a/sendbits.log
+PA1/task2a/receivebits.log
+PA1/task2a/sentbits.log

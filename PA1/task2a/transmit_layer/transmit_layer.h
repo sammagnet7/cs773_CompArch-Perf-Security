@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 extern char *base;
-extern void *probe;
+extern char *probe;
 extern int fd; // shared lib file
 
 int open_transmit();

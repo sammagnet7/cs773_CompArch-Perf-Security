@@ -62,8 +62,8 @@ int main() {
     for (size_t i = 0; i < length; i += batch_size) {
         strncpy(batch, test_string + i, batch_size);
         sync_ts = start_sync();
-        printf("\nS:: TS: %lld Round: %ld/%ld\n", sync_ts, batches,
-               num_batches);
+        // printf("\nS:: TS: %lld Round: %ld/%ld\n", sync_ts, batches,
+        // num_batches);
         batch[batch_size] = '\0'; // Null-terminate the batch
         send_string(batch);
         // usleep(10000);

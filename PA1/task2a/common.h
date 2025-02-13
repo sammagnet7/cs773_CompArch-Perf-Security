@@ -8,8 +8,9 @@
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
 #define SLOT_LENGTH 15000000
-#define MIN_CACHE_MISS_CYCLES 230
+#define MIN_CACHE_MISS_CYCLES 200
 #define MESSAGE_CHUNK_LEN 700 // bits; /7 chars
+#define SHARED_ARRAY_SIZE 1
 
 #define BIT_REPEAT 3 // send each bit how many times
 #define ROUNDS 1     // send the whole payload how many times

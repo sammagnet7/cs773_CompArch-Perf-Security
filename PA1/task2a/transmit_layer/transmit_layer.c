@@ -2,32 +2,50 @@
 #include "../common.h"
 #include <fcntl.h>
 // #include <math.h>
+#include <dlfcn.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
-char *base;
-void *probe;
-int fd; // shared lib file
+int fd;
+char *base = NULL;
+char *probe = NULL;
+void *handle = NULL;
 
-size_t flushandreload(void *addr) {
-    size_t time = rdtsc();
-    maccess(addr);
-    size_t delta = rdtsc() - time;
-    flush(addr);
-    return delta;
+#define HISTORY_SIZE 160000
+size_t __sent_counter = 0, __received_counter = 0;
+bool __sent_bits[HISTORY_SIZE], __received_bits[HISTORY_SIZE];
+
+// size_t flushandreload(void *addr) {
+//     size_t time = rdtsc();
+//     maccess(addr);
+//     size_t delta = rdtsc() - time;
+//     flush(addr);
+//     return delta;
+// }
+
+size_t onlyflush(char *addr) {
+    for (int i = 0; i < SHARED_ARRAY_SIZE; i += 8)
+        flush((void *)(addr + i));
+    return 0;
 }
 
-size_t onlyreload(void *addr) {
-    size_t time = rdtsc();
-    maccess(addr);
-    size_t delta = rdtsc() - time;
-    return delta;
+size_t onlyreload(char *addr) {
+    size_t delta = 0, time;
+    for (int i = 0; i < SHARED_ARRAY_SIZE; i += 8) {
+        time = rdtsc();
+        maccess((void *)(addr + i));
+        delta += rdtsc() - time;
+    }
+    return (delta / SHARED_ARRAY_SIZE);
 }
 
 int open_transmit() {
+    __sent_counter = 0;
+    __received_counter = 0;
     fd = open("./libshared.so", O_RDONLY);
     if (fd == -1) {
         perror("open");
@@ -61,7 +79,46 @@ int open_transmit() {
     return EXIT_SUCCESS;
 }
 
-void close_transmit() { close(fd); }
+void save_history(char *filename, bool *history, size_t length) {
+    if (length <= 0)
+        return;
+    printf("\nhistroy: %s %ld\n", filename, length);
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("fopen");
+        return;
+    }
+    for (size_t i = 0; i < length; i += 8) {
+        unsigned char byte = 0;
+        for (size_t j = 0; j < 8 && (i + j) < length; j++) {
+            byte |= (history[i + j] << (7 - j));
+        }
+        fprintf(file, "%02x", byte);
+        if (i % 32 == 0 && i != 0)
+            fprintf(file, " ");
+    }
+    fclose(file);
+}
+
+void close_transmit() {
+    // if (handle) {
+    //     dlclose(handle);
+    //     handle = NULL;
+    // }
+    if (base != MAP_FAILED) {
+        struct stat st;
+        if (fstat(fd, &st) == 0) {
+            if ((st.st_size & 0xFFF) != 0) {
+                st.st_size |= 0xFFF;
+                st.st_size += 1;
+            }
+            munmap(base, st.st_size);
+        }
+    }
+    close(fd);
+    save_history("sentbits.log", __sent_bits, __sent_counter);
+    save_history("receivebits.log", __received_bits, __received_counter);
+}
 
 size_t calibrate() {
     size_t start = rdtsc();
@@ -103,6 +160,11 @@ bool _detect_bit() {
     }
     bool val = count > (BIT_REPEAT / 2);
     // printf("%d", val);
+    // if (__received_counter >= HISTORY_SIZE) {
+    //     save_history("receivebits.log", __received_bits, __received_counter);
+    //     __received_counter = 0;
+    // }
+    // __received_bits[__received_counter++] = val;
     return val;
 }
 
@@ -117,7 +179,7 @@ bool detect_bit() {
         future = -1;
         return detect_bit();
     }
-    printf("%d", curr);
+    // printf("%d", curr);
     return curr;
 }
 
@@ -125,7 +187,7 @@ void __send_bit(bool value) {
     size_t start = rdtsc();
     if (value)
         while (rdtsc() - start < SLOT_LENGTH) {
-            flush((void *)probe);
+            onlyflush((void *)probe);
         }
     else
         while (rdtsc() - start < SLOT_LENGTH) {
@@ -133,6 +195,11 @@ void __send_bit(bool value) {
 }
 
 void _send_bit(bool value) {
+    // if (__sent_counter >= HISTORY_SIZE) {
+    //     save_history("sentbits.log", __sent_bits, __sent_counter);
+    //     __sent_counter = 0;
+    // }
+    // __sent_bits[__sent_counter++] = value;
     // printf("%d", value);
     for (int i = 0; i < BIT_REPEAT; i++)
         __send_bit(value);

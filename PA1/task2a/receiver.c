@@ -10,7 +10,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-size_t round = 0;
+size_t CHUNKS = 0;
 char *receive_messages[ROUNDS];
 
 char *reconstruct(bool *received_bits, size_t length) {
@@ -80,7 +80,7 @@ void clear_file(const char *filename) {
 void cleanup() {
     clear_file("received.txt");
 
-    for (int i = 0; i < round; i++) {
+    for (int i = 0; i < CHUNKS; i++) {
         if (receive_messages[i]) {
             printf("round %d : %s", i, receive_messages[i]);
             append_to_file("received.txt", receive_messages[i]);
@@ -107,18 +107,18 @@ int main() {
     // exit(0);
 
     ull sync_ts;
-    round = 0;
+    CHUNKS = 0;
     for (int i = 0; i < ROUNDS; i++)
         receive_messages[i] = 0;
 
     do {
         sync_ts = start_sync();
-        printf("\nR:: TS: %lld round: %ld\n", sync_ts, round);
-        receive_message(&receive_messages[round++]);
-        // if (receive_messages[round - 1])
-        // printf("\nreceived %ld : %s", round, receive_messages[round - 1]);
+        // printf("\nR:: TS: %lld round: %ld\n", sync_ts, CHUNKS);
+        receive_message(&receive_messages[CHUNKS++]);
+        // if (receive_messages[CHUNKS - 1])
+        // printf("\nreceived %ld : %s", CHUNKS, receive_messages[CHUNKS - 1]);
         // printf("\n");
-    } while (receive_messages[round - 1]);
+    } while (receive_messages[CHUNKS - 1]);
 
     cleanup(receive_messages);
 }
