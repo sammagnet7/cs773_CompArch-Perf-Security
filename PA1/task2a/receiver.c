@@ -125,7 +125,7 @@ char *reconstruct(bool *received_bits, size_t length) {
 
 void receive_message(char **received_message) {
     future = -1;
-    size_t len = 0, msg_len = 700;
+    size_t len = 0, msg_len = MESSAGE_CHUNK_LEN;
     bool received[msg_len];
     int prev = 0, curr;
 
@@ -153,13 +153,21 @@ void receive_message(char **received_message) {
     // printf("received message: %s\n", received_message);
 }
 
-void write_to_file(const char *filename, const char *message) {
+void append_to_file(const char *filename, const char *message) {
     FILE *file = fopen(filename, "a");
     if (!file) {
         perror("fopen");
         return;
     }
-    fprintf(file, "%s\n", message);
+    fprintf(file, "%s", message);
+    fclose(file);
+}
+
+void clear_file(const char *filename) {
+    FILE *file = fopen(filename, "w");
+    if (!file) {
+        perror("fopen");
+    }
     fclose(file);
 }
 
@@ -205,17 +213,12 @@ int main() {
             break;
     } while (true);
 
-    FILE *file = fopen("received.txt", "w");
-    if (!file) {
-        perror("fopen");
-        return EXIT_FAILURE;
-    }
-    fclose(file);
+    clear_file("received.txt");
 
     for (int i = 0; i < round; i++) {
-        printf("r%d %s\n", i, receive_messages[i]);
+        // printf("r%d %s\n", i, receive_messages[i]);
         if (receive_messages[i]) {
-            write_to_file("received.txt", receive_messages[i]);
+            append_to_file("received.txt", receive_messages[i]);
             free(receive_messages[i]);
         }
     }

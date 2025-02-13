@@ -5,11 +5,12 @@
 
 #define ull unsigned long long
 
-#define SLOT_LENGTH 1500000 // 1500000
+#define SLOT_LENGTH 15000
 #define MIN_CACHE_MISS_CYCLES 200
+#define MESSAGE_CHUNK_LEN 7000 // bits === 100 ascii chars
 
-#define BIT_REPEAT 3 // send each bit
-#define ROUNDS 1     // send the whole charater
+#define BIT_REPEAT 3 // send each bit how many times
+#define ROUNDS 1     // send the whole payload how many times
 
 #define ASCII_BITS 7
 #define START_SEQ_LEN 5

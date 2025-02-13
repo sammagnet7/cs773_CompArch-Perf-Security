@@ -2,6 +2,7 @@
 
 make;
 taskset -c 3 ./sender &
-taskset -c 5 ./receiver
-
+taskset -c 5 ./receiver;
 wait
+
+code --diff msg.txt received.txt

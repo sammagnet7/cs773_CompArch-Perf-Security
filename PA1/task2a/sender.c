@@ -139,7 +139,7 @@ int main() {
         return EXIT_FAILURE;
     }
     size_t length = strlen(test_string);
-    size_t batch_size = 100, batches = 0;
+    size_t batch_size = (MESSAGE_CHUNK_LEN / ASCII_BITS), batches = 0;
     char batch[batch_size + 1];
     for (size_t i = 0; i < length; i += batch_size) {
         strncpy(batch, test_string + i, batch_size);
