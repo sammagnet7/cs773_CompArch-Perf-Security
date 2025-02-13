@@ -66,11 +66,11 @@ bool _detect_bit() {
             count++;
         }
     }
-    return count > (BIT_REPEAT / 2);
+    bool val = count > (BIT_REPEAT / 2);
+    return val;
 }
-
+int future = -1;
 bool detect_bit() {
-    static int future = -1;
     int curr;
     if (future == -1)
         future = _detect_bit();
@@ -83,11 +83,35 @@ bool detect_bit() {
     return curr;
 }
 
+int wait_for_magic_seq() {
+    size_t maxtry = 1000, allen = 0, try = 0;
+    bool all_recieved[maxtry];
+    int prev = 0, freq_10 = 0, curr;
+    while (freq_10 < 3 && ++try < maxtry) {
+        curr = _detect_bit(base);
+        all_recieved[allen++] = curr;
+        if (prev == 1 && curr == 0)
+            freq_10 += 1;
+        prev = curr;
+    }
+
+    // printf("R start: %ld\n", start);
+    // printf("rBits: ");
+    // len = 0;
+    // while (len < allen)
+    //     printf("%d", all_recieved[len++]);
+    // printf("\n");
+
+    return freq_10;
+}
+
 char *reconstruct(bool *received_bits, size_t length) {
     size_t num_chars = length / ASCII_BITS;
     char *output = (char *)malloc(num_chars + 1);
-    if (!output)
+    if (!output) {
+        printf("unable to allocate buffer on heap");
         return NULL;
+    }
     for (size_t i = 0; i < num_chars; i++) {
         char c = 0;
         for (int j = 0; j < ASCII_BITS; j++) {
@@ -100,46 +124,43 @@ char *reconstruct(bool *received_bits, size_t length) {
 }
 
 void receive_message(char **received_message) {
-    size_t len = 0, allen = 0, msg_len = 1000;
-    size_t try = 0, maxtry = 1000;
-    bool received[msg_len], all_recieved[maxtry];
-    int prev = 0, freq_10 = 0, curr;
-    while (freq_10 < 3 && ++try < maxtry) {
-        curr = _detect_bit(base);
-        all_recieved[allen++] = curr;
-        if (prev == 1 && curr == 0)
-            freq_10 += 1;
-        prev = curr;
-    }
-    // printf("R start: %ld\n", start);
-    // printf("rBits: ");
-    // len = 0;
-    // while (len < allen)
-    //     printf("%d", all_recieved[len++]);
-    // printf("\n");
+    future = -1;
+    size_t len = 0, msg_len = 700;
+    bool received[msg_len];
+    int prev = 0, curr;
+
+    int freq_10 = wait_for_magic_seq();
+
     if (freq_10 < 3) {
-        // printf("Error: Sequence not found, freq_10: %d, tries: %zu\n",
-        // freq_10,               try);
+        printf("Error: Sequence not found, freq_10: %d\n", freq_10);
         *received_message = NULL;
         return;
     }
+
     len = 0;
     while (len < msg_len) {
         curr = detect_bit(base);
         received[len++] = curr;
         prev = curr;
     }
-    // printf("rbits: ");
+    msg_len = len;
+    // printf("10s %d + rbits: ", freq_10);
     // len = 0;
     // while (len < msg_len)
     //     printf("%d", received[len++]);
     // printf("\n");
     *received_message = reconstruct(received, msg_len);
     // printf("received message: %s\n", received_message);
-    // for (int i = 0; received_message[i] != '\0'; i++)
-    //     printf("%d%c ", received_message[i], received_message[i]);
-    // printf("\n");
-    // printf("R start: %ld\n", start);
+}
+
+void write_to_file(const char *filename, const char *message) {
+    FILE *file = fopen(filename, "a");
+    if (!file) {
+        perror("fopen");
+        return;
+    }
+    fprintf(file, "%s\n", message);
+    fclose(file);
 }
 
 int main() {
@@ -172,22 +193,31 @@ int main() {
     }
 
     char *receive_messages[ROUNDS] = {0};
-    for (int round = 0; round < ROUNDS; round++) {
+    size_t round = 0;
+
+    do {
         start_sync();
-        receive_message(&receive_messages[round]);
-        usleep(1000);
-    }
+        receive_message(&receive_messages[round++]);
+        // usleep(1000);
+        // printf("round: %d str: %S\n", round,
+        // receive_messages[round - 1]);
+        if (!receive_messages[round - 1])
+            break;
+    } while (true);
 
-    for (int round = 0; round < ROUNDS; round++) {
-        if (receive_messages[round]) {
-            printf("m%d: %s\n", round, receive_messages[round]);
-        } else {
-            printf("m%d: NULL\n", round);
+    FILE *file = fopen("received.txt", "w");
+    if (!file) {
+        perror("fopen");
+        return EXIT_FAILURE;
+    }
+    fclose(file);
+
+    for (int i = 0; i < round; i++) {
+        printf("r%d %s\n", i, receive_messages[i]);
+        if (receive_messages[i]) {
+            write_to_file("received.txt", receive_messages[i]);
+            free(receive_messages[i]);
         }
-    }
-
-    for (int round = 0; round < ROUNDS; round++) {
-        free(receive_messages[round]);
     }
 
     if (munmap(base, st.st_size) == -1) {

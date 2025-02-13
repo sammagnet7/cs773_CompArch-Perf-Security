@@ -5,11 +5,11 @@ CFLAGS = -Wall -g
 all: sender receiver libshared.so
 
 # Build sender executable
-sender: sender.o utils.o
+sender: sender.o utils.o common.h cacheutils.h
 	$(CC) $(CFLAGS) -o sender sender.o utils.o
 
 # Build receiver executable
-receiver: receiver.o utils.o
+receiver: receiver.o utils.o common.h cacheutils.h
 	$(CC) $(CFLAGS) -o receiver receiver.o utils.o
 
 # Create shared library

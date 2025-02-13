@@ -32,3 +32,6 @@
 *.app
 receiver
 sender
+
+msg.txt
+received.txt
