@@ -1,10 +1,6 @@
-#ifndef CACHEUTILS_H
-#define CACHEUTILS_H
+#include "cacheutils.h"
 
-#define MAX(X, Y) (((X) > (Y)) ? (X) : (Y))
-#define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
-
-unsigned long probe_timing(char *adrs) {
+unsigned long probe_timing(void *adrs) {
     volatile unsigned long time;
 
     asm __volatile__("    mfence             \n"
@@ -35,5 +31,3 @@ unsigned long long rdtsc() {
 void maccess(void *p) { asm volatile("movq (%0), %%rax\n" : : "c"(p) : "rax"); }
 
 void flush(void *p) { asm volatile("clflush 0(%0)\n" : : "c"(p) : "rax"); }
-
-#endif

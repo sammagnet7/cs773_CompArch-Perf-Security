@@ -3,6 +3,17 @@
     "files.associations": {
         "config": "bat",
         "*.pdf": "doctex",
-        "cmath": "c"
-    }
+        "cmath": "c",
+        "correct.h": "c",
+        "reed-solomon.h": "c",
+        "portable.h": "c",
+        "encode.h": "c",
+        "field.h": "c",
+        "polynomial.h": "c",
+        "transmit_layer.h": "c",
+        "stat.h": "c",
+        "common.h": "c",
+        "cacheutils.h": "c"
+    },
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }

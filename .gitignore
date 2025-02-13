@@ -32,6 +32,8 @@
 *.app
 receiver
 sender
+calibrate
 
 msg.txt
 received.txt
+**/temp/
