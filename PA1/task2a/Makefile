@@ -2,26 +2,18 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Targets
-all: sender receiver libshared.so calibrate
+all: sender receiver calibrate
 
 # Build sender executable
-sender: sender.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
-	$(CC) $(CFLAGS) -o sender sender.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
+sender: sender.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
+	$(CC) $(CFLAGS) -o sender sender.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
 
 # Build receiver executable
-receiver: receiver.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
-	$(CC) $(CFLAGS) -o receiver receiver.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
+receiver: receiver.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
+	$(CC) $(CFLAGS) -o receiver receiver.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
 
-calibrate: calibrate.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o
-	$(CC) $(CFLAGS)  -o calibrate calibrate.o utils/utils.o utils/cacheutils.o transmit_layer/transmit_layer.o common.o -L. -lshared -Wl,-rpath,.
-
-# Create shared library
-libshared.so: shared.c
-	$(CC) -g -fPIC -shared -o libshared.so shared.c
-
-# Compile utils.c to utils.o
-utils/utils.o: utils/utils.c utils/utils.h
-	$(CC) $(CFLAGS) -c utils/utils.c -o utils/utils.o
+calibrate: calibrate.o utils/cacheutils.o
+	$(CC) $(CFLAGS)  -o calibrate calibrate.o utils/cacheutils.o
 
 # Compile sender.c to sender.o
 sender.o: sender.c
@@ -48,4 +40,4 @@ common.o: common.c common.h
 
 # Clean up build artifacts
 clean:
-	rm -f sender receiver libshared.so *.o transmit_layer/*.o utils/*.o
+	rm -f sender receiver calibrate *.o transmit_layer/*.o utils/*.o
