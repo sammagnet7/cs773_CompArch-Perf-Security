@@ -10,20 +10,25 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-void send_string(const char *str) {
+void send_string(const char *str)
+{
     send_magic_seq();
-    while (*str) {
+    while (*str)
+    {
         char c = *str++;
-        for (int i = ASCII_BITS - 1; i >= 0; i--) {
+        for (int i = ASCII_BITS - 1; i >= 0; i--)
+        {
             send_bit((c >> i) & 1);
         }
     }
     send_magic_seq();
 }
 
-char *read_file(const char *filename) {
+char *read_file(const char *filename)
+{
     FILE *file = fopen(filename, "r");
-    if (!file) {
+    if (!file)
+    {
         perror("fopen");
         return NULL;
     }
@@ -35,7 +40,8 @@ char *read_file(const char *filename) {
 
     // Allocate memory for the file content
     char *content = (char *)malloc(length + 1);
-    if (!content) {
+    if (!content)
+    {
         perror("malloc");
         fclose(file);
         return NULL;
@@ -49,23 +55,27 @@ char *read_file(const char *filename) {
     return content;
 }
 
-uint32_t PACK(uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3) {
+uint32_t PACK(uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3)
+{
     return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3;
 }
 
-size_t string_2_uint32(char *string, uint32_t **datas) {
+size_t string_2_uint32(char *string, uint32_t **datas)
+{
     size_t length = strlen(string);
     size_t num_uint32 = (length + 3) / 4; // Round up
 
     *datas = (uint32_t *)malloc(num_uint32 * sizeof(uint32_t));
-    if (*datas == NULL) {
+    if (*datas == NULL)
+    {
         perror("malloc");
         return -1;
     }
 
     memset(*datas, 0, num_uint32 * sizeof(uint32_t));
 
-    for (size_t i = 0; i < num_uint32; i++) {
+    for (size_t i = 0; i < num_uint32; i++)
+    {
         uint8_t c0 = (i * 4 < length) ? string[i * 4] : '\0';
         uint8_t c1 = (i * 4 + 1 < length) ? string[i * 4 + 1] : '\0';
         uint8_t c2 = (i * 4 + 2 < length) ? string[i * 4 + 2] : '\0';
@@ -78,19 +88,39 @@ size_t string_2_uint32(char *string, uint32_t **datas) {
     return num_uint32;
 }
 
-int main() {
-    open_transmit();
-    char *payload = read_file("msg.txt");
-    if (!payload) {
+int main()
+{
+    open_transmit();                      // opens the shared file
+    char *payload = read_file("msg.txt"); // read input to send
+    if (!payload)
+    {
         return EXIT_FAILURE;
     }
     uint32_t *datas;
     size_t datas_len = string_2_uint32(payload, &datas);
-    if (datas_len <= 0) {
+    if (datas_len <= 0)
+    {
         printf("unable to allocate memroy, too large file !!");
         exit(1);
     }
-    send_data(datas, datas_len);
+
+    // send_data(datas, datas_len);
+    int bit = 1;
+    while (1)
+    {
+        size_t start = rdtsc(), index = 0;
+        if (bit)
+            while (rdtsc() - start < SLOT_LENGTH)
+            {
+                flush((void *)(base + index));
+                index = (index + 64) % SHARED_ARRAY_SIZE;
+            }
+        else
+            while (rdtsc() - start < SLOT_LENGTH)
+            {
+            }
+    }
+
     free(payload);
     close_transmit();
     return 0;

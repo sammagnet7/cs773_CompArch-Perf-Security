@@ -34,7 +34,7 @@ receiver
 sender
 calibrate
 
-msg.txt
+
 received.txt
 **/temp/
 PA1/task2a/sendbits.log

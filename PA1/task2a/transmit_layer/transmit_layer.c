@@ -284,8 +284,8 @@ size_t receive_data(uint32_t **received_chunks)
 {
     ull sync_ts;
     size_t round = 0, try = 0, max_try = 2;
-    received_chunks = (uint32_t **)malloc(MAX_ROUNDS * sizeof(uint32_t *));
-    bool received[MAX_ROUNDS][ENCODED_MESSAGE_LEN];
+    received_chunks = (uint32_t **)malloc(MAX_CHUNKS * sizeof(uint32_t *));
+    bool received[MAX_CHUNKS][ENCODED_MESSAGE_LEN];
     while (try < max_try)
     {
         sync_ts = start_sync();
