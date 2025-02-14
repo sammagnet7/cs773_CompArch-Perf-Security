@@ -88,6 +88,23 @@ size_t string_2_uint32(char *string, uint32_t **datas)
     return num_uint32;
 }
 
+void stringToBinary(const char *str, char *binary)
+{
+    char temp[9];     // Each character needs 8 bits + 1 null terminator
+    binary[0] = '\0'; // Initialize the binary string
+    for (size_t i = 0; i < strlen(str); i++)
+    {
+        unsigned char ch = str[i];
+        // Convert the character to binary
+        for (int j = 7; j >= 0; j--)
+        {
+            temp[7 - j] = (ch & (1 << j)) ? '1' : '0';
+        }
+        temp[8] = '\0';       // Null-terminate the temporary string
+        strcat(binary, temp); // Append the binary representation to the result
+    }
+}
+
 int ssend_bit(int bit)
 {
     size_t start = rdtsc(), index = 0;
@@ -104,27 +121,24 @@ int ssend_bit(int bit)
 }
 int main()
 {
-    open_transmit();                      // opens the shared file
-    char *payload = read_file("msg.txt"); // read input to send
+    open_transmit(); // opens the shared file
+    // char *payload = read_file("msg.txt"); // read input to send
+    char payload[] = "Hello, World!";
     if (!payload)
     {
         return EXIT_FAILURE;
     }
-    uint32_t *datas;
-    size_t datas_len = string_2_uint32(payload, &datas);
-    if (datas_len <= 0)
-    {
-        printf("unable to allocate memroy, too large file !!");
-        exit(1);
-    }
+    char binary[strlen(payload) * 8 + 1];
+    stringToBinary(payload, binary);
+    printf("Binary: %s\n", binary);
+    int binary_len = strlen(binary);
     size_t index = 0;
-    int bits[10] = {1, 0, 1, 0, 1, 0, 1, 0, 1, 0};
     while (1)
     {
-        int bit = bits[index];
+        int bit = binary[index];
         ssend_bit(bit);
-	if(++index == 10)
-	break;
+        if (++index == binary_len)
+            break;
     }
 
     ////////////////////////// Constants //////////////////////////
@@ -155,7 +169,7 @@ int main()
     //     }
     // }
 
-    free(payload);
+    // free(payload);
     close_transmit();
     return 0;
 }
