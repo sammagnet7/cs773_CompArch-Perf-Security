@@ -88,6 +88,20 @@ size_t string_2_uint32(char *string, uint32_t **datas)
     return num_uint32;
 }
 
+int ssend_bit(int bit)
+{
+    size_t start = rdtsc(), index = 0;
+    if (bit)
+        while (rdtsc() - start < SLOT_LENGTH)
+        {
+            flush((void *)(base + index));
+            index = (index + 64) % SHARED_ARRAY_SIZE;
+        }
+    else
+        while (rdtsc() - start < SLOT_LENGTH)
+        {
+        }
+}
 int main()
 {
     open_transmit();                      // opens the shared file
@@ -103,22 +117,36 @@ int main()
         printf("unable to allocate memroy, too large file !!");
         exit(1);
     }
+    ////////////////////////// Constants //////////////////////////
+    size_t bits_per_uint32 = sizeof(uint32_t) * 8;
+    size_t uint32s_per_chunk = MESSAGE_CHUNK_LEN / bits_per_uint32;
+    size_t num_chunks =
+        (datas_len + uint32s_per_chunk - 1) / uint32s_per_chunk; // Round up
+    send_data(datas, datas_len);
 
-    // send_data(datas, datas_len);
-    int bit = 1;
-    while (1)
+    /////////////////// Send the message in chunks ///////////////////
+    for (size_t chunk = 0; chunk < num_chunks; chunk++)
     {
-        size_t start = rdtsc(), index = 0;
-        if (bit)
-            while (rdtsc() - start < SLOT_LENGTH)
+        ////////// Index calculation for each chunk //////////
+        size_t start = chunk * uint32s_per_chunk;
+        size_t end = start + uint32s_per_chunk;
+        if (end > datas_len)
+        {
+            end = datas_len;
+        }
+        // Need to sync here
+        ////////// Looping over each 32 bit integer in chunk //////////
+        for (size_t i = start; i < end; i++)
+        {
+            //////// Looping over all bits in 32 bit integer ////////
+            for (int j = sizeof(uint32_t) * 8 - 1; j >= 0; j--)
             {
-                flush((void *)(base + index));
-                index = (index + 64) % SHARED_ARRAY_SIZE;
+                bool bit = (datas[i] >> j) & 1;
+                printf("%d", bit); // 32 bits
+                // ssend_bit(bit);
             }
-        else
-            while (rdtsc() - start < SLOT_LENGTH)
-            {
-            }
+            printf("\n");
+        }
     }
 
     free(payload);
