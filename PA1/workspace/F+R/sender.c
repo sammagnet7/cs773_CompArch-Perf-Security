@@ -130,6 +130,12 @@ int main()
     }
     char binary[strlen(payload) * 8 + 1];
     stringToBinary(payload, binary);
+
+    for (int i = 0; i < strlen(binary); i++)
+    {
+        binary[i] = binary[i] - '0';
+    }
+
     printf("Binary: %s\n", binary);
     int binary_len = strlen(binary);
     size_t index = 0;
