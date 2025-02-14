@@ -123,7 +123,8 @@ int main()
     {
         int bit = bits[index];
         ssend_bit(bit);
-        index = (index + 1) % 10;
+	if(++index == 10)
+	break;
     }
 
     ////////////////////////// Constants //////////////////////////

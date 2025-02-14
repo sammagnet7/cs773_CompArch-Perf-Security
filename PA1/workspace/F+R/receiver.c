@@ -146,12 +146,12 @@ int main()
     // CHUNKS = receive_data(received_chunks);
 
     int size = 0;
-    char dump[25000];
+    char dump[500];
     while (1)
     {
         int bit = rdetect_bit((__uint64_t)base);
         dump[size++] = bit + '0';
-        if (size == 25000)
+        if (size == 500)
         {
             dump[size] = '\0';
             printf("%s\n", dump);
