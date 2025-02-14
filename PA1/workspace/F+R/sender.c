@@ -9,6 +9,8 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#define MAX_LIMIT_BOOL 1000 * 1024 * 8 // 250 KB
+#define CHUNK_SIZE 512
 
 void send_string(const char *str)
 {
@@ -55,39 +57,6 @@ char *read_file(const char *filename)
     return content;
 }
 
-uint32_t PACK(uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3)
-{
-    return (c0 << 24) | (c1 << 16) | (c2 << 8) | c3;
-}
-
-size_t string_2_uint32(char *string, uint32_t **datas)
-{
-    size_t length = strlen(string);
-    size_t num_uint32 = (length + 3) / 4; // Round up
-
-    *datas = (uint32_t *)malloc(num_uint32 * sizeof(uint32_t));
-    if (*datas == NULL)
-    {
-        perror("malloc");
-        return -1;
-    }
-
-    memset(*datas, 0, num_uint32 * sizeof(uint32_t));
-
-    for (size_t i = 0; i < num_uint32; i++)
-    {
-        uint8_t c0 = (i * 4 < length) ? string[i * 4] : '\0';
-        uint8_t c1 = (i * 4 + 1 < length) ? string[i * 4 + 1] : '\0';
-        uint8_t c2 = (i * 4 + 2 < length) ? string[i * 4 + 2] : '\0';
-        uint8_t c3 = (i * 4 + 3 < length) ? string[i * 4 + 3] : '\0';
-        (*datas)[i] = PACK(c0, c1, c2, c3);
-
-        // printf("%c%c%c%c : %08x; ", c0, c1, c2, c3, (*datas)[i]);
-    }
-
-    return num_uint32;
-}
-
 void stringToBinary(const char *str, char *binary)
 {
     char temp[9];     // Each character needs 8 bits + 1 null terminator
@@ -105,7 +74,36 @@ void stringToBinary(const char *str, char *binary)
     }
 }
 
-int ssend_bit(int bit)
+size_t read_bool_file(const char *filename, bool *bits)
+{
+    FILE *file = fopen(filename, "rb");
+    if (!file)
+    {
+        perror("fopen");
+        return 0;
+    }
+
+    size_t bit_count = 0;
+    uint8_t byte;
+
+    while (fread(&byte, sizeof(uint8_t), 1, file) == 1)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            if (bit_count >= MAX_LIMIT_BOOL)
+            {
+                perror("bits length longer than limit");
+                break;
+            }
+            bits[bit_count++] = (byte & (1 << (7 - i))) != 0;
+        }
+    }
+
+    fclose(file);
+    return bit_count;
+}
+
+void ssend_bit(int bit)
 {
     size_t start = rdtsc(), index = 0;
     if (bit)
@@ -119,30 +117,52 @@ int ssend_bit(int bit)
         {
         }
 }
+
 int main()
 {
     open_transmit(); // opens the shared file
-    // char *payload = read_file("msg.txt"); // read input to send
-    char payload[] = "Hello, World!";
-    if (!payload)
+    bool bit_stream[MAX_LIMIT_BOOL];
+    size_t bits_len = read_bool_file("msg.txt", bit_stream);
+    // for (int i = 0; i < bit_stream_len; i++)
+    // {
+    //     printf("%d", bit_stream[i]);
+    //     if (i % 8 == 7)
+    //     {
+    //         printf(" ");
+    //     }
+    // }
+    // printf("\n");
+    size_t bit_index = 0;
+    while (bit_index < bits_len)
     {
-        return EXIT_FAILURE;
+        // need to sync here
+        // (bit_index & (CHUNK_SIZE - 1)) == CHUNK_SIZE - 1 ? printf("chunk end %ld\n", bit_index) : 0;
+        ssend_bit(bit_stream[bit_index]);
+        bit_index++;
     }
-    char binary[strlen(payload) * 8 + 1];
-    stringToBinary(payload, binary);
+    // write_to_file("msg.txt", data);
+    // char binary[strlen(payload) * 8 + 1];
+    // stringToBinary(payload, binary);
 
-    printf("Binary: %s\n", binary);
-    int binary_len = strlen(binary);
-    size_t index = 0;
-    while (1)
-    {
-        int bit = binary[index] - 48;
-        ssend_bit(bit);
-        if (++index == binary_len)
-            break;
-    }
+    // printf("Binary: %s\n", binary);
+    // int binary_len = strlen(binary);
+    // size_t index = 0;
+    // while (1)
+    // {
+    //     int bit = binary[index] - 48;
+    //     ssend_bit(bit);
+    //     if (++index == binary_len)
+    //         break;
+    // }
 
     ////////////////////////// Constants //////////////////////////
+    // uint32_t *datas;
+    // size_t datas_len = string_2_uint32(payload, &datas);
+    // for (size_t i = 0; i < count; i++)
+    // {
+    //     /* code */
+    // }
+
     // size_t bits_per_uint32 = sizeof(uint32_t) * 8;
     // size_t uint32s_per_chunk = MESSAGE_CHUNK_LEN / bits_per_uint32;
     // size_t num_chunks =
