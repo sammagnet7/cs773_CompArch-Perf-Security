@@ -133,10 +133,12 @@ int main()
     // }
     // printf("\n");
     size_t bit_index = 0;
+    start_sync();
     while (bit_index < bits_len)
     {
         // need to sync here
-        // (bit_index & (CHUNK_SIZE - 1)) == CHUNK_SIZE - 1 ? printf("chunk end %ld\n", bit_index) : 0;
+        (bit_index & (CHUNK_SIZE - 1)) == CHUNK_SIZE - 1 ? start_sync() : 0;
+        // start_sync();
         ssend_bit(bit_stream[bit_index]);
         bit_index++;
     }

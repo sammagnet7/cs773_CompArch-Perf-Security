@@ -20,8 +20,8 @@
 #define ASCII_BITS 8
 #define START_SEQ_LEN 5
 
-#define TIME_MASK 0x3FFFFFFF
-#define SYNC_INTERVAL 536870912
+#define TIME_MASK 0x3FF
+#define SYNC_INTERVAL 0x1FF
 extern ull start_sync();
 
 #endif

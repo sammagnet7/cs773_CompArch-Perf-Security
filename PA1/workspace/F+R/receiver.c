@@ -149,6 +149,7 @@ int main()
     char dump[500];
     while (1)
     {
+        start_sync();
         int bit = rdetect_bit((__uint64_t)base);
         dump[size++] = bit + '0';
         if (size == 500)
