@@ -99,7 +99,13 @@ void signal_handler(int signum)
         cleanup();
     }
 }
-
+size_t onlyreload(void *addr)
+{
+    size_t time = rdtsc();
+    maccess(addr);
+    size_t delta = rdtsc() - time;
+    return delta;
+}
 bool rdetect_bit()
 {
     size_t hit = 0, miss = 0, i = 0;
