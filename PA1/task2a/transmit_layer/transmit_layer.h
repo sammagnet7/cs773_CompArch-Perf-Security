@@ -21,7 +21,7 @@ bool detect_bit();
 void send_magic_seq();
 int wait_magic_seq();
 
-void send_data(uint32_t *data);
-void receive_data(uint32_t *data);
+void send_data(uint32_t *data, size_t length);
+size_t receive_data(uint32_t **chunks);
 
 #endif // TRANSMIT_LAYER_H

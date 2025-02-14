@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -183,9 +184,9 @@ bool detect_bit() {
     return curr;
 }
 
-void __send_bit(bool value) {
+void __send_bit(bool bit) {
     size_t start = rdtsc();
-    if (value)
+    if (bit)
         while (rdtsc() - start < SLOT_LENGTH) {
             onlyflush((void *)probe);
         }
@@ -194,7 +195,7 @@ void __send_bit(bool value) {
         }
 }
 
-void _send_bit(bool value) {
+void _send_bit(bool bit) {
     // if (__sent_counter >= HISTORY_SIZE) {
     //     save_history("sentbits.log", __sent_bits, __sent_counter);
     //     __sent_counter = 0;
@@ -202,18 +203,126 @@ void _send_bit(bool value) {
     // __sent_bits[__sent_counter++] = value;
     // printf("%d", value);
     for (int i = 0; i < BIT_REPEAT; i++)
-        __send_bit(value);
+        __send_bit(bit);
 }
 
-void send_bit(bool value) {
-    // printf("%d", value);
-    static bool prev_value = -1;
-    if (prev_value == 1 && value == 0) {
+void send_bit(bool bit) {
+    // printf("%d", bit);
+    static bool prev_bit = -1;
+    if (prev_bit == 1 && bit == 0) {
         _send_bit(1);
         _send_bit(0);
     }
-    _send_bit(value);
-    prev_value = value;
+    _send_bit(bit);
+    prev_bit = bit;
+}
+
+void send_one_uint32(uint32_t data) {
+    // printf("%08x; ", data);
+    send_magic_seq();
+    for (int i = sizeof(uint32_t) * 8 - 1; i >= 0; i--) {
+        bool bit = (data >> i) & 1;
+        send_bit(bit);
+    }
+    send_magic_seq();
+    // printf(" | ");
+}
+
+void send_data(uint32_t *datas, size_t length) {
+    size_t bits_per_uint32 = sizeof(uint32_t) * 8;
+    size_t uint32s_per_chunk = MESSAGE_CHUNK_LEN / bits_per_uint32;
+    size_t num_batches =
+        (length + uint32s_per_chunk - 1) / uint32s_per_chunk; // Round up
+    ull sync_ts;
+
+    for (size_t batch = 0; batch < num_batches; batch++) {
+        sync_ts = start_sync();
+        printf("\nS:: TS: %lld Round: %ld/%ld\n", sync_ts, batch, num_batches);
+
+        size_t start = batch * uint32s_per_chunk;
+        size_t end = start + uint32s_per_chunk;
+        if (end > length) {
+            end = length;
+        }
+
+        for (size_t i = start; i < end; i++) {
+            send_one_uint32(datas[i]);
+        }
+    }
+}
+
+size_t compact_bools_2_uint32(bool *bitstream, size_t bitstream_length,
+                              uint32_t **datas) {
+    size_t bits_per_uint32 = sizeof(uint32_t) * 8;
+    size_t num_uint32 =
+        (bitstream_length + bits_per_uint32 - 1) / bits_per_uint32; // Round up
+
+    *datas = (uint32_t *)malloc(num_uint32 * sizeof(uint32_t));
+    if (*datas == NULL) {
+        perror("malloc");
+        return 0;
+    }
+
+    memset(*datas, 0, num_uint32 * sizeof(uint32_t));
+    uint32_t temp = 0;
+    for (size_t i = 0; i < bitstream_length; i++) {
+        size_t index = i / bits_per_uint32;
+        size_t shift = bits_per_uint32 - 1 - (i % bits_per_uint32);
+        temp |= ((uint32_t)bitstream[i] << shift);
+        if (i % bits_per_uint32 == 0 && i != 0) {
+            if (temp != 0x0000)
+                (*datas)[index] = temp;
+            temp = 0;
+            // printf("%08x;", (*datas)[index - 1]);
+        }
+    }
+
+    return num_uint32;
+}
+
+size_t receive_data(uint32_t *received_chunks[MAX_ROUNDS]) {
+    ull sync_ts;
+    size_t round = 0, try = 0, max_try = 2;
+    while (try < max_try) {
+        sync_ts = start_sync();
+        printf("\nR:: TS: %lld round: %ld\n", sync_ts, round);
+        future = -1;
+        size_t len = 0;
+        bool received[MESSAGE_CHUNK_LEN];
+
+        int freq_10 = wait_magic_seq();
+
+        if (freq_10 < 3) {
+            printf("Error: Sequence not found, freq_10: %d try: %ld/%ld \n",
+                   freq_10, try, max_try);
+            received_chunks[round] = NULL;
+            ++try;
+            continue;
+        }
+        try = 0;
+        len = 0;
+        while (len < MESSAGE_CHUNK_LEN)
+            received[len++] = detect_bit();
+
+        compact_bools_2_uint32(received, MESSAGE_CHUNK_LEN,
+                               &received_chunks[round]);
+        if (!received_chunks[round])
+            break;
+        ++round;
+
+        // len = 0;
+        // while (len < MESSAGE_CHUNK_LEN)
+        //     printf("%d", received[len++]);
+        // printf("\n");
+    }
+
+    // for (int i = 0; i < round; i++)
+    //     for (int j = 0; j < MESSAGE_CHUNK_LEN / 32; j++)
+    //         if (received_chunks[i][j])
+    //             printf("%08x;", received_chunks[i][j]);
+    // printf("\n");
+
+    return round;
 }
 
 void send_magic_seq() {

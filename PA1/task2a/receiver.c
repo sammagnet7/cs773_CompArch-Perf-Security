@@ -11,52 +11,40 @@
 #include <unistd.h>
 
 size_t CHUNKS = 0;
-char *receive_messages[ROUNDS];
+char *received_messages[MAX_ROUNDS] = {0};
+uint32_t *received_chunks[MAX_ROUNDS] = {0};
 
-char *reconstruct(bool *received_bits, size_t length) {
-    size_t num_chars = length / ASCII_BITS;
+char *reconstruct(uint32_t *received_bits, size_t length) {
+    size_t num_chars = length * 4;
     char *output = (char *)malloc(num_chars + 1);
     if (!output) {
         printf("unable to allocate buffer on heap");
         return NULL;
     }
-    for (size_t i = 0; i < num_chars; i++) {
-        char c = 0;
-        for (int j = 0; j < ASCII_BITS; j++) {
-            c = (c << 1) | received_bits[i * ASCII_BITS + j];
+    num_chars = 0;
+    char c[4];
+    for (size_t i = 0; i < length; i++) {
+        uint32_t value = received_bits[i];
+        if (value == 0x0000)
+            continue;
+        // ++num_chars;
+        // printf("%08x;", value);
+        c[0] = (value >> 24) & 0xFF;
+        c[1] = (value >> 16) & 0xFF;
+        c[2] = (value >> 8) & 0xFF;
+        c[3] = value & 0xFF;
+        for (int j = 0; j < 4; j++) {
+            if (c[j] >= 32 && c[j] <= 126) {
+                output[num_chars++] = c[j];
+                // printf(".%c", c[j]);
+            }
         }
-        output[i] = c;
-        // printf(".%c", c);
     }
-    output[num_chars] = '\0'; // Null terminate the string
-    return output;
-}
-
-void receive_message(char **received_message) {
-    future = -1;
-    size_t len = 0, msg_len = MESSAGE_CHUNK_LEN;
-    bool received[msg_len];
-
-    int freq_10 = wait_magic_seq();
-
-    if (freq_10 < 3) {
-        printf("Error: Sequence not found, freq_10: %d\n", freq_10);
-        *received_message = NULL;
-        return;
-    }
-
-    len = 0;
-    while (len < msg_len)
-        received[len++] = detect_bit(base);
-
-    msg_len = len;
-    // printf("10s %d + rbits: ", freq_10);
-    // len = 0;
-    // while (len < msg_len)
-    //     printf("%d", received[len++]);
     // printf("\n");
-    *received_message = reconstruct(received, msg_len);
-    // printf("\nreceived message: %s\n", *received_message);
+
+    output[num_chars] = '\0';
+    // printf("recon %s", output);
+    return output;
 }
 
 void append_to_file(const char *filename, const char *message) {
@@ -80,11 +68,11 @@ void clear_file(const char *filename) {
 void cleanup() {
     clear_file("received.txt");
 
-    for (int i = 0; i < CHUNKS; i++) {
-        if (receive_messages[i]) {
-            printf("round %d : %s", i, receive_messages[i]);
-            append_to_file("received.txt", receive_messages[i]);
-            free(receive_messages[i]);
+    for (int i = 0; i <= CHUNKS; i++) {
+        if (received_messages[i]) {
+            printf("\nchunk %d : %s", i, received_messages[i]);
+            append_to_file("received.txt", received_messages[i]);
+            free(received_messages[i]);
         }
     }
 
@@ -106,19 +94,24 @@ int main() {
     // calibrate();
     // exit(0);
 
-    ull sync_ts;
     CHUNKS = 0;
-    for (int i = 0; i < ROUNDS; i++)
-        receive_messages[i] = 0;
+    for (int i = 0; i < MAX_ROUNDS; i++)
+        received_messages[i] = 0;
+    // ull sync_ts;
+    uint32_t *received_chunks[MAX_ROUNDS] = {0};
+    CHUNKS = receive_data(received_chunks);
+    printf("chunks %ld\n", CHUNKS);
+    if (CHUNKS <= 0) {
+        printf("error in receiving");
+        exit(1);
+    }
+    for (int i = 0; i < MAX_ROUNDS; i++) {
+        if (!received_chunks[i])
+            continue;
+        received_messages[i] =
+            reconstruct(received_chunks[i], MESSAGE_CHUNK_LEN / 32);
+        free(received_chunks[i]);
+    }
 
-    do {
-        sync_ts = start_sync();
-        // printf("\nR:: TS: %lld round: %ld\n", sync_ts, CHUNKS);
-        receive_message(&receive_messages[CHUNKS++]);
-        // if (receive_messages[CHUNKS - 1])
-        // printf("\nreceived %ld : %s", CHUNKS, receive_messages[CHUNKS - 1]);
-        // printf("\n");
-    } while (receive_messages[CHUNKS - 1]);
-
-    cleanup(receive_messages);
+    cleanup();
 }
