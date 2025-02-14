@@ -99,7 +99,7 @@ void signal_handler(int signum)
         cleanup();
     }
 }
-size_t onlyreload(void *addr)
+size_t ronlyreload(void *addr)
 {
     size_t time = rdtsc();
     maccess(addr);
@@ -112,7 +112,7 @@ bool rdetect_bit()
     size_t time = rdtsc();
     while (rdtsc() - time < SLOT_LENGTH)
     {
-        size_t reload_time = onlyreload((void *)(base + i));
+        size_t reload_time = ronlyreload((void *)(base + i));
         i = (i + 64) % SHARED_ARRAY_SIZE; // bytes in shared text file in nearest multiple of 64        // max_rld = MAX(max_rld, reload_time);
         if (reload_time > MIN_CACHE_MISS_CYCLES)
         {
