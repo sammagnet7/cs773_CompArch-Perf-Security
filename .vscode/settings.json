@@ -1,22 +1,6 @@
 {
-    "editor.formatOnSave": true,
     "files.associations": {
-        "config": "bat",
-        "*.pdf": "doctex",
-        "cmath": "c",
-        "correct.h": "c",
-        "reed-solomon.h": "c",
-        "portable.h": "c",
-        "encode.h": "c",
-        "field.h": "c",
-        "polynomial.h": "c",
-        "transmit_layer.h": "c",
-        "stat.h": "c",
-        "common.h": "c",
-        "cacheutils.h": "c",
-        "stdint.h": "c",
-        "dlfcn.h": "c",
-        "error_correction.h": "c"
-    },
-    "C_Cpp.default.compilerPath": "/usr/bin/gcc"
+        "cmath": "cpp",
+        "sys_config.h": "c"
+    }
 }
