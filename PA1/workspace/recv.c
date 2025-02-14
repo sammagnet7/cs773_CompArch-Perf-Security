@@ -54,6 +54,7 @@ int detect(__uint64_t base)
             hit++;
             // printf("CACHE HIT %ld\n", reload_time);
         }
+        i++;
     }
 
     return hit > miss;

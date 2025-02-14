@@ -42,6 +42,7 @@ int main()
     while (1)
     {
         flush((void *)(base+(index*64)%limit));
+        index++;
     }
     return 0;
 }
