@@ -117,37 +117,42 @@ int main()
         printf("unable to allocate memroy, too large file !!");
         exit(1);
     }
+    size_t index = 0;
+    int bits[10] = {1, 0, 1, 0, 1, 0, 1, 0, 1, 0};
+    while (1)
+    {
+        int bit = bits[index];
+        ssend_bit(bit);
+        index = (index + 1) % 10;
+    }
+
     ////////////////////////// Constants //////////////////////////
-    size_t bits_per_uint32 = sizeof(uint32_t) * 8;
-    size_t uint32s_per_chunk = MESSAGE_CHUNK_LEN / bits_per_uint32;
-    size_t num_chunks =
-        (datas_len + uint32s_per_chunk - 1) / uint32s_per_chunk; // Round up
-    send_data(datas, datas_len);
+    // size_t bits_per_uint32 = sizeof(uint32_t) * 8;
+    // size_t uint32s_per_chunk = MESSAGE_CHUNK_LEN / bits_per_uint32;
+    // size_t num_chunks =
+    //     (datas_len + uint32s_per_chunk - 1) / uint32s_per_chunk; // Round up
 
     /////////////////// Send the message in chunks ///////////////////
-    for (size_t chunk = 0; chunk < num_chunks; chunk++)
-    {
-        ////////// Index calculation for each chunk //////////
-        size_t start = chunk * uint32s_per_chunk;
-        size_t end = start + uint32s_per_chunk;
-        if (end > datas_len)
-        {
-            end = datas_len;
-        }
-        // Need to sync here
-        ////////// Looping over each 32 bit integer in chunk //////////
-        for (size_t i = start; i < end; i++)
-        {
-            //////// Looping over all bits in 32 bit integer ////////
-            for (int j = sizeof(uint32_t) * 8 - 1; j >= 0; j--)
-            {
-                bool bit = (datas[i] >> j) & 1;
-                printf("%d", bit); // 32 bits
-                // ssend_bit(bit);
-            }
-            printf("\n");
-        }
-    }
+    // for (size_t chunk = 0; chunk < num_chunks; chunk++)
+    // {
+    //     ////////// Index calculation for each chunk //////////
+    //     size_t start = chunk * uint32s_per_chunk;
+    //     size_t end = start + uint32s_per_chunk;
+    //     if (end > datas_len)
+    //     {
+    //         end = datas_len;
+    //     }
+    //     // Need to sync here
+    //     ////////// Looping over each 32 bit integer in chunk //////////
+    //     for (size_t i = start; i < end; i++)
+    //     {
+    //         //////// Looping over all bits in 32 bit integer ////////
+    //         for (int j = sizeof(uint32_t) * 8 - 1; j >= 0; j--)
+    //         {
+    //         }
+    //         printf("\n");
+    //     }
+    // }
 
     free(payload);
     close_transmit();
