@@ -146,10 +146,21 @@ int main()
     // CHUNKS = receive_data(received_chunks);
 
     int size = 0;
+    size_t maxtry = 1000, try = 0;
+    int prev = 0, freq_10 = 0, curr;
     char dump[500];
+    start_sync();
+    // wait for magic sequence
+    while (freq_10 < 3 && ++try < maxtry)
+    {
+        curr = rdetect_bit((__uint64_t)base);
+        if (prev == 1 && curr == 0)
+            freq_10 += 1;
+        prev = curr;
+    }
     while (1)
     {
-        start_sync();
+
         int bit = rdetect_bit((__uint64_t)base);
         dump[size++] = bit + '0';
         if (size == 500)

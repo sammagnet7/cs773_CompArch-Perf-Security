@@ -134,6 +134,11 @@ int main()
     // printf("\n");
     size_t bit_index = 0;
     start_sync();
+    for (int i = 0; i < 3; i++)
+    {
+        ssend_bit(1);
+        ssend_bit(0);
+    }
     while (bit_index < bits_len)
     {
         // need to sync here
