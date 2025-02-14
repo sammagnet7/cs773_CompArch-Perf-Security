@@ -16,7 +16,6 @@ char *base = NULL;
 char *probe = NULL;
 void *handle = NULL;
 
-#define HISTORY_SIZE 160000
 size_t __sent_counter = 0, __received_counter = 0;
 bool __sent_bits[HISTORY_SIZE], __received_bits[HISTORY_SIZE];
 
@@ -161,11 +160,11 @@ bool _detect_bit() {
     }
     bool val = count > (BIT_REPEAT / 2);
     // printf("%d", val);
-    // if (__received_counter >= HISTORY_SIZE) {
-    //     save_history("receivebits.log", __received_bits, __received_counter);
-    //     __received_counter = 0;
-    // }
-    // __received_bits[__received_counter++] = val;
+    if (__received_counter >= HISTORY_SIZE) {
+        save_history("receivebits.log", __received_bits, __received_counter);
+        __received_counter = 0;
+    }
+    __received_bits[__received_counter++] = val;
     return val;
 }
 
@@ -196,12 +195,12 @@ void __send_bit(bool bit) {
 }
 
 void _send_bit(bool bit) {
-    // if (__sent_counter >= HISTORY_SIZE) {
-    //     save_history("sentbits.log", __sent_bits, __sent_counter);
-    //     __sent_counter = 0;
-    // }
-    // __sent_bits[__sent_counter++] = value;
-    // printf("%d", value);
+    if (__sent_counter >= HISTORY_SIZE) {
+        save_history("sentbits.log", __sent_bits, __sent_counter);
+        __sent_counter = 0;
+    }
+    __sent_bits[__sent_counter++] = bit;
+    // printf("%d", bit);
     for (int i = 0; i < BIT_REPEAT; i++)
         __send_bit(bit);
 }
@@ -283,12 +282,12 @@ size_t compact_bools_2_uint32(bool *bitstream, size_t bitstream_length,
 size_t receive_data(uint32_t *received_chunks[MAX_ROUNDS]) {
     ull sync_ts;
     size_t round = 0, try = 0, max_try = 2;
+    bool received[MAX_ROUNDS][ENCODED_MESSAGE_LEN];
     while (try < max_try) {
         sync_ts = start_sync();
         printf("\nR:: TS: %lld round: %ld\n", sync_ts, round);
         future = -1;
         size_t len = 0;
-        bool received[MESSAGE_CHUNK_LEN];
 
         int freq_10 = wait_magic_seq();
 
@@ -301,19 +300,21 @@ size_t receive_data(uint32_t *received_chunks[MAX_ROUNDS]) {
         }
         try = 0;
         len = 0;
-        while (len < MESSAGE_CHUNK_LEN)
-            received[len++] = detect_bit();
+        while (len < ENCODED_MESSAGE_LEN)
+            received[round][len++] = detect_bit();
 
-        compact_bools_2_uint32(received, MESSAGE_CHUNK_LEN,
-                               &received_chunks[round]);
-        if (!received_chunks[round])
-            break;
         ++round;
 
         // len = 0;
         // while (len < MESSAGE_CHUNK_LEN)
         //     printf("%d", received[len++]);
         // printf("\n");
+    }
+    for (int i = 0; i < round; i++) {
+        compact_bools_2_uint32(received[i], MESSAGE_CHUNK_LEN,
+                               &received_chunks[i]);
+        // if (!received_chunks[i])
+        //     break;
     }
 
     // for (int i = 0; i < round; i++)

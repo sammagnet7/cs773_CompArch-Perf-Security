@@ -13,7 +13,9 @@
 #define MESSAGE_CHUNK_LEN 4800 // bits; multiple of 8
 
 #define BIT_REPEAT 3 // send each bit how many times
-#define ROUNDS 1     // send the whole payload how many times
+#define MAX_ROUNDS 1 // send the whole payload how many times
+#define ENCODED_MESSAGE_LEN MESSAGE_CHUNK_LEN
+#define HISTORY_SIZE (MESSAGE_CHUNK_LEN * MAX_ROUNDS)
 
 #define ASCII_BITS 8
 #define START_SEQ_LEN 5

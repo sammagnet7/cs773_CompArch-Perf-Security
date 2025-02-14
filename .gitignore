@@ -40,3 +40,8 @@ received.txt
 PA1/task2a/sendbits.log
 PA1/task2a/receivebits.log
 PA1/task2a/sentbits.log
+PA1/task2a/shared.txt
+PA1/task2a/msg_full.txt
+PA1/task2a/transmit_layer/transmit_layer.c.bak2
+PA1/task2a/transmit_layer/transmit_layer.c.bak
+PA1/task2a/error_correction/error_correction
