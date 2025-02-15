@@ -141,7 +141,7 @@ int main()
 	    // printf("Got ACK\n");
             bit_index += CHUNK_SIZE;
         }
-	printf("CHUNK %d/%d\r", bit_index/CHUNK_SIZE, num_chunks);
+	printf("CHUNK %ld/%ld\r", bit_index/CHUNK_SIZE, num_chunks);
 	fflush(stdout);
     }
     // free(payload);

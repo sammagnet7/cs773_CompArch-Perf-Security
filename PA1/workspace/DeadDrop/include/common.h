@@ -8,7 +8,7 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
-#define SLOT_LENGTH 1500000
+#define SLOT_LENGTH 150000
 #define MIN_CACHE_MISS_CYCLES 135
 #define SHARED_ARRAY_SIZE 8192
 #define MESSAGE_CHUNK_LEN 4800 // bits; multiple of 8
