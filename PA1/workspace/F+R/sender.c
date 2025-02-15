@@ -11,7 +11,7 @@
 #include <unistd.h>
 #define MAX_LIMIT_BOOL 1000 * 1024 * 8 // 250 KB
 
-size_t read_bool_file(const char *filename, bool *bits)
+size_t read_bool_file(const char *filename, uint8_t *bits)
 {
     FILE *file = fopen(filename, "rb");
     if (!file)
@@ -68,7 +68,7 @@ void sync_chunk()
 int main()
 {
     open_transmit(); // opens the shared file
-    bool bit_stream[MAX_LIMIT_BOOL];
+    uint8_t bit_stream[MAX_LIMIT_BOOL];
     size_t bits_len = read_bool_file("msg.txt", bit_stream);
     // for (int i = 0; i < bits_len; i++)
     // {

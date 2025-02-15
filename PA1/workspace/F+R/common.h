@@ -9,7 +9,7 @@
 
 #define SLOT_LENGTH 15000000
 #define MIN_CACHE_MISS_CYCLES 135
-#define SHARED_ARRAY_SIZE 49984
+#define SHARED_ARRAY_SIZE 8192
 #define MESSAGE_CHUNK_LEN 4800 // bits; multiple of 8
 #define CHUNK_SIZE 128
 #define BIT_REPEAT 3 // send each bit how many times
