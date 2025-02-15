@@ -4,8 +4,9 @@ Refer [this](https://docs.google.com/document/d/1a77P4xrjjIW19FLUkyICbp5-0Gycmhe
 
 
 ## Submission Details
-Name and roll numbers of the team members.
-
+Sm Arif Ali (23m0822)
+Soumik Dutta (23m0826)
+Arnab Bhakta (23m0835)
 
 ## Task 2A
 ### Approach

@@ -29,7 +29,10 @@ except subprocess.CalledProcessError:
 
 
 ######################### Get input string to send #################################
-STRING_TO_SEND = input("Input String: ")
+if len(sys.argv) > 1:
+    STRING_TO_SEND = sys.argv[1]
+else:
+    STRING_TO_SEND = input("Enter file name: ")
 
 def process_input(user_input):
     binary_str = ''.join(format(ord(char), '08b') for char in user_input)  # Convert to binary (8-bit)
