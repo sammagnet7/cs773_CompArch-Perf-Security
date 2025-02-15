@@ -44,6 +44,7 @@ size_t read_bool_file(const char *filename, uint8_t *bits)
 
 void ssend_bit(int bit)
 {
+//	printf("%d\n", bit);
     size_t start = rdtsc(), index = 0;
     if (bit)
         while (rdtsc() - start < SLOT_LENGTH)
@@ -67,7 +68,7 @@ void sync_preamble()
         int bit = (pattern >> i) & 1;
         ssend_bit(bit);
     }
-    printf("S-SYNC PREAMBLE: ID: %ld\n", bit_index);
+    // printf("S-SYNC PREAMBLE: ID: %ld\n", bit_index);
 }
 void sync_postamble()
 {
@@ -77,7 +78,7 @@ void sync_postamble()
         int bit = (pattern >> i) & 1;
         ssend_bit(bit);
     }
-    printf("S-SYNC POSTAMBLE: ID: %ld\n", bit_index);
+    // printf("S-SYNC POSTAMBLE: ID: %ld\n", bit_index);
 }
 
 size_t ronlyreload(void *addr)
@@ -111,39 +112,40 @@ int check_acknowledgement()
 int main()
 {
     open_transmit("dump.txt"); // opens the shared file
-    uint8_t bit_stream[MAX_LIMIT_BOOL];
-    size_t bits_len = read_bool_file("msg.txt", bit_stream);
-
+    uint8_t bit_stream[MAX_LIMIT_BOOL] = {0};
+    size_t bits_len = read_bool_file("processed.bin", bit_stream);
+    uint32_t pattern = MAGIC_POSTAMBLE;
+    size_t num_chunks = bits_len/CHUNK_SIZE;
     while (bit_index < bits_len){
-	 if (bit_index != 0 && bit_index % CHUNK_SIZE == 0)
-        {
-            if (check_acknowledgement()) // if ack received, move to next chunk
-            {
-                bit_index++;
-            }
-            else
-            {
-                bit_index = bit_index - CHUNK_SIZE; // resend the chunk
-            }
-        }
+//	check_acknowledgement();
         // Send preamble at Chunk boundary
-        if (bit_index % CHUNK_SIZE == 0)
-        {
-            sync_preamble();
-        }
+        sync_preamble();
 
-        // send each bit in the chunk
-        ssend_bit(bit_stream[bit_index]);
+        for (int i = 0; i < CHUNK_SIZE; i++)
+        {
+            ssend_bit(bit_stream[bit_index + i]); // send each bit in the chunk
+        }
 
         // Send postamble at Chunk boundary
-        if (bit_index % CHUNK_SIZE == CHUNK_SIZE - 1)
+	
+    	for (int i = MAGIC_SEQ_LEN - 1; i >= 0; i--)
+    	{
+        	int bit = (pattern >> i) & 1;
+        	ssend_bit(bit);
+    	}
+    	// printf("S-SYNC POSTAMBLE: ID: %ld\n", bit_index);
+        size_t start = rdtsc();
+	while(rdtsc()-start<ACK_THRESHOLD*1000){};
+	if (check_acknowledgement()) // if ack received, move to next chunk
         {
-            sync_postamble();
+	    // printf("Got ACK\n");
+            bit_index += CHUNK_SIZE;
         }
-        bit_index++;
+	printf("CHUNK %d/%d\r", bit_index/CHUNK_SIZE, num_chunks);
+	fflush(stdout);
     }
     // free(payload);
     close_transmit();
-    printf("Transmission complete\n");
+    // printf("Transmission complete\n");
     return 0;
 }

@@ -1,6 +1,6 @@
 # Compiler
 CC = gcc
-CFLAGS = -Wall -O0 -Iinclude
+CFLAGS = -Wall -O0 -g -Iinclude
 
 # Source files
 COMMON_SRC = utils.c
@@ -17,6 +17,8 @@ BIN_DIR = bin
 SENDER_EXE = $(BIN_DIR)/sender
 RECEIVER_EXE = $(BIN_DIR)/receiver
 
+all: $(SENDER_EXE) $(RECEIVER_EXE)
+
 # Create directories if they don't exist
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
@@ -25,7 +27,6 @@ $(BIN_DIR):
 	@mkdir -p $(BIN_DIR)
 
 # Rules
-all: $(SENDER_EXE) $(RECEIVER_EXE)
 
 $(SENDER_EXE): $(OBJ_DIR) $(BIN_DIR) $(SENDER_OBJ)
 	$(CC) $(CFLAGS) -o $@ $(SENDER_OBJ)

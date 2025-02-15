@@ -70,7 +70,7 @@ int rdetect_bit() {
     return miss >= hit;
 }
 void sigint_handler(int signum) {
-    dump_bits(received_bits, received_till_now, OUTPUT_FILE);
+    dump_bits(received_bits, data_till_now, OUTPUT_FILE);
     exit(0);
 }
 
@@ -84,18 +84,7 @@ void sync_preamble() {
         curr = rdetect_bit((__uint64_t)base);
         pattern_history = (pattern_history << 1) | (curr & 1);
     }
-    printf("R-GOT PREAMBLE: ID: %ld\n", received_till_now);
-}
-void sync_postamble() {
-    int curr;
-    uint32_t pattern_history = 0;
-    // start_sync();
-    // wait for magic sequence
-    while ((pattern_history & MAGIC_MASK) != MAGIC_POSTAMBLE) {
-        curr = rdetect_bit((__uint64_t)base);
-        pattern_history = (pattern_history << 1) | (curr & 1);
-    }
-    printf("R-GOT POSTAMBLE: ID: %ld\n", received_till_now);
+    // printf("R-GOT PREAMBLE: ID: %ld\n", received_till_now);
 }
 
 int send_acknowledgement() {
@@ -117,27 +106,24 @@ int main() {
     uint32_t pattern_history = 0;
     size_t EXTENDED_CHUNK_SIZE = CHUNK_SIZE + MAGIC_SEQ_LEN;
     while (1) {
-        if (received_till_now % EXTENDED_CHUNK_SIZE == 0) {
-            sync_preamble();
+        
+	sync_preamble();
+        for (int i = 0; i < EXTENDED_CHUNK_SIZE; i++)
+        {
+            int bit = rdetect_bit((__uint64_t)base);
+            pattern_history = (pattern_history << 1) | bit;
+            received_bits[data_till_now+i] = bit;
         }
-
-        int bit = rdetect_bit((__uint64_t)base);
-        pattern_history = (pattern_history << 1) | bit;
-        received_bits[data_till_now] = bit;
-        if (received_till_now % EXTENDED_CHUNK_SIZE ==
-            EXTENDED_CHUNK_SIZE - 1) {
-
-            if ((pattern_history & MAGIC_MASK) == MAGIC_POSTAMBLE) {
-                data_till_now -= (MAGIC_SEQ_LEN + 1);
-                printf("GOT POSTAMBLE\n");
-                send_acknowledgement();
-            } else {
-                data_till_now -= (EXTENDED_CHUNK_SIZE + 1);
-                printf("NO POSTAMBLE\n");
-            }
-            printf("INDEX: %ld\n", received_till_now);
+        if ((pattern_history & MAGIC_MASK) == MAGIC_POSTAMBLE)
+        {
+            data_till_now += CHUNK_SIZE;
+         //   printf("GOT POSTAMBLE\n");
+            // size_t start = rdtsc();
+            send_acknowledgement();
+            received_till_now++;
+            // size_t end = rdtsc();
+            // printf("ACK TOOK %ld\n", end-start);
         }
-        received_till_now++;
-        data_till_now++;
+       // printf("CHUNK: %ld\n", received_till_now);
     }
 }
