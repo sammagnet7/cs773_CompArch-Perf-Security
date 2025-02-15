@@ -55,7 +55,17 @@ void ssend_bit(int bit)
         {
         }
 }
+void sync_chunk()
+{
+    // start_sync();
+    // send magic sequence
 
+    for (int i = 0; i < 3; i++)
+    {
+        ssend_bit(1);
+        ssend_bit(0);
+    }
+}
 int main()
 {
     open_transmit(); // opens the shared file
@@ -66,16 +76,15 @@ int main()
     //     printf("%d", bit_stream[i]);
     // }
     size_t bit_index = 0;
-    start_sync();
-    for (int i = 0; i < 3; i++)
-    {
-        ssend_bit(1);
-        ssend_bit(0);
-    }
+
     while (bit_index < bits_len)
     {
+
         // need to sync here
-        (bit_index & (CHUNK_SIZE - 1)) == CHUNK_SIZE - 1 ? start_sync() : 0;
+        if (bit_index % CHUNK_SIZE == 0)
+        {
+            sync_chunk();
+        }
         // start_sync();
         ssend_bit(bit_stream[bit_index]);
         bit_index++;

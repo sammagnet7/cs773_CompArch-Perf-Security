@@ -7,11 +7,11 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(X, Y) (((X) < (Y)) ? (X) : (Y))
 
-#define SLOT_LENGTH 1500000
+#define SLOT_LENGTH 15000000
 #define MIN_CACHE_MISS_CYCLES 135
 #define SHARED_ARRAY_SIZE 49984
 #define MESSAGE_CHUNK_LEN 4800 // bits; multiple of 8
-
+#define CHUNK_SIZE 128
 #define BIT_REPEAT 3 // send each bit how many times
 #define MAX_CHUNKS 1 // send the whole payload how many times
 #define ENCODED_MESSAGE_LEN MESSAGE_CHUNK_LEN

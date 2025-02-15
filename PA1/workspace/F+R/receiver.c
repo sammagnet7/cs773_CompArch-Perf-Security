@@ -82,34 +82,39 @@ void sigint_handler(int signum)
     dump_bits(received_bits, received_till_now, OUTPUT_FILE);
     exit(0);
 }
+void sync_chunk()
+{
+    size_t maxtry = 1000, try = 0;
+    int curr;
+    unsigned char pattern_so_far = 0;
+    unsigned char pattern = 0b101010;
+    // start_sync();
+    // wait for magic sequence
+    while (pattern_so_far != pattern)
+    {
+        curr = rdetect_bit((__uint64_t)base);
+        pattern_so_far = (pattern_so_far << 1) | curr;
+    }
+}
 
 int main()
 {
     signal(SIGINT, sigint_handler);
     open_transmit(); // opening shared file
 
-    CHUNKS = 0;
-
-    size_t maxtry = 1000, try = 0;
-    int prev = 0, freq_10 = 0, curr;
-    start_sync();
-    // wait for magic sequence
-    while (freq_10 < 3 && ++try < maxtry)
-    {
-        curr = rdetect_bit((__uint64_t)base);
-        if (prev == 1 && curr == 0)
-            freq_10 += 1;
-        prev = curr;
-    }
     while (1)
     {
-
-        int bit = rdetect_bit((__uint64_t)base);
-        received_bits[received_till_now++] = bit;
-        if (received_till_now == MAX_RECEIVED_BITS_SIZE)
+        if (received_till_now % CHUNK_SIZE == 0)
         {
-            dump_bits(received_bits, received_till_now, OUTPUT_FILE);
-            break;
+            sync_chunk();
         }
+        int bit = rdetect_bit((__uint64_t)base);
+        received_bits[received_till_now] = bit;
+        received_till_now++;
+        // if (received_till_now == MAX_RECEIVED_BITS_SIZE)
+        // {
+        //     dump_bits(received_bits, received_till_now, OUTPUT_FILE);
+        //     break;
+        // }
     }
 }
