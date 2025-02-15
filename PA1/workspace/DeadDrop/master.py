@@ -15,9 +15,8 @@ SENDER_INPUT_FILE = "processed.bin"
 RECEIVER_OUTPUT_FILE = "received.txt"
 DECODED_OUTPUT_FILE = ""
 
-STRT_BIT_SEQ = b'\xaa'
-TERM_BIT_SEQ = b'\xdb'
-CHUNK_SIZE_BYTE = 32
+CHUNK_SIZE_BYTE = 16
+ECC_BYTE = 8
 START_TIME = None
 END_TIME = None
 makefile_dir = "./"
@@ -25,12 +24,13 @@ makefile_dir = "./"
 import reedsolo
  
 # Reed-Solomon encoder/decoder (tweak `nsym` to change error correction strength)
-RS = reedsolo.RSCodec(nsym=16)  # 16 parity bytes for error correction
+RS = reedsolo.RSCodec(nsym=ECC_BYTE)  # 16 parity bytes for error correction
  
 def file_encoder(input_file: str = None, output_file: str = None, input_data: bytes = None):
     """
     Encode input data with error correction and write to output_file.
     """
+    print(f"Encoding {input_file} into {output_file}")
     if input_data is None and input_file is None:
         raise ValueError("Either input_file or input_data must be provided.")
  
@@ -43,17 +43,13 @@ def file_encoder(input_file: str = None, output_file: str = None, input_data: by
  
     global STRING_TO_SEND
     STRING_TO_SEND = input_data
- 
-    output.extend(STRT_BIT_SEQ)
- 
+  
     for i in range(0, len(input_data), CHUNK_SIZE_BYTE):
         chunk = input_data[i:i + CHUNK_SIZE_BYTE]
         encoded_chunk = RS.encode(chunk)  # Apply error correction
         output.extend(encoded_chunk)
         byte_number += len(chunk)
- 
-    output.extend(TERM_BIT_SEQ)
- 
+  
     if output_file:
         with open(output_file, "wb") as outfile:
             outfile.write(output)
@@ -66,56 +62,23 @@ def file_decoder(input_file: str, output_file: str):
     Read input_file, decode with error correction, write to output_file.
     """
     decoded_bytes = bytearray()
- 
+    print(f"Decoding {input_file} into {output_file}")
     with open(input_file, "rb") as infile, open(output_file, "wb") as outfile:
         data = infile.read()
  
-        #if not data.startswith(STRT_BIT_SEQ) or not data.endswith(TERM_BIT_SEQ):
-         #   raise ValueError("Invalid encoded file format")
- 
-        # Remove start/termination markers
-        data = data[len(STRT_BIT_SEQ):-len(TERM_BIT_SEQ)]
- 
-        for i in range(0, len(data), CHUNK_SIZE_BYTE + 16):  # 16 bytes for error correction
-            chunk = data[i:i + CHUNK_SIZE_BYTE + 16]
+        for i in range(0, len(data), CHUNK_SIZE_BYTE + ECC_BYTE):  # 16 bytes for error correction
+            chunk = data[i:i + CHUNK_SIZE_BYTE + ECC_BYTE]
             try:
-                decoded_chunk = RS.decode(chunk)  # Error correction
-                decoded_bytes.extend(decoded_chunk)
+                decoded_chunk, _, _ = RS.decode(chunk)  # Error correction
+                if isinstance(decoded_chunk, bytearray) or isinstance(decoded_chunk, bytes):
+                    decoded_bytes.extend(decoded_chunk)
+                else:
+                    raise TypeError("Decoded chunk is not a bytearray or bytes object")
                 outfile.write(decoded_chunk)
             except reedsolo.ReedSolomonError:
                 print(f"Warning: Failed to correct errors in chunk {i // CHUNK_SIZE_BYTE}")
  
     return decoded_bytes
-file_decoder("received.txt", "out.txt")
-def file_encoder(
-    input_file: str = None, output_file: str = None, input_data: bytes = None
-):
-    """
-    Encode input data and write to output_file. Can take either an input file or a direct byte string.
-    """
-    if input_data is None and input_file is None:
-        raise ValueError("Either input_file or input_data must be provided.")
-
-    byte_number = 0
-    output = bytearray()
-
-    if input_file:
-        with open(input_file, "rb") as infile:
-            input_data = infile.read()
-    global STRING_TO_SEND
-    STRING_TO_SEND = input_data
-
-    for byte in input_data:
-        output.append(byte)
-        byte_number += 1
-
-    if output_file:
-        with open(output_file, "wb") as outfile:
-            outfile.write(output)
-
-    return output
-
-
 
 def calculate_accuracy(original_file: str, decoded_file: str) -> float:
     """
