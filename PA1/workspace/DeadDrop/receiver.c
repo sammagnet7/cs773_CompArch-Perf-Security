@@ -10,8 +10,8 @@
 #include "utils.h"
 
 #define MAX_RECEIVED_BITS_SIZE 1000 * 1024 * 8
-#define DEAD_DROP_START_INDEX 0x1fff
-#define DEAD_DROP_END_INDEX 0x2fff
+#define DEAD_DROP_START_INDEX 0x6fff
+#define DEAD_DROP_END_INDEX 0xAfff
 #define DEAD_DROP_SIZE (DEAD_DROP_END_INDEX - DEAD_DROP_START_INDEX)
 size_t CHUNKS = 0;
 size_t received_till_now = 0;
@@ -84,22 +84,35 @@ void sigint_handler(int signum)
     dump_bits(received_bits, received_till_now, OUTPUT_FILE);
     exit(0);
 }
-void sync_chunk()
+
+void sync_preamble()
 {
     // size_t maxtry = 1000, try = 0;
     int curr;
     uint32_t pattern_history = 0;
-    uint32_t seq_mask = 0xFFFFFFFF;
     // start_sync();
     // wait for magic sequence
-    printf("R-SYNC START\n");
-    while ((pattern_history & seq_mask) != MAGIC_SEQUENCE)
+    while ((pattern_history & MAGIC_MASK) != MAGIC_PREAMBLE)
     {
         curr = rdetect_bit((__uint64_t)base);
         pattern_history = (pattern_history << 1) | (curr & 1);
     }
-    printf("R-GOT PREAMBLE\n");
+    printf("R-GOT PREAMBLE: ID: %ld\n", received_till_now);
 }
+void sync_postamble()
+{
+    int curr;
+    uint32_t pattern_history = 0;
+    // start_sync();
+    // wait for magic sequence
+    while ((pattern_history & MAGIC_MASK) != MAGIC_POSTAMBLE)
+    {
+        curr = rdetect_bit((__uint64_t)base);
+        pattern_history = (pattern_history << 1) | (curr & 1);
+    }
+    printf("R-GOT POSTAMBLE: ID: %ld\n", received_till_now);
+}
+
 
 int send_acknowledgement()
 {
@@ -120,24 +133,33 @@ int main()
     open_transmit("dump.txt"); // opening shared file
     memset(received_bits, -1, sizeof received_bits);
     printf("Initialised buffer\n");
+	uint32_t pattern_history = 0;
+    size_t EXTENDED_CHUNK_SIZE = CHUNK_SIZE + MAGIC_SEQ_LEN; 
     while (1)
     {
-        if (received_till_now && received_till_now % CHUNK_SIZE == 0)
-        {
-            send_acknowledgement();
-        }
         if (received_till_now % CHUNK_SIZE == 0)
         {
-            sync_chunk();
+            sync_preamble();
         }
 
         int bit = rdetect_bit((__uint64_t)base);
+	pattern_history = (pattern_history << 1) | bit;
         received_bits[received_till_now] = bit;
+        if (received_till_now % EXTENDED_CHUNK_SIZE == EXTENDED_CHUNK_SIZE - 1)
+        {
+	
+            if((pattern_history & MAGIC_MASK) == MAGIC_POSTAMBLE)
+	    {
+		received_till_now -= MAGIC_SEQ_LEN + 1;
+		printf("GOT POSTAMBLE\n");
+		send_acknowledgement(); 
+	    }
+	    else{
+		 received_till_now -= EXTENDED_CHUNK_SIZE + 1;
+		printf("NO POSTAMBLE\n");
+            }
+	   printf("INDEX: %ld\n", received_till_now);
+        }
         received_till_now++;
-        // if (received_till_now == MAX_RECEIVED_BITS_SIZE)
-        // {
-        //     dump_bits(received_bits, received_till_now, OUTPUT_FILE);
-        //     break;
-        // }
     }
 }

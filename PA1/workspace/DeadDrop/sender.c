@@ -9,9 +9,10 @@
 #include "include/utils.h"
 
 #define MAX_LIMIT_BOOL 1000 * 1024 * 8 // 250 KB
-#define DEAD_DROP_START_INDEX 0x1fff
-#define DEAD_DROP_END_INDEX 0x2fff
+#define DEAD_DROP_START_INDEX 0x6fff
+#define DEAD_DROP_END_INDEX 0xAfff
 #define DEAD_DROP_SIZE (DEAD_DROP_END_INDEX - DEAD_DROP_START_INDEX)
+size_t bit_index = 0;
 size_t read_bool_file(const char *filename, uint8_t *bits)
 {
     FILE *file = fopen(filename, "rb");
@@ -55,19 +56,30 @@ void ssend_bit(int bit)
         {
         }
 }
-void sync_chunk()
+
+void sync_preamble()
 {
     // start_sync();
     // send magic sequence
-    uint32_t pattern = MAGIC_SEQUENCE;
-    printf("S-SYNC START\n");
+    uint32_t pattern = MAGIC_PREAMBLE;
     for (int i = MAGIC_SEQ_LEN - 1; i >= 0; i--)
     {
         int bit = (pattern >> i) & 1;
         ssend_bit(bit);
     }
-    printf("S-SYNC SENT\n");
+    printf("S-SYNC PREAMBLE: ID: %ld\n", bit_index);
 }
+void sync_postamble()
+{
+    uint32_t pattern = MAGIC_POSTAMBLE;
+    for (int i = MAGIC_SEQ_LEN - 1; i >= 0; i--)
+    {
+        int bit = (pattern >> i) & 1;
+        ssend_bit(bit);
+    }
+    printf("S-SYNC POSTAMBLE: ID: %ld\n", bit_index);
+}
+
 size_t ronlyreload(void *addr)
 {
     size_t time = rdtsc();
@@ -82,7 +94,7 @@ int check_acknowledgement()
     while (progress < DEAD_DROP_END_INDEX)
     {
         size_t reload_time = ronlyreload((void *)(base + progress));
-        printf("Progress: %d Reload time %ld\n", progress, reload_time);
+        //printf("Progress: %d Reload time %ld\n", progress, reload_time);
         if (reload_time > MIN_CACHE_MISS_CYCLES)
         {
             miss++;
@@ -93,20 +105,17 @@ int check_acknowledgement()
         }
         progress += 64;
     }
-    printf("Hit: %ld, Miss: %ld\n", hit, miss);
+    //printf("Hit: %ld, Miss: %ld\n", hit, miss);
     return miss > hit;
 }
 int main()
 {
     open_transmit("dump.txt"); // opens the shared file
-    size_t bit_index = 0;
     uint8_t bit_stream[MAX_LIMIT_BOOL];
-    size_t bits_len = read_bool_file("dump.txt", bit_stream);
+    size_t bits_len = read_bool_file("msg.txt", bit_stream);
 
-    while (bit_index < bits_len)
-    {
-        // After sending a chunk, check for acknowledgement
-        if (bit_index != 0 && bit_index % CHUNK_SIZE == 0)
+    while (bit_index < bits_len){
+	 if (bit_index != 0 && bit_index % CHUNK_SIZE == 0)
         {
             if (check_acknowledgement()) // if ack received, move to next chunk
             {
@@ -120,11 +129,17 @@ int main()
         // Send preamble at Chunk boundary
         if (bit_index % CHUNK_SIZE == 0)
         {
-            sync_chunk();
+            sync_preamble();
         }
 
         // send each bit in the chunk
         ssend_bit(bit_stream[bit_index]);
+
+        // Send postamble at Chunk boundary
+        if (bit_index % CHUNK_SIZE == CHUNK_SIZE - 1)
+        {
+            sync_postamble();
+        }
         bit_index++;
     }
     // free(payload);
