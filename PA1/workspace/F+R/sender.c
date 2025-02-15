@@ -54,22 +54,25 @@ void ssend_bit(int bit)
         {
         }
 }
+size_t global_count = 0;
 void sync_chunk()
 {
     // start_sync();
     // send magic sequence
-
-    for (int i = 0; i < 3; i++)
+    uint32_t pattern = MAGIC_SEQUENCE;
+    //printf("%ld S-SYNC START\n", global_count);
+    for (int i = MAGIC_SEQ_LEN - 1; i >= 0; i--)
     {
-        ssend_bit(1);
-        ssend_bit(0);
+	int bit = (pattern >> i) & 1;
+        ssend_bit(bit);
     }
+	//printf("S-SYNC SENT\n");
 }
 int main()
 {
     open_transmit(); // opens the shared file
     uint8_t bit_stream[MAX_LIMIT_BOOL];
-    size_t bits_len = read_bool_file("msg.txt", bit_stream);
+    size_t bits_len = read_bool_file("processed.bin", bit_stream);
     // for (int i = 0; i < bits_len; i++)
     // {
     //     printf("%d", bit_stream[i]);
