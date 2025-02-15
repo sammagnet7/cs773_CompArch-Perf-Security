@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -70,21 +71,25 @@ void sigint_handler(int signum) {
     exit(0);
 }
 void sync_chunk() {
+    // size_t maxtry = 1000, try = 0;
     int curr;
-    unsigned char pattern_so_far = 0;
-    unsigned char pattern = 0b101010;
+    uint32_t pattern_history = 0;
+    uint32_t seq_mask = 0xFFFFFFFF;
     // start_sync();
     // wait for magic sequence
-    while (pattern_so_far != pattern) {
+    // printf("%ld R-SYNC START\n", received_till_now);
+    while ((pattern_history & seq_mask) != MAGIC_SEQUENCE) {
         curr = rdetect_bit((__uint64_t)base);
-        pattern_so_far = (pattern_so_far << 1) | curr;
+        pattern_history = (pattern_history << 1) | (curr & 1);
     }
+    // printf("R-SYNC END\n");
 }
 
 int main() {
     signal(SIGINT, sigint_handler);
     open_transmit(); // opening shared file
-
+    memset(received_bits, -1, sizeof received_bits);
+    printf("Initialised buffer\n");
     while (1) {
         if (received_till_now % CHUNK_SIZE == 0) {
             sync_chunk();
