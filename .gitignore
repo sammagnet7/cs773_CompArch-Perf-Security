@@ -34,7 +34,10 @@ receiver
 sender
 calibrate
 
+# python
+.venv/
 
+# work files
 received.txt
 processed.bin
 **/temp/
