@@ -8,8 +8,7 @@
 extern char *base;
 extern int fd; // shared lib file
 extern struct stat st;
-
-int open_transmit();
+int open_transmit(char *shared_file);
 void close_transmit();
 
 unsigned long long start_sync();

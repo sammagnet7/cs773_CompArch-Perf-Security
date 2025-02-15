@@ -12,12 +12,15 @@
 #define MAX_RECEIVED_BITS_SIZE 1000 * 1024 * 8
 size_t CHUNKS = 0;
 size_t received_till_now = 0;
+int open_transmit(char *shared_file);
 int received_bits[MAX_RECEIVED_BITS_SIZE];
 #define OUTPUT_FILE "received.txt"
-void dump_bits(int *bits, size_t length, const char *out_file_name) {
+void dump_bits(int *bits, size_t length, const char *out_file_name)
+{
     printf("Dumping bits to file %s\n", out_file_name);
     FILE *file = fopen(out_file_name, "wb");
-    if (!file) {
+    if (!file)
+    {
         perror("fopen");
         return;
     }
@@ -25,52 +28,64 @@ void dump_bits(int *bits, size_t length, const char *out_file_name) {
     uint8_t byte = 0;
     size_t bit_count = 0;
 
-    for (size_t i = 0; i < length; i++) {
-        if (bits[i]) {
+    for (size_t i = 0; i < length; i++)
+    {
+        if (bits[i])
+        {
             byte |= (1 << (7 - bit_count));
         }
         bit_count++;
 
-        if (bit_count == 8) {
+        if (bit_count == 8)
+        {
             fwrite(&byte, sizeof(uint8_t), 1, file);
             byte = 0;
             bit_count = 0;
         }
     }
-    if (bit_count > 0) {
+    if (bit_count > 0)
+    {
         fwrite(&byte, sizeof(uint8_t), 1, file);
     }
 
     fclose(file);
 }
 
-size_t ronlyreload(void *addr) {
+size_t ronlyreload(void *addr)
+{
     size_t time = rdtsc();
     maccess(addr);
     size_t delta = rdtsc() - time;
     return delta;
 }
-int rdetect_bit() {
+int rdetect_bit()
+{
     size_t hit = 0, miss = 0, i = 0;
     size_t time = rdtsc();
-    while (rdtsc() - time < SLOT_LENGTH) {
+    while (rdtsc() - time < SLOT_LENGTH)
+    {
         size_t reload_time = ronlyreload((void *)(base + i));
         i = (i + 64) % SHARED_ARRAY_SIZE; // bytes in shared text file in
                                           // nearest multiple of 64
-        if (reload_time > MIN_CACHE_MISS_CYCLES) {
+        if (reload_time > MIN_CACHE_MISS_CYCLES)
+        {
             miss++;
-        } else {
+        }
+        else
+        {
             hit++;
         }
         i++;
     }
     return miss >= hit;
 }
-void sigint_handler(int signum) {
+void sigint_handler(int signum)
+{
     dump_bits(received_bits, received_till_now, OUTPUT_FILE);
     exit(0);
 }
-void sync_chunk() {
+void sync_chunk()
+{
     // size_t maxtry = 1000, try = 0;
     int curr;
     uint32_t pattern_history = 0;
@@ -78,20 +93,29 @@ void sync_chunk() {
     // start_sync();
     // wait for magic sequence
     // printf("%ld R-SYNC START\n", received_till_now);
-    while ((pattern_history & seq_mask) != MAGIC_SEQUENCE) {
+    while ((pattern_history & seq_mask) != MAGIC_SEQUENCE)
+    {
         curr = rdetect_bit((__uint64_t)base);
         pattern_history = (pattern_history << 1) | (curr & 1);
     }
     // printf("R-SYNC END\n");
 }
 
-int main() {
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        printf("Usage: %s <filename>\n", argv[0]);
+        return 0;
+    }
+    open_transmit(argv[1]);
     signal(SIGINT, sigint_handler);
-    open_transmit(); // opening shared file
     memset(received_bits, -1, sizeof received_bits);
     printf("Initialised buffer\n");
-    while (1) {
-        if (received_till_now % CHUNK_SIZE == 0) {
+    while (1)
+    {
+        if (received_till_now % CHUNK_SIZE == 0)
+        {
             sync_chunk();
         }
         int bit = rdetect_bit((__uint64_t)base);
