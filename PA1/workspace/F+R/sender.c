@@ -10,7 +10,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #define MAX_LIMIT_BOOL 1000 * 1024 * 8 // 250 KB
-#define CHUNK_SIZE 512
 
 size_t read_bool_file(const char *filename, bool *bits)
 {
