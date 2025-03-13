@@ -1,7 +1,7 @@
 
 # provide the path of both the trace file
-TRACE_DIR1=""  #path of the first trace file (excluding the trace file name)
-TRACE_DIR2=""  #path of the second trace file (excluding the trace file name)
+TRACE_DIR1="../Given/traces/"  #path of the first trace file (excluding the trace file name)
+TRACE_DIR2="../Given/traces/"  #path of the second trace file (excluding the trace file name)
 binary=${1}
 num1=${2}
 num2=${3}
