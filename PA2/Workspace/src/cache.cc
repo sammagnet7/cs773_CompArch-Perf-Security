@@ -2992,20 +2992,54 @@ int CACHE::check_hit(PACKET *packet)
         packet_tag = packet->address;
 
     // hit
-    for (uint32_t way = 0; way < NUM_WAY; way++)
+    if (cache_type == IS_LLC)
     {
-        if (block[set][way].valid && (block[set][way].tag == packet_tag))
+        uint32_t st_way = 0, end_way = 0;
+
+        if (packet->cpu == 0)
         {
+            st_way = 0;
+            end_way = NUM_WAY / 2;
+        }
+        else if (packet->cpu == 1)
+        {
+            st_way = NUM_WAY / 2;
+            end_way = NUM_WAY;
+        }
+        for (uint32_t way = st_way; way < end_way; way++)
+        {
+            if (block[set][way].valid && (block[set][way].tag == packet_tag))
+            {
 
-            match_way = way;
+                match_way = way;
 
-            DP(if (warmup_complete[packet->cpu]) {
+                DP(if (warmup_complete[packet->cpu]) {
                             cout << "[" << NAME << "] " << __func__ << " instr_id: " << packet->instr_id << " type: " << +packet->type << hex << " addr: " << packet->address;
                             cout << " full_addr: " << packet->full_addr << " tag: " << block[set][way].tag << " data: " << block[set][way].data << dec;
                             cout << " set: " << set << " way: " << way << " lru: " << block[set][way].lru;
                             cout << " event: " << packet->event_cycle << " cycle: " << current_core_cycle[cpu] << endl; });
 
-            break;
+                break;
+            }
+        }
+    }
+    else
+    {
+        for (uint32_t way = 0; way < NUM_WAY; way++)
+        {
+            if (block[set][way].valid && (block[set][way].tag == packet_tag))
+            {
+
+                match_way = way;
+
+                DP(if (warmup_complete[packet->cpu]) {
+                                cout << "[" << NAME << "] " << __func__ << " instr_id: " << packet->instr_id << " type: " << +packet->type << hex << " addr: " << packet->address;
+                                cout << " full_addr: " << packet->full_addr << " tag: " << block[set][way].tag << " data: " << block[set][way].data << dec;
+                                cout << " set: " << set << " way: " << way << " lru: " << block[set][way].lru;
+                                cout << " event: " << packet->event_cycle << " cycle: " << current_core_cycle[cpu] << endl; });
+
+                break;
+            }
         }
     }
 
