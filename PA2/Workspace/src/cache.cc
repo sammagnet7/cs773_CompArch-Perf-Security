@@ -2840,6 +2840,7 @@ uint32_t CACHE::get_set(uint64_t address)
 
     return setIdx;
 }
+
 // Set indexing for set partitioned LLC
 uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)
 {
@@ -2854,8 +2855,14 @@ uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)
 
     if (cache_type != IS_LLC)
         return setIdx;
-    // cout << "get_set -> CPU: " << cpu << "orig SET: " << setIdx << endl;
+
     uint32_t msb_mask = 1U << (lg2(NUM_SET) - 1);
+
+    if (doIncreaseSets(cpu))
+    {
+    }
+
+    // cout << "get_set -> CPU: " << cpu << "orig SET: " << setIdx << endl;
     // cout <<"NUM_SETS:" << NUM_SET << "BITS: " << lg2(NUM_SET) << "MASK: " << msb_mask << endl;
     if (cpu == 0)
     {
@@ -2867,6 +2874,21 @@ uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)
     }
 
     return setIdx;
+}
+
+bool CACHE::doIncreaseSets(uint64_t cpu)
+{
+    uint64_t currCpu = cpu;
+    uint64_t otherCpu = cpu == 0 ? 1 : 0;
+
+    double threshold = 50 * 1000; // FInd emperically
+
+    // cout << "cpu0 load miss:: " << sim_miss[currCpu][LOAD] << " cpu1 load miss: " << sim_miss[otherCpu][LOAD] << endl;
+
+    if (sim_miss[currCpu][LOAD] > (sim_miss[otherCpu][LOAD] + threshold))
+        return true;
+
+    return false;
 }
 
 uint32_t CACHE::get_way(uint64_t address, uint32_t set)
