@@ -514,7 +514,7 @@ uint64_t PAGE_TABLE_WALKER :: va_to_pa_ptw(uint8_t cpu, uint64_t instr_id, bool 
                 ooo_cpu[cpu].L1I.invalidate_entry(cl_addr);
                 ooo_cpu[cpu].L1D.invalidate_entry(cl_addr);
                 ooo_cpu[cpu].L2C.invalidate_entry(cl_addr);
-                uncore.LLC.invalidate_entry(cl_addr);
+                uncore.LLC.invalidate_entry(cl_addr, cpu);
             }
 
             // swap complete

@@ -52,7 +52,7 @@ void CACHE::handle_fill()
         uint32_t mshr_index = MSHR.next_fill_index;
 
         // find victim
-        uint32_t set = get_set(MSHR.entry[mshr_index].address), way;
+        uint32_t set = get_set(MSHR.entry[mshr_index].address, fill_cpu), way;
         way = (this->*find_victim)(fill_cpu, MSHR.entry[mshr_index].instr_id, set, block[set], MSHR.entry[mshr_index].ip, MSHR.entry[mshr_index].full_addr, MSHR.entry[mshr_index].type);
 
         // Neelu: Fill Packet type for L2
@@ -751,7 +751,7 @@ void CACHE::handle_writeback()
         int index = WQ.head;
 
         // access cache
-        uint32_t set = get_set(WQ.entry[index].address);
+        uint32_t set = get_set(WQ.entry[index].address, writeback_cpu);
         int way = check_hit(&WQ.entry[index]);
 
         // Neelu: For Ideal Critical IP Prefetcher
@@ -967,7 +967,7 @@ void CACHE::handle_writeback()
             else
             {
                 // find victim
-                uint32_t set = get_set(WQ.entry[index].address), way;
+                uint32_t set = get_set(WQ.entry[index].address, writeback_cpu), way;
                 way = (this->*find_victim)(writeback_cpu, WQ.entry[index].instr_id, set, block[set], WQ.entry[index].ip, WQ.entry[index].full_addr, WQ.entry[index].type);
 
 #ifdef LLC_BYPASS
@@ -1458,9 +1458,8 @@ void CACHE::handle_read()
             int index = RQ.head;
 
             // access cache
-            uint32_t set = get_set(RQ.entry[index].address);
+            uint32_t set = get_set(RQ.entry[index].address, read_cpu);
             int way = check_hit(&RQ.entry[index]);
-
             // Neelu: For Ideal Critical IP Prefetcher
             /*if(cache_type == IS_L1D)
               {
@@ -2432,7 +2431,7 @@ void CACHE::handle_prefetch()
             }
 
             // access cache
-            uint32_t set = get_set(PQ.entry[index].address);
+            uint32_t set = get_set(PQ.entry[index].address, prefetch_cpu);
             int way = check_hit(&PQ.entry[index]);
 
             if (way >= 0)
@@ -2837,7 +2836,37 @@ uint32_t CACHE::get_set(uint64_t address)
 
     else
 #endif
-        return (uint32_t)(address & ((1 << lg2(NUM_SET)) - 1));
+        uint32_t setIdx = (uint32_t)(address & ((1 << lg2(NUM_SET)) - 1));
+
+    return setIdx;
+}
+// Set indexing for set partitioned LLC
+uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)
+{
+#ifdef PUSH_DTLB_PB
+    if (cache_type == IS_DTLB_PB)
+        return 0;
+
+    else
+#endif
+
+        uint32_t setIdx = (uint32_t)(address & ((1 << lg2(NUM_SET)) - 1));
+
+    if (cache_type != IS_LLC)
+        return setIdx;
+    // cout << "get_set -> CPU: " << cpu << "orig SET: " << setIdx << endl;
+    uint32_t msb_mask = 1U << (lg2(NUM_SET) - 1);
+    // cout <<"NUM_SETS:" << NUM_SET << "BITS: " << lg2(NUM_SET) << "MASK: " << msb_mask << endl;
+    if (cpu == 0)
+    {
+        setIdx &= ~msb_mask; // Set MSB to 0
+    }
+    else
+    {
+        setIdx |= msb_mask; // Set MSB to 1
+    }
+
+    return setIdx;
 }
 
 uint32_t CACHE::get_way(uint64_t address, uint32_t set)
@@ -2971,7 +3000,7 @@ void CACHE::fill_cache(uint32_t set, uint32_t way, PACKET *packet)
 
 int CACHE::check_hit(PACKET *packet)
 {
-    uint32_t set = get_set(packet->address);
+    uint32_t set = get_set(packet->address, packet->cpu);
     int match_way = -1;
 
     if (NUM_SET < set)
@@ -3025,6 +3054,40 @@ int CACHE::check_hit(PACKET *packet)
 int CACHE::invalidate_entry(uint64_t inval_addr)
 {
     uint32_t set = get_set(inval_addr);
+    int match_way = -1;
+
+    if (NUM_SET < set)
+    {
+        cerr << "[" << NAME << "_ERROR] " << __func__ << " invalid set index: " << set << " NUM_SET: " << NUM_SET;
+        cerr << " inval_addr: " << hex << inval_addr << dec << endl;
+        assert(0);
+    }
+
+    // invalidate
+    for (uint32_t way = 0; way < NUM_WAY; way++)
+    {
+        if (block[set][way].valid && (block[set][way].tag == inval_addr))
+        {
+
+            block[set][way].valid = 0;
+
+            match_way = way;
+
+            DP(if (warmup_complete[cpu]) {
+                            cout << "[" << NAME << "] " << __func__ << " inval_addr: " << hex << inval_addr;  
+                            cout << " tag: " << block[set][way].tag << " data: " << block[set][way].data << dec;
+                            cout << " set: " << set << " way: " << way << " lru: " << block[set][way].lru << " cycle: " << current_core_cycle[cpu] << endl; });
+
+            break;
+        }
+    }
+
+    return match_way;
+}
+
+int CACHE::invalidate_entry(uint64_t inval_addr, uint64_t cpu)
+{
+    uint32_t set = get_set(inval_addr, cpu);
     int match_way = -1;
 
     if (NUM_SET < set)

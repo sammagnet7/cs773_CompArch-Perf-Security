@@ -306,6 +306,7 @@ class CACHE : public MEMORY {
 
     int  check_hit(PACKET *packet),
          invalidate_entry(uint64_t inval_addr),
+         invalidate_entry(uint64_t inval_addr, uint64_t cpu),
          check_mshr(PACKET *packet),
          prefetch_line(uint64_t ip, uint64_t base_addr, uint64_t pf_addr, int prefetch_fill_level, uint32_t prefetch_metadata)/* Neelu: commenting, uint64_t prefetch_id)*/,
          kpc_prefetch_line(uint64_t base_addr, uint64_t pf_addr, int prefetch_fill_level, int delta, int depth, int signature, int confidence, uint32_t prefetch_metadata),
@@ -407,6 +408,7 @@ class CACHE : public MEMORY {
          llc_prefetcher_cache_fill(uint64_t addr, uint32_t set, uint32_t way, uint8_t prefetch, uint64_t evicted_addr, uint32_t metadata_in);
     
     uint32_t get_set(uint64_t address),
+             get_set(uint64_t address, uint64_t cpu),
              get_way(uint64_t address, uint32_t set),
 
 
