@@ -837,7 +837,7 @@ uint64_t va_to_pa(uint32_t cpu, uint64_t instr_id, uint64_t va, uint64_t unique_
                 ooo_cpu[cpu].L1I.invalidate_entry(cl_addr);
                 ooo_cpu[cpu].L1D.invalidate_entry(cl_addr);
                 ooo_cpu[cpu].L2C.invalidate_entry(cl_addr);
-                uncore.LLC.invalidate_entry(cl_addr);
+                uncore.LLC.invalidate_entry(cl_addr, cpu);
             }
 
             // swap complete
