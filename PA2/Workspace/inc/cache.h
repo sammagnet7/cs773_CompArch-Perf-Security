@@ -181,6 +181,8 @@ public:
         roi_miss[NUM_CPUS][NUM_TYPES],
         roi_instr_miss[NUM_CPUS][NUM_TYPES];
 
+    uint64_t self_eviction[2];
+
     uint64_t total_miss_latency;
 
     // constructor
