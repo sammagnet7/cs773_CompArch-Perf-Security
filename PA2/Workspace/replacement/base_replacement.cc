@@ -45,7 +45,7 @@ uint32_t CACHE::lru_victim(uint32_t cpuid, uint64_t instr_id, uint32_t set, cons
         if (block[set][way].valid == false)
         {
 
-            DP(if (warmup_complete[cpu]) {
+            DP(if (warmup_complete[cpuid]) {
             cout << "[" << NAME << "] " << __func__ << " instr_id: " << instr_id << " invalid set: " << set << " way: " << way;
             cout << hex << " address: " << (full_addr>>LOG2_BLOCK_SIZE) << " victim address: " << block[set][way].address << " data: " << block[set][way].data;
             cout << dec << " lru: " << block[set][way].lru << endl; });
@@ -58,15 +58,15 @@ uint32_t CACHE::lru_victim(uint32_t cpuid, uint64_t instr_id, uint32_t set, cons
     if (way == NUM_WAY)
     {
         // Count Self eviction (when a core evicts its own data block from the cache)
-        if (block[set][way].cpu == cpu)
-            self_eviction[cpu]++;
+        if (block[set][way].cpu == cpuid)
+            self_eviction[cpuid]++;
 
         for (way = 0; way < NUM_WAY; way++)
         {
             if (block[set][way].lru == NUM_WAY - 1)
             {
 
-                DP(if (warmup_complete[cpu]) {
+                DP(if (warmup_complete[cpuid]) {
                 cout << "[" << NAME << "] " << __func__ << " instr_id: " << instr_id << " replace set: " << set << " way: " << way;
                 cout << hex << " address: " << (full_addr>>LOG2_BLOCK_SIZE) << " victim address: " << block[set][way].address << " data: " << block[set][way].data;
                 cout << dec << " lru: " << block[set][way].lru << endl; });
