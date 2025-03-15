@@ -72,7 +72,10 @@ def extract_data(mode: str, trace: str):
             obj["mpki_core" + selected_core] = mpki
     obj["mpki_avg"] = (obj["mpki_core0"] + obj["mpki_core1"]) / 2
     obj["ipc_total"] = obj["ipc_core0"] + obj["ipc_core1"]
-    obj["eviction_total"] = (obj["eviction_core0"] + obj["eviction_core1"]) / 1000
+    total_instructions = 50000000 * 2
+    obj["eviction_total"] = (
+        (obj["eviction_core0"] + obj["eviction_core1"]) / total_instructions * 1000
+    )  # 1K/50M*2
     return obj
 
 
