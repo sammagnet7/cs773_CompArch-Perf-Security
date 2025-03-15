@@ -57,10 +57,6 @@ uint32_t CACHE::lru_victim(uint32_t cpuid, uint64_t instr_id, uint32_t set, cons
     // LRU victim
     if (way == NUM_WAY)
     {
-        // Count Self eviction (when a core evicts its own data block from the cache)
-        if (block[set][way].cpu == cpuid)
-            self_eviction[cpuid]++;
-
         for (way = 0; way < NUM_WAY; way++)
         {
             if (block[set][way].lru == NUM_WAY - 1)
@@ -81,6 +77,10 @@ uint32_t CACHE::lru_victim(uint32_t cpuid, uint64_t instr_id, uint32_t set, cons
         cerr << "[" << NAME << "] " << __func__ << " no victim! set: " << set << endl;
         assert(0);
     }
+
+    // Count Self eviction (when a core evicts its own data block from the cache)
+    if (block[set][way].cpu == cpuid)
+        self_eviction[cpuid]++;
 
     return way;
 }
