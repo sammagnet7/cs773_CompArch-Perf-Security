@@ -33,4 +33,7 @@ void CACHE::llc_update_replacement_state(uint32_t cpu, uint32_t set, uint32_t wa
 
 void CACHE::llc_replacement_final_stats()
 {
+    cout << endl
+         << "CPU 0 " << "Self-eviction count: " << self_eviction[0] << endl;
+    cout << "CPU 1 " << "Self-eviction count: " << self_eviction[1] << endl;
 }

@@ -417,6 +417,7 @@ void reset_cache_stats(uint32_t cpu, CACHE *cache)
         cache->sim_access[cpu][i] = 0;
         cache->sim_hit[cpu][i] = 0;
         cache->sim_miss[cpu][i] = 0;
+        cache->self_eviction[cpu] = 0;
         cache->sim_instr_miss[cpu][i] = 0;
     }
 
