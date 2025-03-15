@@ -20,7 +20,9 @@
 ### Branch Name: `Way-Partitioning`
 
 ### Files Changed:
-- **PLACEHOLDER**
+- inc/cache.h
+- replacement/lru.llc_repl
+- src/cache.cc
 
 ### Results:
 
@@ -40,7 +42,10 @@
 ### Branch Name: `Static-Set-partitioning`
 
 ### Files Changed:
-- **PLACEHOLDER**
+- inc/cache.h
+- src/cache.cc
+- src/page_table_walker.cc
+- src/main.cc
 
 ### Results:
 
@@ -60,7 +65,10 @@
 ### Branch Name: `Dynamic-set-partitioning`
 
 ### Files Changed:
-- **PLACEHOLDER**
+- inc/cache.h
+- src/cache.cc
+- src/main.cc
+- src/page_table_walker.cc
 
 ### Results:
 
