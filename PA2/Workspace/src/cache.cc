@@ -2845,7 +2845,7 @@ void CACHE::update_partition(int cpuid)
 {
     uint64_t core0_misses = sim_miss[0][LOAD];
     uint64_t core1_misses = sim_miss[1][LOAD];
-    cout << "HEURISTIC CPU0:" << core0_misses << " CPU1: " << core1_misses << endl;
+    // cout << "HEURISTIC CPU0:" << core0_misses << " CPU1: " << core1_misses << endl;
 }
 // Set indexing for set partitioned LLC
 uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)

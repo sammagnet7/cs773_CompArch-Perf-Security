@@ -189,6 +189,9 @@ public:
     uint32_t core0_mask; // Mask for Core 0's partition (number of sets - 1)
     uint32_t core1_base; // Base index for Core 1's partition
     uint32_t core1_mask; // Mask for Core 1's partition (number of sets - 1)
+    uint32_t heuristic_threshold;
+    uint32_t core_misses[2]; // Counters for counting misses
+    uint32_t inst_at_LLC;    // Counter for counting load instructions seen at LLC
 
     // constructor
     CACHE(string v1, uint32_t v2, int v3, uint32_t v4, uint32_t v5, uint32_t v6, uint32_t v7, uint32_t v8)
@@ -196,6 +199,7 @@ public:
     {
 
         LATENCY = 0;
+        heuristic_threshold = 10000;
         core0_base = 0;
         core1_base = 2048;
         core0_mask = 2047;
