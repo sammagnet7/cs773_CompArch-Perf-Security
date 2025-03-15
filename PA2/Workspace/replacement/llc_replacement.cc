@@ -1,16 +1,16 @@
 #include "cache.h"
 
-uint32_t CACHE::lru_victim_WAY_PARTITION(uint32_t cpu, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type)
+uint32_t CACHE::lru_victim_WAY_PARTITION(uint32_t cpuId, uint64_t instr_id, uint32_t set, const BLOCK *current_set, uint64_t ip, uint64_t full_addr, uint32_t type)
 {
     uint32_t way = 0;
     uint32_t st_way = 0, end_way = 0;
 
-    if (cpu == 0)
+    if (cpuId == 0)
     {
         st_way = 0;
         end_way = NUM_WAY / 2;
     }
-    else if (cpu == 1)
+    else if (cpuId == 1)
     {
         st_way = NUM_WAY / 2;
         end_way = NUM_WAY;
@@ -33,6 +33,10 @@ uint32_t CACHE::lru_victim_WAY_PARTITION(uint32_t cpu, uint64_t instr_id, uint32
     // LRU victim
     if (way == end_way)
     {
+        // Count Self eviction (when a core evicts its own data block from the cache)
+        if (block[set][st_way].cpu == cpuId)
+            self_eviction[cpuId]++;
+
         for (way = st_way; way < end_way; way++)
         {
             if (block[set][way].lru == NUM_WAY / 2 - 1)
