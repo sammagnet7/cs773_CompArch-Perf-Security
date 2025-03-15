@@ -185,12 +185,21 @@ public:
 
     uint64_t total_miss_latency;
 
+    uint32_t core0_base; // Base index for Core 0's partition
+    uint32_t core0_mask; // Mask for Core 0's partition (number of sets - 1)
+    uint32_t core1_base; // Base index for Core 1's partition
+    uint32_t core1_mask; // Mask for Core 1's partition (number of sets - 1)
+
     // constructor
     CACHE(string v1, uint32_t v2, int v3, uint32_t v4, uint32_t v5, uint32_t v6, uint32_t v7, uint32_t v8)
         : NAME(v1), NUM_SET(v2), NUM_WAY(v3), NUM_LINE(v4), WQ_SIZE(v5), RQ_SIZE(v6), PQ_SIZE(v7), MSHR_SIZE(v8)
     {
 
         LATENCY = 0;
+        core0_base = 0;
+        core1_base = 2048;
+        core0_mask = 2047;
+        core1_mask = 2047;
 
         // cache block
         block = new BLOCK *[NUM_SET];
@@ -299,6 +308,7 @@ public:
     };*/
 
     // functions
+    void update_partition(int cpuid);
     int add_rq(PACKET *packet),
         add_wq(PACKET *packet),
         add_pq(PACKET *packet);

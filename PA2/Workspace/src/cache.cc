@@ -2841,6 +2841,12 @@ uint32_t CACHE::get_set(uint64_t address)
     return setIdx;
 }
 
+void CACHE::update_partition(int cpuid)
+{
+    uint64_t core0_misses = sim_miss[0][LOAD];
+    uint64_t core1_misses = sim_miss[1][LOAD];
+    cout << "HEURISTIC CPU0:" << core0_misses << " CPU1: " << core1_misses << endl;
+}
 // Set indexing for set partitioned LLC
 uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)
 {
@@ -2855,7 +2861,8 @@ uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)
 
     if (cache_type != IS_LLC)
         return setIdx;
-
+    update_partition(cpu);
+    // cout << "get_set -> CPU: " << cpu << "orig SET: " << setIdx << endl;
     uint32_t msb_mask = 1U << (lg2(NUM_SET) - 1);
 
     if (doIncreaseSets(cpu))
@@ -2873,6 +2880,16 @@ uint32_t CACHE::get_set(uint64_t address, uint64_t cpu)
         setIdx |= msb_mask; // Set MSB to 1
     }
 
+    if (cpu == 0)
+    {
+        // cout << "SP->CPU0: "<< "CALC: " << core0_base + (address % (core0_mask + 1)) << " ACTUAL: " << setIdx << endl; // Use modulo for non-power-of-2 sizes
+        return core0_base + (address % (core0_mask + 1));
+    }
+    else if (cpu == 1)
+    {
+        // cout << "SP->CPU1: "<< "CALC: " << core1_base + (address % (core1_mask + 1)) << " ACTUAL: " << setIdx << endl; // Use modulo for non-power-of-2 sizes
+        return core1_base + (address % (core1_mask + 1));
+    }
     return setIdx;
 }
 
