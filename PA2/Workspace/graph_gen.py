@@ -119,8 +119,6 @@ def compare_data(parsed_data, modes):
             }
         )
     comparison_data = []
-    other_modes = modes
-    other_modes.remove("base")
     for mode in modes:
         for trace in [
             "mcf-mcf",
@@ -183,7 +181,7 @@ def draw_graph(title, ylabel, labels, base_values, new_values, file_name):
             height = bar.get_height()
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
-                height * 1.02,  # Small offset to avoid overlap
+                height * 1.02,
                 f"{height:.2f}",
                 ha="center",
                 color=color_blue,
@@ -221,7 +219,7 @@ def draw_graph(title, ylabel, labels, base_values, new_values, file_name):
             height = bar.get_height()
             ax.text(
                 bar.get_x() + bar.get_width() / 2,
-                height + 0.01,  # Fixed small offset for IPC
+                height + 0.01,
                 f"{height:.2f}",
                 ha="center",
                 color=color_blue,
@@ -242,21 +240,78 @@ def draw_graph(title, ylabel, labels, base_values, new_values, file_name):
     print(f"Saved {file_name}")
 
 
+def draw_combined_graph(data):
+    data.reverse()
+    modes = ["base", "way", "static", "dynamic"]
+    traces = sorted(set(row["trace"] for row in data))
+
+    colors = {
+        "base": "#e5904b",
+        "way": "#C0504D",
+        "static": "#4F81BD",
+        "dynamic": "#9BBB59",
+    }
+
+    metrics = {
+        "ipc": ("Normalized IPC", "Normalized IPC", "normalized_ipc"),
+        "mpki": ("LLC MPKI", "LLC MPKI", "new_mpki"),
+        "evictions": (
+            "Self Evictions Per Kilo Instructions",
+            "Evictions (K)",
+            "new_evictions",
+        ),
+    }
+
+    for metric_key, (title, ylabel, metric) in metrics.items():
+        x = np.arange(len(traces))
+        width = 0.2  # Adjust for multiple bars
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+
+        for j, mode in enumerate(modes):
+            mode_data = {
+                row["trace"]: row[metric] for row in data if row["mode"] == mode
+            }
+            values = [mode_data.get(trace, 0) for trace in traces]
+            ax.bar(x + j * width, values, width, label=mode, color=colors[mode])
+
+            for idx, val in enumerate(values):
+                ax.text(
+                    x[idx] + j * width,
+                    val * 1.02,
+                    f"{val:.2f}",
+                    ha="center",
+                    fontsize=9,
+                )
+
+        ax.set_ylabel(ylabel)
+        ax.set_title(f"{title} for All Modes")
+        ax.grid(True, linestyle="-", alpha=0.7, axis="y")
+        ax.legend()
+
+        ax.set_xticks(x + width)
+        ax.set_xticklabels(traces, rotation=0)
+        ax.set_xlabel("Trace")
+
+        file_name = GRAPH_IMG_PATH.format(mode="combined", type=metric_key)
+        plt.savefig(file_name, bbox_inches="tight")
+        plt.close(fig)
+        print(f"Saved {file_name}")
+
+
 def process_and_plot(data):
-    modes = set(row["mode"] for row in data)  # Get unique modes
+    modes = set(row["mode"] for row in data if row["mode"] != "base")
 
     for mode in modes:
-        mode_data = [row for row in data if row["mode"] == mode]  # Filter data by mode
+        mode_data = [row for row in data if row["mode"] == mode]
         traces = [row["trace"] for row in mode_data]
 
         # Extracting values
         ipc_values = [row["normalized_ipc"] for row in mode_data]
         base_mpki = [row["base_mpki"] for row in mode_data]
         new_mpki = [row["new_mpki"] for row in mode_data]
-        base_evictions = [
-            row["base_evictions"] / 1000 for row in mode_data
-        ]  # Convert to per K instructions
-        new_evictions = [row["new_evictions"] / 1000 for row in mode_data]
+        base_evictions = [row["base_evictions"] for row in mode_data]
+        new_evictions = [row["new_evictions"] for row in mode_data]
 
         # Generating 3 plots per mode
         draw_graph(
@@ -284,17 +339,28 @@ def process_and_plot(data):
             GRAPH_IMG_PATH.format(mode=mode_2_dir[mode], type="evictions"),
         )
 
+    # Draw combined graph
+    draw_combined_graph(data)
 
-def generate_report(data):
-    # print(data)
+
+def generate_report(data, comparison_data):
     template = ""
     with open("Report.template.md", "r") as fileobj:
         template = fileobj.read()
+    # individual mode report
     for entry in data:
         trace = entry["trace"]
         mode = entry["mode"]
         for key, value in entry.items():
             if key not in ["mode", "trace"]:
+                placeholder = f"{{{{{mode}.{trace}.{key}}}}}"  # Match template style
+                template = template.replace(placeholder, str(value))
+    #  combined report
+    for entry in comparison_data:
+        trace = entry["trace"]
+        mode = entry["mode"]
+        for key, value in entry.items():
+            if key not in ["mode", "trace"] and "base" not in key:
                 placeholder = f"{{{{{mode}.{trace}.{key}}}}}"  # Match template style
                 template = template.replace(placeholder, str(value))
     lines = template.split("\n")
@@ -327,7 +393,7 @@ def main(_modes: str):
     print(tabulate(comparison_data, headers="keys", tablefmt="grid"))
 
     process_and_plot(comparison_data)
-    generate_report(parsed_data)
+    generate_report(parsed_data, comparison_data)
 
 
 if __name__ == "__main__":

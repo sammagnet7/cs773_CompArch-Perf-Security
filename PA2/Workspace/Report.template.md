@@ -30,7 +30,7 @@
 - **evictions_core0**: Cache blocks evicted from core 0’s cache. Directly obtained.  
 - **evictions_core1**: Cache blocks evicted from core 1’s cache. Directly obtained.  
 - **evictions_total**: Total cache evictions across both cores. Formula: `evictions_total = evictions_core0 + evictions_core1`.  
-- **evictions_per_k**: Cache blocks evicted per 1000 instructions. Formula: `evictions_per_k = (evictions_total / total_instruction_executed) * 1000`, where `total_instruction_executed = 50M`.  
+- **evictions_per_k**: Cache blocks evicted per 1000 instructions. Formula: `evictions_per_k = (evictions_total / total_instruction_executed) * 1000`, where `total_instruction_executed = 50M/core*2cores = 100M`.  
 
 
 #### Base Data
@@ -384,5 +384,84 @@
 ---
 
 ## Conclusion
+#### Data
+<table border="1">
+    <thead>
+        <tr>
+            <th rowspan="2">Trace</th>
+            <th colspan="4">Normalized IPC</th>
+            <th colspan="4">LLC MPKI</th>
+            <th colspan="4">Self Evictions Per Kilo Instructions</th>
+        </tr>
+        <tr>
+            <th>Base</th>
+            <th>Way</th>
+            <th>Static</th>
+            <th>Dynamic</th>
+            <th>Base</th>
+            <th>Way</th>
+            <th>Static</th>
+            <th>Dynamic</th>
+            <th>Base</th>
+            <th>Way</th>
+            <th>Static</th>
+            <th>Dynamic</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>mcf-mcf</td>
+            <td>{{base.mcf-mcf.normalized_ipc}}</td>
+            <td>{{way.mcf-mcf.normalized_ipc}}</td>
+            <td>{{static.mcf-mcf.normalized_ipc}}</td>
+            <td>{{dynamic.mcf-mcf.normalized_ipc}}</td>
+            <td>{{base.mcf-mcf.new_mpki}}</td>
+            <td>{{way.mcf-mcf.new_mpki}}</td>
+            <td>{{static.mcf-mcf.new_mpki}}</td>
+            <td>{{dynamic.mcf-mcf.new_mpki}}</td>
+            <td>{{base.mcf-mcf.new_evictions}}</td>
+            <td>{{way.mcf-mcf.new_evictions}}</td>
+            <td>{{static.mcf-mcf.new_evictions}}</td>
+            <td>{{dynamic.mcf-mcf.new_evictions}}</td>
+        </tr>
+        <tr>
+            <td>mcf-perl</td>
+            <td>{{base.mcf-perl.normalized_ipc}}</td>
+            <td>{{way.mcf-perl.normalized_ipc}}</td>
+            <td>{{static.mcf-perl.normalized_ipc}}</td>
+            <td>{{dynamic.mcf-perl.normalized_ipc}}</td>
+            <td>{{base.mcf-perl.new_mpki}}</td>
+            <td>{{way.mcf-perl.new_mpki}}</td>
+            <td>{{static.mcf-perl.new_mpki}}</td>
+            <td>{{dynamic.mcf-perl.new_mpki}}</td>
+            <td>{{base.mcf-perl.new_evictions}}</td>
+            <td>{{way.mcf-perl.new_evictions}}</td>
+            <td>{{static.mcf-perl.new_evictions}}</td>
+            <td>{{dynamic.mcf-perl.new_evictions}}</td>
+        </tr>
+        <tr>
+            <td>perl-perl</td>
+            <td>{{base.perl-perl.normalized_ipc}}</td>
+            <td>{{way.perl-perl.normalized_ipc}}</td>
+            <td>{{static.perl-perl.normalized_ipc}}</td>
+            <td>{{dynamic.perl-perl.normalized_ipc}}</td>
+            <td>{{base.perl-perl.new_mpki}}</td>
+            <td>{{way.perl-perl.new_mpki}}</td>
+            <td>{{static.perl-perl.new_mpki}}</td>
+            <td>{{dynamic.perl-perl.new_mpki}}</td>
+            <td>{{base.perl-perl.new_evictions}}</td>
+            <td>{{way.perl-perl.new_evictions}}</td>
+            <td>{{static.perl-perl.new_evictions}}</td>
+            <td>{{dynamic.perl-perl.new_evictions}}</td>
+        </tr>
+    </tbody>
+</table>
 
+#### Normalized Speedup
+![Dynamic Set Partitioning - Normalized Speedup](./results/graphs/combined/ipc.png)
 
+#### LLC MPKI Comparison
+![Dynamic Set Partitioning - LLC MPKI](./results/graphs/combined/mpki.png)
+
+#### Self-Evictions per Kilo Instructions
+![Dynamic Set Partitioning - Self Evictions](./results/graphs/combined/evictions.png)
