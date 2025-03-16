@@ -235,7 +235,7 @@ def draw_graph(title, ylabel, labels, base_values, new_values, file_name):
     ax.legend()
 
     plt.grid(True, linestyle="-", alpha=0.7, axis="y")
-    plt.savefig(file_name, bbox_inches="tight")
+    plt.savefig(file_name, bbox_inches="tight", dpi=300)
     plt.close(fig)
     print(f"Saved {file_name}")
 
@@ -294,7 +294,7 @@ def draw_combined_graph(data):
         ax.set_xlabel("Trace")
 
         file_name = GRAPH_IMG_PATH.format(mode="combined", type=metric_key)
-        plt.savefig(file_name, bbox_inches="tight")
+        plt.savefig(file_name, bbox_inches="tight", dpi=300)
         plt.close(fig)
         print(f"Saved {file_name}")
 

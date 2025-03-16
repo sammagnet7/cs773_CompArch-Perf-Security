@@ -18,26 +18,26 @@
 ### Experiment Details
 
 #### Explanation of Table Columns:
-- **mode**: Cache management mode used in the experiment (Way, Static, Dynamic). Directly obtained.  
-- **trace**: Workload combination used (e.g., mcf-mcf, mcf-perl, perl-perl). Directly obtained.  
-- **ipc_core0**: Instructions executed per cycle by core 0. Directly obtained.  
-- **ipc_core1**: Instructions executed per cycle by core 1. Directly obtained.  
-- **ipc_total**: Total instructions per cycle across both cores. Formula: `ipc_total = ipc_core0 + ipc_core1`.  
-- **normalized_ipc**: Normalized ipc compared to base. Formulat: `normalized_ipc = new_ipc_total / base_ipc_total`
-- **mpki_core0**: Cache misses per 1000 instructions for core 0. Directly obtained.  
-- **mpki_core1**: Cache misses per 1000 instructions for core 1. Directly obtained.  
-- **mpki_avg**: Average cache misses per 1000 instructions. Formula: `mpki_avg = (mpki_core0 + mpki_core1) / 2`.  
-- **evictions_core0**: Cache blocks evicted from core 0’s cache. Directly obtained.  
-- **evictions_core1**: Cache blocks evicted from core 1’s cache. Directly obtained.  
-- **evictions_total**: Total cache evictions across both cores. Formula: `evictions_total = evictions_core0 + evictions_core1`.  
-- **evictions_per_k**: Cache blocks evicted per 1000 instructions. Formula: `evictions_per_k = (evictions_total / total_instruction_executed) * 1000`, where `total_instruction_executed = 50M/core*2cores = 100M`.  
-
+- **Policy**: Cache partition policy used i.e. Base(No partition), Way, Static, Dynamic.
+- **trace**: Workload i.e. mcf-mcf, mcf-perl, perl-perl.
+- **ipc_core0**: Instructions executed per cycle by core 0.
+- **ipc_core1**: Instructions executed per cycle by core 1.
+- **ipc_total**: `ipc_core0 + ipc_core1`.  
+- **normalized_ipc**: `new_ipc_total / base_ipc_total`
+- **mpki_core0**: LLC Cache misses per 1000 instructions for core 0.
+- **mpki_core1**: LLC Cache misses per 1000 instructions for core 1.
+- **mpki_avg**: `(mpki_core0 + mpki_core1) / 2`.  
+- **evictions_core0**: LLC Self eviction by core 0.
+- **evictions_core1**: LLC Self eviction by core 1.
+- **evictions_total**: `evictions_core0 + evictions_core1`.  
+- **total_instruction_executed**: `50M` (core0) + `50M` (core1) = `100M`
+- **EPKI (Evictions per kilo instructions)**:  `(evictions_total / total_instruction_executed) * 1000`
 
 #### Base Data
-<table>
+<table border="1">
     <thead>
         <tr>
-            <th rowspan="2">Mode</th>
+            <th rowspan="2">Policy</th>
             <th rowspan="2">Trace</th>
             <th colspan="3">IPC</th>
             <th colspan="3">MPKI</th>
@@ -46,14 +46,14 @@
         <tr>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
+            <th>Sum</th>
             <th>Core 0</th>
             <th>Core 1</th>
             <th>Avg</th>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
-            <th>Per K</th>
+            <th>Sum</th>
+            <th>EPKI</th>
         </tr>
     </thead>
     <tbody>
@@ -72,7 +72,7 @@
             <td>{{base.mcf-mcf.evictions_per_k}}</td>
         </tr>
         <tr>
-            <td>Static</td>
+            <td>Base</td>
             <td>mcf-perl</td>
             <td>{{base.mcf-perl.ipc_core0}}</td>
             <td>{{base.mcf-perl.ipc_core1}}</td>
@@ -86,7 +86,7 @@
             <td>{{base.mcf-perl.evictions_per_k}}</td>
         </tr>
         <tr>
-            <td>Static</td>
+            <td>Base</td>
             <td>perl-perl</td>
             <td>{{base.perl-perl.ipc_core0}}</td>
             <td>{{base.perl-perl.ipc_core1}}</td>
@@ -116,10 +116,10 @@
 ### Results:
 
 #### Data
-<table>
+<table border="1">
     <thead>
         <tr>
-            <th rowspan="2">Mode</th>
+            <th rowspan="2">Policy</th>
             <th rowspan="2">Trace</th>
             <th colspan="3">IPC</th>
             <th colspan="3">MPKI</th>
@@ -128,14 +128,14 @@
         <tr>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
+            <th>Sum</th>
             <th>Core 0</th>
             <th>Core 1</th>
             <th>Avg</th>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
-            <th>Per K</th>
+            <th>Sum</th>
+            <th>EPKI</th>
         </tr>
     </thead>
     <tbody>
@@ -154,7 +154,7 @@
             <td>{{way.mcf-mcf.evictions_per_k}}</td>
         </tr>
         <tr>
-            <td>Static</td>
+            <td>Way</td>
             <td>mcf-perl</td>
             <td>{{way.mcf-perl.ipc_core0}}</td>
             <td>{{way.mcf-perl.ipc_core1}}</td>
@@ -168,7 +168,7 @@
             <td>{{way.mcf-perl.evictions_per_k}}</td>
         </tr>
         <tr>
-            <td>Static</td>
+            <td>Way</td>
             <td>perl-perl</td>
             <td>{{way.perl-perl.ipc_core0}}</td>
             <td>{{way.perl-perl.ipc_core1}}</td>
@@ -197,7 +197,7 @@
 
 ---
 
-## Task 2A: Static Set Partitioning (Rang-De-Basanti)
+## Task 2A: Static Set Partitioning
 
 ### Branch Name: `Static-Set-partitioning`
 
@@ -210,10 +210,10 @@
 ### Results:
 
 #### Data
-<table>
+<table border="1">
     <thead>
         <tr>
-            <th rowspan="2">Mode</th>
+            <th rowspan="2">Policy</th>
             <th rowspan="2">Trace</th>
             <th colspan="3">IPC</th>
             <th colspan="3">MPKI</th>
@@ -222,14 +222,14 @@
         <tr>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
+            <th>Sum</th>
             <th>Core 0</th>
             <th>Core 1</th>
             <th>Avg</th>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
-            <th>Per K</th>
+            <th>Sum</th>
+            <th>EPKI</th>
         </tr>
     </thead>
     <tbody>
@@ -290,7 +290,7 @@
 
 ---
 
-## Task 2B: Dynamic Set Partitioning (Tumse Na Ho Payega!)
+## Task 2B: Dynamic Set Partitioning
 
 ### Branch Name: `Dynamic-set-partitioning`
 
@@ -303,10 +303,10 @@
 ### Results:
 
 #### Data
-<table>
+<table border="1">
     <thead>
         <tr>
-            <th rowspan="2">Mode</th>
+            <th rowspan="2">Policy</th>
             <th rowspan="2">Trace</th>
             <th colspan="3">IPC</th>
             <th colspan="3">MPKI</th>
@@ -315,14 +315,14 @@
         <tr>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
+            <th>Sum</th>
             <th>Core 0</th>
             <th>Core 1</th>
             <th>Avg</th>
             <th>Core 0</th>
             <th>Core 1</th>
-            <th>Total</th>
-            <th>Per K</th>
+            <th>Sum</th>
+            <th>EPKI</th>
         </tr>
     </thead>
     <tbody>
@@ -341,7 +341,7 @@
             <td>{{dynamic.mcf-mcf.evictions_per_k}}</td>
         </tr>
         <tr>
-            <td>Static</td>
+            <td>Dynamic</td>
             <td>mcf-perl</td>
             <td>{{dynamic.mcf-perl.ipc_core0}}</td>
             <td>{{dynamic.mcf-perl.ipc_core1}}</td>
@@ -355,7 +355,7 @@
             <td>{{dynamic.mcf-perl.evictions_per_k}}</td>
         </tr>
         <tr>
-            <td>Static</td>
+            <td>Dynamic</td>
             <td>perl-perl</td>
             <td>{{dynamic.perl-perl.ipc_core0}}</td>
             <td>{{dynamic.perl-perl.ipc_core1}}</td>
