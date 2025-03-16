@@ -20,18 +20,20 @@
 ### Branch Name: `Way-Partitioning`
 
 ### Files Changed:
-- **PLACEHOLDER**
+- inc/cache.h
+- replacement/lru.llc_repl
+- src/cache.cc
 
 ### Results:
 
 #### Normalized IPC
-![Way Partitioning - Normalized IPC](./results/graphs/way_part/IPC.png)
+![Way Partitioning - Normalized IPC](./results/graphs/way_part/ipc.png)
 
 #### LLC MPKI Comparison
-![Way Partitioning - LLC MPKI](./results/graphs/way_part/MPKI.png)
+![Way Partitioning - LLC MPKI](./results/graphs/way_part/mpki.png)
 
 #### Self-Evictions per Kilo Instructions
-![Way Partitioning - Self Evictions](./results/graphs/way_part/EVICTION.png)
+![Way Partitioning - Self Evictions](./results/graphs/way_part/evictions.png)
 
 ---
 
@@ -40,18 +42,21 @@
 ### Branch Name: `Static-Set-partitioning`
 
 ### Files Changed:
-- **PLACEHOLDER**
+- inc/cache.h
+- src/cache.cc
+- src/page_table_walker.cc
+- src/main.cc
 
 ### Results:
 
 #### Normalized Speedup
-![Static Set Partitioning - Normalized Speedup](./results/graphs/static_set_part/IPC.png)
+![Static Set Partitioning - Normalized Speedup](./results/graphs/static_set_part/ipc.png)
 
 #### LLC MPKI Comparison
-![Static Set Partitioning - LLC MPKI](./results/graphs/static_set_part/MPKI.png)
+![Static Set Partitioning - LLC MPKI](./results/graphs/static_set_part/mpki.png)
 
 #### Self-Evictions per Kilo Instructions
-![Static Set Partitioning - Self Evictions](./results/graphs/static_set_part/EVICTION.png)
+![Static Set Partitioning - Self Evictions](./results/graphs/static_set_part/evictions.png)
 
 ---
 
@@ -60,18 +65,21 @@
 ### Branch Name: `Dynamic-set-partitioning`
 
 ### Files Changed:
-- **PLACEHOLDER**
+- inc/cache.h
+- src/cache.cc
+- src/main.cc
+- src/page_table_walker.cc
 
 ### Results:
 
 #### Normalized Speedup
-![Dynamic Set Partitioning - Normalized Speedup](./results/graphs/dynamic_set_part/IPC.png)
+![Dynamic Set Partitioning - Normalized Speedup](./results/graphs/dynamic_set_part/ipc.png)
 
 #### LLC MPKI Comparison
-![Dynamic Set Partitioning - LLC MPKI](./results/graphs/dynamic_set_part/MPKI.png)
+![Dynamic Set Partitioning - LLC MPKI](./results/graphs/dynamic_set_part/mpki.png)
 
 #### Self-Evictions per Kilo Instructions
-![Dynamic Set Partitioning - Self Evictions](./results/graphs/dynamic_set_part/EVICTION.png)
+![Dynamic Set Partitioning - Self Evictions](./results/graphs/dynamic_set_part/evictions.png)
 
 ---
 
