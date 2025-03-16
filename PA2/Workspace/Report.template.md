@@ -34,11 +34,74 @@
 
 
 #### Base Data
-| mode  | trace     | ipc_core0   | ipc_core1   | ipc_total   | mpki_core0   | mpki_core1   | mpki_avg   | evictions_core0   | evictions_core1   | evictions_total   | evictions_per_k   |
-|-------|----------|------------|------------|------------|------------|------------|----------|------------------|------------------|------------------|------------------|
-| base  | mcf-mcf  | {{base.mcf-mcf.ipc_core0}}  | {{base.mcf-mcf.ipc_core1}}  | {{base.mcf-mcf.ipc_total}}  | {{base.mcf-mcf.mpki_core0}}  | {{base.mcf-mcf.mpki_core1}}  | {{base.mcf-mcf.mpki_avg}}  | {{base.mcf-mcf.evictions_core0}}  | {{base.mcf-mcf.evictions_core1}}  | {{base.mcf-mcf.evictions_total}}  | {{base.mcf-mcf.evictions_per_k}}  |
-| base  | mcf-perl | {{base.mcf-perl.ipc_core0}} | {{base.mcf-perl.ipc_core1}} | {{base.mcf-perl.ipc_total}} | {{base.mcf-perl.mpki_core0}} | {{base.mcf-perl.mpki_core1}} | {{base.mcf-perl.mpki_avg}} | {{base.mcf-perl.evictions_core0}} | {{base.mcf-perl.evictions_core1}} | {{base.mcf-perl.evictions_total}} | {{base.mcf-perl.evictions_per_k}} |
-| base  | perl-perl| {{base.perl-perl.ipc_core0}} | {{base.perl-perl.ipc_core1}} | {{base.perl-perl.ipc_total}} | {{base.perl-perl.mpki_core0}} | {{base.perl-perl.mpki_core1}} | {{base.perl-perl.mpki_avg}} | {{base.perl-perl.evictions_core0}} | {{base.perl-perl.evictions_core1}} | {{base.perl-perl.evictions_total}} | {{base.perl-perl.evictions_per_k}} |
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">Mode</th>
+            <th rowspan="2">Trace</th>
+            <th colspan="3">IPC</th>
+            <th colspan="3">MPKI</th>
+            <th colspan="4">Evictions</th>
+        </tr>
+        <tr>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Avg</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Per K</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Base</td>
+            <td>mcf-mcf</td>
+            <td>{{base.mcf-mcf.ipc_core0}}</td>
+            <td>{{base.mcf-mcf.ipc_core1}}</td>
+            <td>{{base.mcf-mcf.ipc_total}}</td>
+            <td>{{base.mcf-mcf.mpki_core0}}</td>
+            <td>{{base.mcf-mcf.mpki_core1}}</td>
+            <td>{{base.mcf-mcf.mpki_avg}}</td>
+            <td>{{base.mcf-mcf.evictions_core0}}</td>
+            <td>{{base.mcf-mcf.evictions_core1}}</td>
+            <td>{{base.mcf-mcf.evictions_total}}</td>
+            <td>{{base.mcf-mcf.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>mcf-perl</td>
+            <td>{{base.mcf-perl.ipc_core0}}</td>
+            <td>{{base.mcf-perl.ipc_core1}}</td>
+            <td>{{base.mcf-perl.ipc_total}}</td>
+            <td>{{base.mcf-perl.mpki_core0}}</td>
+            <td>{{base.mcf-perl.mpki_core1}}</td>
+            <td>{{base.mcf-perl.mpki_avg}}</td>
+            <td>{{base.mcf-perl.evictions_core0}}</td>
+            <td>{{base.mcf-perl.evictions_core1}}</td>
+            <td>{{base.mcf-perl.evictions_total}}</td>
+            <td>{{base.mcf-perl.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>perl-perl</td>
+            <td>{{base.perl-perl.ipc_core0}}</td>
+            <td>{{base.perl-perl.ipc_core1}}</td>
+            <td>{{base.perl-perl.ipc_total}}</td>
+            <td>{{base.perl-perl.mpki_core0}}</td>
+            <td>{{base.perl-perl.mpki_core1}}</td>
+            <td>{{base.perl-perl.mpki_avg}}</td>
+            <td>{{base.perl-perl.evictions_core0}}</td>
+            <td>{{base.perl-perl.evictions_core1}}</td>
+            <td>{{base.perl-perl.evictions_total}}</td>
+            <td>{{base.perl-perl.evictions_per_k}}</td>
+        </tr>
+    </tbody>
+</table>
+
 
 
 ## Task 1A: Implementing Way Partitioning in Champsim
@@ -53,11 +116,74 @@
 ### Results:
 
 #### Data
-| mode  | trace     | ipc_core0   | ipc_core1   | ipc_total   | mpki_core0   | mpki_core1   | mpki_avg   | evictions_core0   | evictions_core1   | evictions_total   | evictions_per_k   |
-|-------|----------|------------|------------|------------|------------|------------|----------|------------------|------------------|------------------|------------------|
-| Way  | mcf-mcf  | {{way.mcf-mcf.ipc_core0}}  | {{way.mcf-mcf.ipc_core1}}  | {{way.mcf-mcf.ipc_total}}  | {{way.mcf-mcf.mpki_core0}}  | {{way.mcf-mcf.mpki_core1}}  | {{way.mcf-mcf.mpki_avg}}  | {{way.mcf-mcf.evictions_core0}}  | {{way.mcf-mcf.evictions_core1}}  | {{way.mcf-mcf.evictions_total}}  | {{way.mcf-mcf.evictions_per_k}}  |
-| Way  | mcf-perl | {{way.mcf-perl.ipc_core0}} | {{way.mcf-perl.ipc_core1}} | {{way.mcf-perl.ipc_total}} | {{way.mcf-perl.mpki_core0}} | {{way.mcf-perl.mpki_core1}} | {{way.mcf-perl.mpki_avg}} | {{way.mcf-perl.evictions_core0}} | {{way.mcf-perl.evictions_core1}} | {{way.mcf-perl.evictions_total}} | {{way.mcf-perl.evictions_per_k}} |
-| Way  | perl-perl| {{way.perl-perl.ipc_core0}} | {{way.perl-perl.ipc_core1}} | {{way.perl-perl.ipc_total}} | {{way.perl-perl.mpki_core0}} | {{way.perl-perl.mpki_core1}} | {{way.perl-perl.mpki_avg}} | {{way.perl-perl.evictions_core0}} | {{way.perl-perl.evictions_core1}} | {{way.perl-perl.evictions_total}} | {{way.perl-perl.evictions_per_k}} |
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">Mode</th>
+            <th rowspan="2">Trace</th>
+            <th colspan="3">IPC</th>
+            <th colspan="3">MPKI</th>
+            <th colspan="4">Evictions</th>
+        </tr>
+        <tr>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Avg</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Per K</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Way</td>
+            <td>mcf-mcf</td>
+            <td>{{way.mcf-mcf.ipc_core0}}</td>
+            <td>{{way.mcf-mcf.ipc_core1}}</td>
+            <td>{{way.mcf-mcf.ipc_total}}</td>
+            <td>{{way.mcf-mcf.mpki_core0}}</td>
+            <td>{{way.mcf-mcf.mpki_core1}}</td>
+            <td>{{way.mcf-mcf.mpki_avg}}</td>
+            <td>{{way.mcf-mcf.evictions_core0}}</td>
+            <td>{{way.mcf-mcf.evictions_core1}}</td>
+            <td>{{way.mcf-mcf.evictions_total}}</td>
+            <td>{{way.mcf-mcf.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>mcf-perl</td>
+            <td>{{way.mcf-perl.ipc_core0}}</td>
+            <td>{{way.mcf-perl.ipc_core1}}</td>
+            <td>{{way.mcf-perl.ipc_total}}</td>
+            <td>{{way.mcf-perl.mpki_core0}}</td>
+            <td>{{way.mcf-perl.mpki_core1}}</td>
+            <td>{{way.mcf-perl.mpki_avg}}</td>
+            <td>{{way.mcf-perl.evictions_core0}}</td>
+            <td>{{way.mcf-perl.evictions_core1}}</td>
+            <td>{{way.mcf-perl.evictions_total}}</td>
+            <td>{{way.mcf-perl.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>perl-perl</td>
+            <td>{{way.perl-perl.ipc_core0}}</td>
+            <td>{{way.perl-perl.ipc_core1}}</td>
+            <td>{{way.perl-perl.ipc_total}}</td>
+            <td>{{way.perl-perl.mpki_core0}}</td>
+            <td>{{way.perl-perl.mpki_core1}}</td>
+            <td>{{way.perl-perl.mpki_avg}}</td>
+            <td>{{way.perl-perl.evictions_core0}}</td>
+            <td>{{way.perl-perl.evictions_core1}}</td>
+            <td>{{way.perl-perl.evictions_total}}</td>
+            <td>{{way.perl-perl.evictions_per_k}}</td>
+        </tr>
+    </tbody>
+</table>
+
 
 
 #### Normalized IPC
@@ -84,11 +210,74 @@
 ### Results:
 
 #### Data
-| mode  | trace     | ipc_core0   | ipc_core1   | ipc_total   | mpki_core0   | mpki_core1   | mpki_avg   | evictions_core0   | evictions_core1   | evictions_total   | evictions_per_k   |
-|-------|----------|------------|------------|------------|------------|------------|----------|------------------|------------------|------------------|------------------|
-| Static  | mcf-mcf  | {{static.mcf-mcf.ipc_core0}}  | {{static.mcf-mcf.ipc_core1}}  | {{static.mcf-mcf.ipc_total}}  | {{static.mcf-mcf.mpki_core0}}  | {{static.mcf-mcf.mpki_core1}}  | {{static.mcf-mcf.mpki_avg}}  | {{static.mcf-mcf.evictions_core0}}  | {{static.mcf-mcf.evictions_core1}}  | {{static.mcf-mcf.evictions_total}}  | {{static.mcf-mcf.evictions_per_k}}  |
-| static  | mcf-perl | {{static.mcf-perl.ipc_core0}} | {{static.mcf-perl.ipc_core1}} | {{static.mcf-perl.ipc_total}} | {{static.mcf-perl.mpki_core0}} | {{static.mcf-perl.mpki_core1}} | {{static.mcf-perl.mpki_avg}} | {{static.mcf-perl.evictions_core0}} | {{static.mcf-perl.evictions_core1}} | {{static.mcf-perl.evictions_total}} | {{static.mcf-perl.evictions_per_k}} |
-| static  | perl-perl| {{static.perl-perl.ipc_core0}} | {{static.perl-perl.ipc_core1}} | {{static.perl-perl.ipc_total}} | {{static.perl-perl.mpki_core0}} | {{static.perl-perl.mpki_core1}} | {{static.perl-perl.mpki_avg}} | {{static.perl-perl.evictions_core0}} | {{static.perl-perl.evictions_core1}} | {{static.perl-perl.evictions_total}} | {{static.perl-perl.evictions_per_k}} |
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">Mode</th>
+            <th rowspan="2">Trace</th>
+            <th colspan="3">IPC</th>
+            <th colspan="3">MPKI</th>
+            <th colspan="4">Evictions</th>
+        </tr>
+        <tr>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Avg</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Per K</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Static</td>
+            <td>mcf-mcf</td>
+            <td>{{static.mcf-mcf.ipc_core0}}</td>
+            <td>{{static.mcf-mcf.ipc_core1}}</td>
+            <td>{{static.mcf-mcf.ipc_total}}</td>
+            <td>{{static.mcf-mcf.mpki_core0}}</td>
+            <td>{{static.mcf-mcf.mpki_core1}}</td>
+            <td>{{static.mcf-mcf.mpki_avg}}</td>
+            <td>{{static.mcf-mcf.evictions_core0}}</td>
+            <td>{{static.mcf-mcf.evictions_core1}}</td>
+            <td>{{static.mcf-mcf.evictions_total}}</td>
+            <td>{{static.mcf-mcf.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>mcf-perl</td>
+            <td>{{static.mcf-perl.ipc_core0}}</td>
+            <td>{{static.mcf-perl.ipc_core1}}</td>
+            <td>{{static.mcf-perl.ipc_total}}</td>
+            <td>{{static.mcf-perl.mpki_core0}}</td>
+            <td>{{static.mcf-perl.mpki_core1}}</td>
+            <td>{{static.mcf-perl.mpki_avg}}</td>
+            <td>{{static.mcf-perl.evictions_core0}}</td>
+            <td>{{static.mcf-perl.evictions_core1}}</td>
+            <td>{{static.mcf-perl.evictions_total}}</td>
+            <td>{{static.mcf-perl.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>perl-perl</td>
+            <td>{{static.perl-perl.ipc_core0}}</td>
+            <td>{{static.perl-perl.ipc_core1}}</td>
+            <td>{{static.perl-perl.ipc_total}}</td>
+            <td>{{static.perl-perl.mpki_core0}}</td>
+            <td>{{static.perl-perl.mpki_core1}}</td>
+            <td>{{static.perl-perl.mpki_avg}}</td>
+            <td>{{static.perl-perl.evictions_core0}}</td>
+            <td>{{static.perl-perl.evictions_core1}}</td>
+            <td>{{static.perl-perl.evictions_total}}</td>
+            <td>{{static.perl-perl.evictions_per_k}}</td>
+        </tr>
+    </tbody>
+</table>
+
 
 #### Normalized Speedup
 ![Static Set Partitioning - Normalized Speedup](./results/graphs/static_set_part/ipc.png)
@@ -114,11 +303,74 @@
 ### Results:
 
 #### Data
-| mode  | trace     | ipc_core0   | ipc_core1   | ipc_total   | mpki_core0   | mpki_core1   | mpki_avg   | evictions_core0   | evictions_core1   | evictions_total   | evictions_per_k   |
-|-------|----------|------------|------------|------------|------------|------------|----------|------------------|------------------|------------------|------------------|
-| dynamic  | mcf-mcf  | {{dynamic.mcf-mcf.ipc_core0}}  | {{dynamic.mcf-mcf.ipc_core1}}  | {{dynamic.mcf-mcf.ipc_total}}  | {{dynamic.mcf-mcf.mpki_core0}}  | {{dynamic.mcf-mcf.mpki_core1}}  | {{dynamic.mcf-mcf.mpki_avg}}  | {{dynamic.mcf-mcf.evictions_core0}}  | {{dynamic.mcf-mcf.evictions_core1}}  | {{dynamic.mcf-mcf.evictions_total}}  | {{dynamic.mcf-mcf.evictions_per_k}}  |
-| dynamic  | mcf-perl | {{dynamic.mcf-perl.ipc_core0}} | {{dynamic.mcf-perl.ipc_core1}} | {{dynamic.mcf-perl.ipc_total}} | {{dynamic.mcf-perl.mpki_core0}} | {{dynamic.mcf-perl.mpki_core1}} | {{dynamic.mcf-perl.mpki_avg}} | {{dynamic.mcf-perl.evictions_core0}} | {{dynamic.mcf-perl.evictions_core1}} | {{dynamic.mcf-perl.evictions_total}} | {{dynamic.mcf-perl.evictions_per_k}} |
-| dynamic  | perl-perl| {{dynamic.perl-perl.ipc_core0}} | {{dynamic.perl-perl.ipc_core1}} | {{dynamic.perl-perl.ipc_total}} | {{dynamic.perl-perl.mpki_core0}} | {{dynamic.perl-perl.mpki_core1}} | {{dynamic.perl-perl.mpki_avg}} | {{dynamic.perl-perl.evictions_core0}} | {{dynamic.perl-perl.evictions_core1}} | {{dynamic.perl-perl.evictions_total}} | {{dynamic.perl-perl.evictions_per_k}} |
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">Mode</th>
+            <th rowspan="2">Trace</th>
+            <th colspan="3">IPC</th>
+            <th colspan="3">MPKI</th>
+            <th colspan="4">Evictions</th>
+        </tr>
+        <tr>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Avg</th>
+            <th>Core 0</th>
+            <th>Core 1</th>
+            <th>Total</th>
+            <th>Per K</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Dynamic</td>
+            <td>mcf-mcf</td>
+            <td>{{dynamic.mcf-mcf.ipc_core0}}</td>
+            <td>{{dynamic.mcf-mcf.ipc_core1}}</td>
+            <td>{{dynamic.mcf-mcf.ipc_total}}</td>
+            <td>{{dynamic.mcf-mcf.mpki_core0}}</td>
+            <td>{{dynamic.mcf-mcf.mpki_core1}}</td>
+            <td>{{dynamic.mcf-mcf.mpki_avg}}</td>
+            <td>{{dynamic.mcf-mcf.evictions_core0}}</td>
+            <td>{{dynamic.mcf-mcf.evictions_core1}}</td>
+            <td>{{dynamic.mcf-mcf.evictions_total}}</td>
+            <td>{{dynamic.mcf-mcf.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>mcf-perl</td>
+            <td>{{dynamic.mcf-perl.ipc_core0}}</td>
+            <td>{{dynamic.mcf-perl.ipc_core1}}</td>
+            <td>{{dynamic.mcf-perl.ipc_total}}</td>
+            <td>{{dynamic.mcf-perl.mpki_core0}}</td>
+            <td>{{dynamic.mcf-perl.mpki_core1}}</td>
+            <td>{{dynamic.mcf-perl.mpki_avg}}</td>
+            <td>{{dynamic.mcf-perl.evictions_core0}}</td>
+            <td>{{dynamic.mcf-perl.evictions_core1}}</td>
+            <td>{{dynamic.mcf-perl.evictions_total}}</td>
+            <td>{{dynamic.mcf-perl.evictions_per_k}}</td>
+        </tr>
+        <tr>
+            <td>Static</td>
+            <td>perl-perl</td>
+            <td>{{dynamic.perl-perl.ipc_core0}}</td>
+            <td>{{dynamic.perl-perl.ipc_core1}}</td>
+            <td>{{dynamic.perl-perl.ipc_total}}</td>
+            <td>{{dynamic.perl-perl.mpki_core0}}</td>
+            <td>{{dynamic.perl-perl.mpki_core1}}</td>
+            <td>{{dynamic.perl-perl.mpki_avg}}</td>
+            <td>{{dynamic.perl-perl.evictions_core0}}</td>
+            <td>{{dynamic.perl-perl.evictions_core1}}</td>
+            <td>{{dynamic.perl-perl.evictions_total}}</td>
+            <td>{{dynamic.perl-perl.evictions_per_k}}</td>
+        </tr>
+    </tbody>
+</table>
+
 
 #### Normalized Speedup
 ![Dynamic Set Partitioning - Normalized Speedup](./results/graphs/dynamic_set_part/ipc.png)
