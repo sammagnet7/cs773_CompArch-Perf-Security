@@ -1,6 +1,10 @@
 import sys
 from tabulate import tabulate
 
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 LOG_FILE_PATH = "./results/logs/{mode}/{trace}.txt"
 GRAPH_IMG_PATH = "./results/graphs/{mode}/{type}.png"
 mode_2_dir = {
@@ -53,16 +57,17 @@ def extract_data(mode: str, trace: str):
         "ipc_core0": 0,
         "ipc_core1": 0,
         "ipc_total": 0,
-        "eviction_core0": 0,
-        "eviction_core1": 0,
-        "eviction_total": 0,
+        "evictions_core0": 0,
+        "evictions_core1": 0,
+        "evictions_total": 0,
+        "evictions_per_k": 0,
     }
     selected_core = ""
     for line in mpki_lines:
         if "Self-eviction" in line:
             cur_core = line.split("CPU ")[1].split()[0]
-            eviction_count = int(line.split(":")[-1])
-            obj["eviction_core" + cur_core] = eviction_count
+            evictions_count = int(line.split(":")[-1])
+            obj["evictions_core" + cur_core] = evictions_count
         elif line.startswith("CPU"):
             selected_core = line.split("CPU ")[1].split()[0]
             ipc = float(line.split("cumulative IPC:")[1].split()[0])
@@ -72,10 +77,13 @@ def extract_data(mode: str, trace: str):
             obj["mpki_core" + selected_core] = mpki
     obj["mpki_avg"] = (obj["mpki_core0"] + obj["mpki_core1"]) / 2
     obj["ipc_total"] = obj["ipc_core0"] + obj["ipc_core1"]
+    obj["evictions_total"] = obj["evictions_core0"] + obj["evictions_core1"]
     total_instructions = 50000000 * 2
-    obj["eviction_total"] = (
-        (obj["eviction_core0"] + obj["eviction_core1"]) / total_instructions * 1000
-    )  # 1K/50M*2
+    obj["evictions_per_k"] = obj["evictions_total"] / total_instructions * 1000
+    for key, value in obj.items():
+        if key in ["mode", "trace"]:
+            continue
+        obj[key] = round(value, 2)
     return obj
 
 
@@ -98,7 +106,7 @@ def compare_data(parsed_data, modes):
         trace = data["trace"]
         ipc_total = data["ipc_total"]
         mpki_avg = data["mpki_avg"]
-        eviction_total = data["eviction_total"]
+        evictions_per_k = data["evictions_per_k"]
         indexed_data.update(
             {
                 _mode
@@ -106,7 +114,7 @@ def compare_data(parsed_data, modes):
                 + trace: {
                     "ipc_total": ipc_total,
                     "mpki_avg": mpki_avg,
-                    "eviction_total": eviction_total,
+                    "evictions_per_k": evictions_per_k,
                 }
             }
         )
@@ -122,10 +130,10 @@ def compare_data(parsed_data, modes):
         ]:
             base_ipc_total = indexed_data["base" + "-" + trace]["ipc_total"]
             base_mpki_avg = indexed_data["base" + "-" + trace]["mpki_avg"]
-            base_eviction_total = indexed_data["base" + "-" + trace]["eviction_total"]
+            base_evictions_total = indexed_data["base" + "-" + trace]["evictions_per_k"]
             new_ipc_total = indexed_data[mode + "-" + trace]["ipc_total"]
             new_mpki_avg = indexed_data[mode + "-" + trace]["mpki_avg"]
-            new_eviction_total = indexed_data[mode + "-" + trace]["eviction_total"]
+            new_evictions_total = indexed_data[mode + "-" + trace]["evictions_per_k"]
             normalized_ipc = round(new_ipc_total / base_ipc_total, 2)
             comparison_data.append(
                 {
@@ -134,19 +142,11 @@ def compare_data(parsed_data, modes):
                     "normalized_ipc": normalized_ipc,
                     "base_mpki": base_mpki_avg,
                     "new_mpki": new_mpki_avg,
-                    "base_evictions": base_eviction_total,
-                    "new_eviction": new_eviction_total,
+                    "base_evictions": base_evictions_total,
+                    "new_evictions": new_evictions_total,
                 }
             )
     return comparison_data
-
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-
-import matplotlib.pyplot as plt
-import numpy as np
 
 
 def draw_graph(title, ylabel, labels, base_values, new_values, file_name):
@@ -256,7 +256,7 @@ def process_and_plot(data):
         base_evictions = [
             row["base_evictions"] / 1000 for row in mode_data
         ]  # Convert to per K instructions
-        new_evictions = [row["new_eviction"] / 1000 for row in mode_data]
+        new_evictions = [row["new_evictions"] / 1000 for row in mode_data]
 
         # Generating 3 plots per mode
         draw_graph(
@@ -285,6 +285,30 @@ def process_and_plot(data):
         )
 
 
+def generate_report(data):
+    # print(data)
+    template = ""
+    with open("Report.template.md", "r") as fileobj:
+        template = fileobj.read()
+    for entry in data:
+        trace = entry["trace"]
+        mode = entry["mode"]
+        for key, value in entry.items():
+            if key not in ["mode", "trace"]:
+                placeholder = f"{{{{{mode}.{trace}.{key}}}}}"  # Match template style
+                template = template.replace(placeholder, str(value))
+    lines = template.split("\n")
+    for i in range(0, len(lines), 50):
+        lines.insert(
+            i,
+            "<!-- ! THIS IS AUTOGENERATED DO NOT EDIT THIS. EDIT Report.template.md -->",
+        )
+    template = "\n".join(lines)
+    with open("Report.md", "w") as fileobj:
+        fileobj.write(template)
+    print("Report updated")
+
+
 def main(_modes: str):
     if _modes == "all":
         _modes = "base,way,static,dynamic"
@@ -303,6 +327,7 @@ def main(_modes: str):
     print(tabulate(comparison_data, headers="keys", tablefmt="grid"))
 
     process_and_plot(comparison_data)
+    generate_report(parsed_data)
 
 
 if __name__ == "__main__":
