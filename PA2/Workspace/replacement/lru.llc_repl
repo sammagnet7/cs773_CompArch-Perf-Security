@@ -32,34 +32,19 @@ void CACHE::llc_update_replacement_state(uint32_t cpu, uint32_t set, uint32_t wa
             core0_mask = min(core0_mask + 31, NUM_SET - 32 - 1);
             core1_base = min(core1_base + 32, NUM_SET - 32);
             core1_mask = NUM_SET - core1_base - 1;
-            cout << "REPARTITION: core0 mask: " << core0_mask << " core1 base" << core1_base << " core1_mask: " << core1_mask << endl;
+            // cout << "REPARTITION: core0 mask: " << core0_mask << " core1 base" << core1_base << " core1_mask: " << core1_mask << endl;
         }
-        // else if (core_misses[1] >= 2 * core_misses[0])
-        // {
-        //     core0_mask = max(core0_mask - 31, 31);
-        //     core1_base = min(core1_base - 32, 32);
-        //     core1_mask = NUM_SET - core1_base - 1;
-        //     cout << "REPARTITION: core0 mask: " << core0_mask << " core1 base" << core1_base << " core1_mask: " << core1_mask << endl;
-        // }
+        else if (core_misses[1] >= 2 * core_misses[0])
+        {
+            core0_mask = max(core0_mask - 31, 31U);
+            core1_base = max(core1_base - 32, 32U);
+            core1_mask = NUM_SET - core1_base - 1;
+            // cout << "REPARTITION: core0 mask: " << core0_mask << " core1 base" << core1_base << " core1_mask: " << core1_mask << endl;
+        }
 
         inst_at_LLC = 0;
         core_misses[0] = core_misses[1] = 0;
     }
-    // if (core_inst[0] >= heuristic_threshold)
-    // {
-    //     cout << "HEURISTIC CPU0: " << core_misses[0] << " INST " << core_inst[0] << " RATIO: " << 1.0f * core_misses[0] / core_inst[0] << endl;
-    //     // Reset counters
-    //     core_misses[0] = core_inst[0] = 0;
-    // }
-    // if (core_inst[1] >= heuristic_threshold)
-    // {
-    //     cout << "HEURISTIC CPU1: " << core_misses[1] << " INST " << core_inst[1] << " RATIO: " << 1.0f * core_misses[1] / core_inst[1] << endl;
-    //     // Reset counters
-    //     core_misses[1] = core_inst[1] = 0;
-    // }
-    // uncomment this line to see the LLC accesses
-    // cout << "CPU: " << cpu << "  LLC " << setw(9) << TYPE_NAME << " set: " << setw(5) << set << " way: " << setw(2) << way;
-    // cout << hex << " paddr: " << setw(12) << paddr << " ip: " << setw(8) << ip << " victim_addr: " << victim_addr << dec << endl;
 
     // baseline LRU
     if (hit && (type == WRITEBACK)) // writeback hit does not update LRU state

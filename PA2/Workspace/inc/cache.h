@@ -199,7 +199,7 @@ public:
     {
 
         LATENCY = 0;
-        heuristic_threshold = 10000;
+        heuristic_threshold = 100000;
         core0_base = 0;
         core1_base = 2048;
         core0_mask = 2047;
