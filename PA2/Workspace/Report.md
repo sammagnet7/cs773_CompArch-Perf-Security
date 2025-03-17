@@ -14,6 +14,9 @@
 ## Git Repository
 [Repository Link: **[PA2](https://github.com/sammagnet7/cs773_CompArch-Perf-Security/tree/main/PA2)**]
 
+## Traces
+[Drive link: **[Download](https://drive.google.com/drive/folders/11hoH9rfdehELjpHH7bCtuMuREtSzICmy?usp=drive_link)**]
+
 ---
 
 ### Experiment Details
@@ -105,7 +108,7 @@
     </tbody>
 </table>
 
-
+---
 
 ## Task 1A: Implementing Way Partitioning in Champsim
 
