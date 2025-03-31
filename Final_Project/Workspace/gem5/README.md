@@ -1,4 +1,4 @@
-# The gem5 Simulator
+# The gem5 Simulator (Version 24.1.0.2)
 
 This is the repository for the gem5 simulator. It contains the full source code
 for the simulator and all tests and regressions.
