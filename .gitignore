@@ -41,4 +41,4 @@ calibrate
 #**/temp/
 
 PA2/Given/traces/**
-#Final_Project/speccpu17_gem5/**
+Final_Project/speccpu17_gem5/**
