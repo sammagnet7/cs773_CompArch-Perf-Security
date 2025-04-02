@@ -28,14 +28,14 @@ rm -rf mountdir
 
 # we have taken system configuration specific .config file from `SPEC17_workloads/config` folder and modified it
 # These .cfg file in `custom_configs` folder modified and commented as '#MODIFIED' 
-cp $BASE/scripts/build_iso/configs_cpu17/gcc-linux-x86_all.cfg SPEC17_workloads/config
+cp $BASE/mmyScripts/build_iso/configs_cpu17/gcc-linux-x86_all.cfg SPEC17_workloads/config
 
 cd SPEC17_workloads
 
 source shrc
 
-runcpu --config=gcc-linux-x86_all.cfg --action=build all
-runcpu --config=gcc-linux-x86_all.cfg --action=run --fake all
+runcpu --config=gcc-linux-x86_all.cfg --action=build all -I
+runcpu --config=gcc-linux-x86_all.cfg --action=run --fake all --noreportable --iterations=1  -I
 
 cd ..
 mv SPEC17_workloads $BASE/SPEC17_workloads

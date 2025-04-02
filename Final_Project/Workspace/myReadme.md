@@ -37,13 +37,44 @@
 
 
 ## Configurations
-- Workspace/ : BaseDir
-- {BaseDir}/../resources_gem5 : Put the `cpu2017-*.iso`
-- {BaseDir}/SPEC17_workloads: Contains the built and installed benchmark suits.
-- {BaseDir}/myScripts : Contains all the custom wrirtten scripts.
-- {BaseDir}/mygem5 : Contains modified gem5 code as part of various techniques' implementation.
+- Ubuntu 24.10 :  we used. It can be lesser ubuntu version as well
+- `Workspace/` : BaseDir
+- `{BaseDir}/../resources_gem5` : Contains **cpu2017-*.iso**
+- `{BaseDir}/SPEC17_workloads`: Contains built and installed benchmark suits.
+- `{BaseDir}/myScripts` : Contains all the custom wrirtten scripts.
+- `{BaseDir}/mygem5` : Contains modified gem5 code as part of various techniques' implementation.
+- 
 
 ## Steps to follow
-1. For installing SpecCpu benchmarks:
-   - Follow the instructions mentioned in the script `{BaseDir}/myScripts/build_spec17_x86.sh`
-2. 
+1. Git clone: 
+```
+git clone https://github.com/sammagnet7/cs773_CompArch-Perf-Security
+```
+2. Copy paste the **cpu2017-*.iso** file into folder `Final_Project/resources_gem5`. Then go to {BaseDir}
+```
+cd Final_Project/Workspace 
+```
+3. To install software package dependencies, run
+```
+{BaseDir}/myScripts/dependencies.sh
+```
+4. To build gem5 with x86 architecture:
+```
+cd {BaseDir}/mygem5
+N=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
+scons build/X86/gem5.opt -j${N}
+```
+5. For installing SpecCpu benchmarks: 
+   - Follow the instructions mentioned in the script `{BaseDir}/myScripts/build_iso/build_spec17_x86.sh`
+  
+6. To run all the benchmarks and get and comparative stats: 
+```
+cd Workspace/
+./Workspace/myScripts/run_spec/run_spec17.sh
+
+```
+7. To plot graphs:
+```
+cd Workspace/
+./Workspace/myScripts/plot/run_spec17.sh
+```
