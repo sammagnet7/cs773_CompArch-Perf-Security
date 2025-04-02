@@ -34,8 +34,8 @@ cd SPEC17_workloads
 
 source shrc
 
-runcpu --config=gcc-linux-x86_all.cfg --action=build mcf_s -I
-runcpu --config=gcc-linux-x86_all.cfg --action=run --fake mcf_s --noreportable --iterations=1  -I
+runcpu --config=gcc-linux-x86_all.cfg --action=build all -I
+runcpu --config=gcc-linux-x86_all.cfg --action=run --fake all --noreportable --iterations=1  -I
 
 cd ..
 
