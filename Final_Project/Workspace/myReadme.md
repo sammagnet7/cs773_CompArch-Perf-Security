@@ -38,43 +38,54 @@
 
 ## Configurations
 - Ubuntu 24.10 :  we used. It can be lesser ubuntu version as well
-- `Workspace/` : BaseDir
-- `{BaseDir}/../resources_gem5` : Contains **cpu2017-*.iso**
-- `{BaseDir}/SPEC17_workloads`: Contains built and installed benchmark suits.
-- `{BaseDir}/myScripts` : Contains all the custom wrirtten scripts.
-- `{BaseDir}/mygem5` : Contains modified gem5 code as part of various techniques' implementation.
+- *{BASE}* : **Workspace/**
+- *{BASE}/../resources_gem5* : Contains **cpu2017-*.iso**
+- *{BASE}/SPEC17_workloads*: Contains built and installed benchmark suits.
+- *{BASE}/myScripts* : Contains all the custom wrirtten scripts.
+- *{BASE}/mygem5* : Contains modified gem5 code as part of various techniques' implementation.
 - 
 
 ## Steps to follow
 1. Git clone: 
-```
+```bash
 git clone https://github.com/sammagnet7/cs773_CompArch-Perf-Security
 ```
-2. Copy paste the **cpu2017-*.iso** file into folder `Final_Project/resources_gem5`. Then go to {BaseDir}
-```
+2. Copy paste the **cpu2017-*.iso** file into folder *Final_Project/resources_gem5*. Then go to **{BASE}**
+3. 
+```bash
 cd Final_Project/Workspace 
+
+export BASE=$(pwd)
 ```
-3. To install software package dependencies, run
+3. To install software package dependencies, run from **{BASE}**
+```bash
+./myScripts/dependencies.sh
 ```
-{BaseDir}/myScripts/dependencies.sh
-```
-4. To build gem5 with x86 architecture:
-```
-cd {BaseDir}/mygem5
+1. To build gem5 with x86 architecture, from **{BASE}*:
+```bash
+cd mygem5
+
 N=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
+
 scons build/X86/gem5.opt -j${N}
+
+cd $BASE
 ```
 5. For installing SpecCpu benchmarks: 
-   - Follow the instructions mentioned in the script `{BaseDir}/myScripts/build_iso/build_spec17_x86.sh`
+   - Follow the instructions mentioned in the script `myScripts/build_iso/build_spec17_x86.sh`
   
 6. To run all the benchmarks and get and comparative stats: 
-```
-cd Workspace/
-./Workspace/myScripts/run_spec/run_spec17.sh
+```bash
+cd $BASE
+
+./myScripts/run_spec/run_spec17.sh
 
 ```
 7. To plot graphs:
+```bash
+cd $BASE
+
+./myScripts/run_plot/plot_spec17.sh
 ```
-cd Workspace/
-./Workspace/myScripts/plot/run_spec17.sh
-```
+
+---
