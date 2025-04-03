@@ -81,11 +81,13 @@ cd $BASE
 ./myScripts/run_spec/run_spec17.sh
 
 ```
+>Note: Find the stats files created inside **$BASE/SPEC17_workloads/benchspec/CPU/{becnhmark_folder: r for freq and s for speed}/run/{*base*}.mm64.0000/m5out**
+
 7. To plot graphs:
 ```bash
 cd $BASE
 
 ./myScripts/run_plot/plot_spec17.sh
 ```
-
+> Note: Find the generated plots inside: **$BASE/myScripts/run_plot/plots**
 ---

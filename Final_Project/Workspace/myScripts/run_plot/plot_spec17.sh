@@ -9,8 +9,8 @@ label="spec" # label which is set in the .cfg file in $BASE/myScripts/build_iso/
 rm $PLOTS_DIR/slowdown.data
 
 
-#for bench in bwaves perlbench gcc mcf omnetpp xalancbmk deepsjeng leela exchange2 xz bwaves cactusBSSN lbm wrf cam4 pop2 imagick nab fotonik3d roms
-for bench in mcf omnetpp ## Use above line for all benchmarks
+for bench in bwaves perlbench gcc mcf omnetpp xalancbmk deepsjeng leela exchange2 xz bwaves cactusBSSN lbm wrf cam4 pop2 imagick nab fotonik3d roms
+#for bench in mcf omnetpp ## Use above line for all benchmarks
 
 do
   #echo $bench >> $PLOTS_DIR/slowdown.data
@@ -28,5 +28,11 @@ done
 
 cd $PLOTS_DIR/..
 gnuplot slowdown.gp
+
+
+# Final message after graph generation
+echo -e "\n\033[1;35m🌈🌟🎨  GRAPH GENERATION COMPLETE!  🎨🌟🌈\033[0m"
+echo -e "\033[1;36m📊 Find the generated plots inside:\033[0m"
+echo -e "\033[1;33m➡  $PLOTS_DIR\033[0m\n"
 
 cd $BASE
