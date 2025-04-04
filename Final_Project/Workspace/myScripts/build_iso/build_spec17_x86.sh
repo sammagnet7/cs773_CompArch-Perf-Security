@@ -28,14 +28,14 @@ rm -rf mountdir
 
 # we have taken system configuration specific .config file from `SPEC17_workloads/config` folder and modified it
 # These .cfg file is modified and commented as '#MODIFIED'
-cp $BASE/myScripts/build_iso/configs_cpu17/gcc-linux-x86_all.cfg SPEC17_workloads/config
+cp $BASE/myScripts/build_iso/configs_cpu17/gcc-linux-x86_base.cfg SPEC17_workloads/config
 
 cd SPEC17_workloads
 
 source shrc
 
-runcpu --config=gcc-linux-x86_all.cfg --action=build perlbench_s gcc_s mcf_s omnetpp_s xalancbmk_s x264_s deepsjeng_s leela_s exchange2_s xz_s bwaves_s cactuBSSN_s lbm_s wrf_s cam4_s pop2_s imagick_s nab_s fotonik3d_s roms_s -I
-runcpu --config=gcc-linux-x86_all.cfg --action=run --fake perlbench_s gcc_s mcf_s omnetpp_s xalancbmk_s x264_s deepsjeng_s leela_s exchange2_s xz_s bwaves_s cactuBSSN_s lbm_s wrf_s cam4_s pop2_s imagick_s nab_s fotonik3d_s roms_s --iterations=1  -I
+runcpu --config=gcc-linux-x86_base.cfg --action=build perlbench_s gcc_s mcf_s omnetpp_s xalancbmk_s x264_s deepsjeng_s leela_s exchange2_s xz_s bwaves_s cactuBSSN_s lbm_s wrf_s cam4_s pop2_s imagick_s nab_s fotonik3d_s roms_s -I
+runcpu --config=gcc-linux-x86_base.cfg --action=run --fake perlbench_s gcc_s mcf_s omnetpp_s xalancbmk_s x264_s deepsjeng_s leela_s exchange2_s xz_s bwaves_s cactuBSSN_s lbm_s wrf_s cam4_s pop2_s imagick_s nab_s fotonik3d_s roms_s --iterations=1  -I
 
 #runcpu --config=gcc-linux-x86_all.cfg --action=build all -I
 #runcpu --config=gcc-linux-x86_all.cfg --action=run --fake all --noreportable --iterations=1  -I
