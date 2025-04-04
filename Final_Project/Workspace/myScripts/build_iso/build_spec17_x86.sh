@@ -34,8 +34,11 @@ cd SPEC17_workloads
 
 source shrc
 
-runcpu --config=gcc-linux-x86_all.cfg --action=build all -I
-runcpu --config=gcc-linux-x86_all.cfg --action=run --fake all --noreportable --iterations=1  -I
+runcpu --config=gcc-linux-x86_all.cfg --action=build perlbench_s gcc_s mcf_s omnetpp_s xalancbmk_s x264_s deepsjeng_s leela_s exchange2_s xz_s bwaves_s cactuBSSN_s lbm_s wrf_s cam4_s pop2_s imagick_s nab_s fotonik3d_s roms_s -I
+runcpu --config=gcc-linux-x86_all.cfg --action=run --fake perlbench_s gcc_s mcf_s omnetpp_s xalancbmk_s x264_s deepsjeng_s leela_s exchange2_s xz_s bwaves_s cactuBSSN_s lbm_s wrf_s cam4_s pop2_s imagick_s nab_s fotonik3d_s roms_s --iterations=1  -I
+
+#runcpu --config=gcc-linux-x86_all.cfg --action=build all -I
+#runcpu --config=gcc-linux-x86_all.cfg --action=run --fake all --noreportable --iterations=1  -I
 
 cd ..
 

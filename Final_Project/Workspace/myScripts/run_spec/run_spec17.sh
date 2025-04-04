@@ -21,7 +21,8 @@ P=$((G<N ? G : N))
 # Track active jobs
 active_jobs=0
 
-for bench in bwaves perlbench gcc mcf omnetpp xalancbmk deepsjeng leela exchange2 xz bwaves cactusBSSN lbm wrf cam4 pop2 imagick nab fotonik3d roms
+for bench in perlbench gcc mcf omnetpp xalancbmk x264 deepsjeng leela exchange2 xz bwaves cactuBSSN lbm wrf cam4 pop2 imagick nab fotonik3d roms
+
 #for bench in omnetpp mcf  ## Use above line for all benchmarks
 
 do
@@ -77,5 +78,3 @@ echo -e "\033[1;33m➡  $BASE/SPEC17_workloads/benchspec/CPU/{benchmark_folder: 
 
 
 cd $BASE
-
-

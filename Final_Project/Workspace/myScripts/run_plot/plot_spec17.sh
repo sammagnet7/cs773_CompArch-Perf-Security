@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## Run this script from `Workspace/`
 export BASE=$(pwd)
 export PLOTS_DIR=$BASE/myScripts/run_plot/plots
@@ -9,11 +11,10 @@ label="spec" # label which is set in the .cfg file in $BASE/myScripts/build_iso/
 rm $PLOTS_DIR/slowdown.data
 
 
-for bench in bwaves perlbench gcc mcf omnetpp xalancbmk deepsjeng leela exchange2 xz bwaves cactusBSSN lbm wrf cam4 pop2 imagick nab fotonik3d roms
+for bench in perlbench gcc mcf omnetpp xalancbmk x264 deepsjeng leela exchange2 xz bwaves cactuBSSN lbm wrf cam4 pop2 imagick nab fotonik3d roms
 #for bench in mcf omnetpp ## Use above line for all benchmarks
 
 do
-  #echo $bench >> $PLOTS_DIR/slowdown.data
 
   base=$(grep simSe $SPEC17_DIR/*$(echo $bench)_s/run/run_base_refspeed_${label}-m64.0000/m5out/statsno.txt | awk '{print $2}')
   slow=$(grep simSe $SPEC17_DIR/*$(echo $bench)_s/run/run_base_refspeed_${label}-m64.0000/m5out/statsghostminion.txt  | awk '{print $2}')
