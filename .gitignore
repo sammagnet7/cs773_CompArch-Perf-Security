@@ -42,4 +42,5 @@ calibrate
 
 PA2/Given/traces/**
 Final_Project/resources_gem5/**
+Final_Project/speccpu17_gem5/**
 Final_Project/Workspace/SPEC17_workloads/**
