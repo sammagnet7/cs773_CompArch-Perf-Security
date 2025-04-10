@@ -1,0 +1,17 @@
+perlbench .9645
+gcc .9348
+mcf 1.0006
+omnetpp .9592
+xalancbmk .9367
+x264 .9808
+deepsjeng 1.2948
+leela .9988
+exchange2 .9955
+bwaves 1.0607
+cactuBSSN 1.0730
+lbm 1.2864
+pop2 .9157
+imagick 1.0082
+nab 1.0113
+fotonik3d .9777
+gmean 1.0198
