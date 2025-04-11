@@ -27,6 +27,7 @@ export -f echo_magenta
 export -f echo_white
 
 export BASE=$(realpath "$(dirname $0)/../..")
+export label="spec" # label which is set in the .cfg file in $BASE/myScripts/build_iso/configs_cpu17 folder
 export SPEC17_DIR=$BASE/SPEC17_workloads/benchspec/CPU
 export SPEC_CONFIG=$BASE/myScripts/run_spec/spec_configs
 export SPEC_RUN_DIR_SUFFIX="run/run_base_refspeed_${label}-64.0000"
@@ -53,7 +54,6 @@ if [ "$all_dirs_exist" = false ]; then
     exit 1
 fi
 
-export label="spec" # label which is set in the .cfg file in $BASE/myScripts/build_iso/configs_cpu17 folder
 mkdir -p "$PLOTS_DIR"
 # Calculate resource availability
 N=$(expr $(grep 'processor' /proc/cpuinfo | wc -l) - 8)
