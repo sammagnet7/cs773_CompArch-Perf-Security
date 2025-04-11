@@ -13,6 +13,8 @@ fi
 source "$vars_script_path"
 
 set -u
+mkdir -p "$PLOTS_DIR"
+rm -rf $BENCHMARK_SUCCESS_FILE $BENCHMARK_FAILED_FILE
 cd $SPEC17_DIR
 # Track active jobs
 active_jobs=0

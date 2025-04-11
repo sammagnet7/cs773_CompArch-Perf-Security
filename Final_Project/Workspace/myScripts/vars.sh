@@ -26,7 +26,9 @@ export -f echo_cyan
 export -f echo_magenta
 export -f echo_white
 
-export BASE=$(realpath "$(dirname $0)/../..")
+SCRIPT2_PATH="$(realpath "${BASH_SOURCE[0]}")"
+SCRIPT2_DIR="$(dirname "$SCRIPT2_PATH")"
+export BASE="$(realpath "$SCRIPT2_DIR/../")"
 export label="spec" # label which is set in the .cfg file in $BASE/myScripts/build_iso/configs_cpu17 folder
 export SPEC17_DIR=$BASE/SPEC17_workloads/benchspec/CPU
 export SPEC_CONFIG=$BASE/myScripts/run_spec/spec_configs
@@ -57,8 +59,6 @@ if [ "$all_dirs_exist" = false ]; then
     exit 1
 fi
 
-mkdir -p "$PLOTS_DIR"
-rm -rf $BENCHMARK_SUCCESS_FILE $BENCHMARK_FAILED_FILE
 # Calculate resource availability
 N=$(expr $(grep 'processor' /proc/cpuinfo | wc -l) - 8)
 M=$(grep MemTotal /proc/meminfo | awk '{print $2}')
