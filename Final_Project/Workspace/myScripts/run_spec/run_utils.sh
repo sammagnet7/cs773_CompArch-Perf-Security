@@ -20,7 +20,7 @@ watch_all_gem5() {
 
     echo "🟢 $(echo "$pids" | wc -l) gem5.opt process(es) running:"
     echo "$pids" | while read -r pid; do
-      ps -p "$pid" -o pid=,args= | awk '{print $1, $10, $12}' \
+      ps -p "$pid" -o pid=,args= | awk '{print $1, $3, $6}' \
         | sed -E 's/--outdir=//; s/\.\.\/+|\.\/+//g; s/_base\.spec-.*64//g'
     done
 

@@ -10,5 +10,5 @@ BINA="$2"
 ARGS="$3"
 IN="$4"
 
-$GEM5_RUNNER/run_gem5.sh "ghost_base" "$bench" "$BINA" '' "$ARGS" "$IN"
+$GEM5_RUNNER/run_gem5.sh "ghost_base" "$bench" "$BINA" '' "$ARGS" "$IN" &
 $GEM5_RUNNER/run_gem5.sh "ghost_ghost" "$bench" "$BINA" '--ghostminion --cache_coher --ghost_size="2kB" --iminion --prefetch_ordered' "$ARGS" "$IN"
