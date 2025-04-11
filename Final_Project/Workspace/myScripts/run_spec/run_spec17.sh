@@ -59,9 +59,15 @@ done
 wait
 
 # Final completion message with stats file location
-echo -e "\n\033[1;32m============================================================"
-echo -e "🎉🎉🎉  ALL BENCHMARKS COMPLETED!  🎉🎉🎉"
-echo -e "============================================================\033[0m"
+echo_cyan "\n============================================================"
+if [[ ! -s "$BENCHMARK_FAILED_FILE" ]]; then
+  echo -e "🎉🎉🎉  ALL BENCHMARKS COMPLETED SUCCESSFULLY!  🎉🎉🎉"
+else
+  echo -e "🚨 Some benchmarks failed. Summary below:"
+  echo_red "Failed Benchmarks: "
+  cat "$BENCHMARK_FAILED_FILE"
+fi
+echo_cyan "============================================================"
 
 echo -e "\n\033[1;36m📂 Find the stats files inside:\033[0m"
 echo -e "\033[1;33m➡  $SPEC17_DIR: 'r' for freq and 's' for speed}/run/{*base*}.mm64.0000/m5out\033[0m\n"

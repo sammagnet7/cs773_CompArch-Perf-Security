@@ -89,9 +89,11 @@ if [ $exit_status -ne 0 ] || tail -n 1 "$PWD/$MODE/run_base.log" | grep -q "Simu
     echo_red "\n❌  Failed $MODE Gem5 on $BENCHMARK_NAME ❌"
     echo_red "Logs can be found in $PWD/$MODE/run_base.log"
     echo_red "-----------------------------------------------------------"
+    echo "$BENCHMARK_NAME $MODE" >> "$BENCHMARK_FAILED_FILE"
 else
     echo_green "\n✅✅✅  Completed $MODE Gem5 on $BENCHMARK_NAME ✅✅✅"
     echo_green "Logs saved in $PWD/$MODE/run_base.log"
     echo_green "Stats saved in $PWD/$MODE/stats.txt"
     echo_green "-----------------------------------------------------------"
+    echo "$BENCHMARK_NAME $MODE" >> "$BENCHMARK_SUCCESS_FILE"
 fi

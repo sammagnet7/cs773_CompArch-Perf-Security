@@ -41,6 +41,9 @@ export PLOTS_DIR=$BASE/myScripts/run_plot
 export MAX_INSTS=$max_insts_arg
 export WARMUP_INSTS=$warmup_insts_arg
 
+export BENCHMARK_SUCCESS_FILE="/tmp/success.txt"
+export BENCHMARK_FAILED_FILE="/tmp/failed.txt"
+
 # Check if directories exist
 all_dirs_exist=true
 for dir in "$BASE" "$SPEC17_DIR" "$SPEC_CONFIG" "$GEM5_RUNNER" "$GEM5_BUILD_PATH" "$GEM5_CONFIG_PATH"; do
@@ -55,6 +58,7 @@ if [ "$all_dirs_exist" = false ]; then
 fi
 
 mkdir -p "$PLOTS_DIR"
+rm -rf $BENCHMARK_SUCCESS_FILE $BENCHMARK_FAILED_FILE
 # Calculate resource availability
 N=$(expr $(grep 'processor' /proc/cpuinfo | wc -l) - 8)
 M=$(grep MemTotal /proc/meminfo | awk '{print $2}')
