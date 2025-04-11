@@ -61,7 +61,7 @@ export BASE=$(pwd)
 ```bash
 ./myScripts/dependencies.sh
 ```
-1. To build gem5 with x86 architecture, from **{BASE}*:
+1. To build gem5 with x86 architecture, from **{BASE}*: install scons by `pip install SCons`
 ```bash
 cd mygem5
 

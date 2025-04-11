@@ -20,6 +20,6 @@ stats input_file every ::1 using 2:3 nooutput
 set yrange [0:STATS_max_y * 1.2]
 
 plot input_file every ::1 using 2:xtic(1) title "Baseline", \
-     '' every ::1 using 3 title "MIRAGE", \
+     '' every ::1 using 3 title gem_flavour, \
      '' every ::1 using 0:2:(sprintf("%.3f", column(2))) with labels font "Arial,14" offset 0,1.5 tc rgb "#B030B0" notitle, \
      '' every ::1 using 0:3:(sprintf("%.3f", column(3))) with labels font "Arial,14" offset 0,3.0 tc rgb "#30D5C8" notitle

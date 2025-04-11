@@ -26,14 +26,25 @@ for bench in ${BENCHMARK_ITEMS[*]}; do
     BIN=$(grep $bench $SPEC_CONFIG/binaries_2017.txt | awk -F':' '{print $2}' | xargs)
     ARGS=$(grep $bench $SPEC_CONFIG/args_2017.txt | awk -F':' '{print $2}' | xargs)
 
-    BINA="../../exe/${BIN}_base.${label}-m64"
+    BINA="../../exe/${BIN}_base.${label}-64"
 
-    cd "$(find . -maxdepth 1 -type d -name '*'"$bench"'_s' 2>/dev/null)/run/run_base_refspeed_${label}-m64.0000" || echo "Directory not found!"
+    cd "$(find ${SPEC17_DIR} -maxdepth 1 -type d -name '*'"$bench"'_s' 2>/dev/null)/${SPEC_RUN_DIR_SUFFIX}" || echo "Directory not found!"
 
-    #  change this to different gem5 flavour
-    $GEM5_RUNNER/run_vanilla.sh "$bench" "$BINA" "$ARGS" "$IN"
-    # $GEM5_RUNNER/run_mirage.sh "$bench" "$BINA" "$ARGS" "$IN"
-    # $GEM5_RUNNER/run_ghostminion.sh "$bench" "$BINA" "$ARGS" "$IN"
+    case "${GEM5_FLAVOUR}" in
+    "vanilla")
+      $GEM5_RUNNER/run_vanilla.sh "$bench" "$BINA" "$ARGS" "$IN"
+      ;;
+    "ghost")
+      $GEM5_RUNNER/run_ghostminion.sh "$bench" "$BINA" "$ARGS" "$IN"
+      ;;
+    "mirage")
+      $GEM5_RUNNER/run_mirage.sh "$bench" "$BINA" "$ARGS" "$IN"
+      ;;
+    *)
+      echo "🚨 Unknown GEM5_FLAVOUR: ${GEM5_FLAVOUR}"
+      exit 1
+      ;;
+    esac
   ) &
   ((active_jobs++))
 
@@ -55,4 +66,18 @@ echo -e "============================================================\033[0m"
 echo -e "\n\033[1;36m📂 Find the stats files inside:\033[0m"
 echo -e "\033[1;33m➡  $SPEC17_DIR: 'r' for freq and 's' for speed}/run/{*base*}.mm64.0000/m5out\033[0m\n"
 
-eval "$PLOTS_DIR/plot_spec17.sh"
+case "${GEM5_FLAVOUR}" in
+"vanilla")
+  echo_magenta "No automated plots for vanilla Gem5 ;("
+  ;;
+"ghost")
+  eval "$PLOTS_DIR/plot_spec17.sh" GhostMinion ghost_base ghost_ghost --old-stats
+  ;;
+"mirage")
+  eval "$PLOTS_DIR/plot_spec17.sh" Mirage mirage_base mirage_mirage
+  ;;
+*)
+  echo "🚨 Unknown GEM5_FLAVOUR: ${GEM5_FLAVOUR}"
+  exit 1
+  ;;
+esac

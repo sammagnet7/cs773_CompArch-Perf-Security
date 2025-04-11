@@ -10,5 +10,5 @@ BINA="$2"
 ARGS="$3"
 IN="$4"
 
-$GEM5_RUNNER/run_gem5.sh "mirage_base" "$bench" "$BINA" '--mirage_mode="Baseline"' "$ARGS" "$IN" &
+$GEM5_RUNNER/run_gem5.sh "mirage_base" "$bench" "$BINA" '--mirage_mode="Baseline"' "$ARGS" "$IN"
 $GEM5_RUNNER/run_gem5.sh "mirage_mirage" "$bench" "$BINA" '--mirage_mode="skew-vway-rand" --l2_numSkews=2 --l2_TDR=1.75 --l2_EncrLat=3' "$ARGS" "$IN"

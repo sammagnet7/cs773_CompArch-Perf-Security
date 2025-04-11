@@ -29,9 +29,13 @@ export -f echo_white
 export BASE=$(realpath "$(dirname $0)/../..")
 export SPEC17_DIR=$BASE/SPEC17_workloads/benchspec/CPU
 export SPEC_CONFIG=$BASE/myScripts/run_spec/spec_configs
+export SPEC_RUN_DIR_SUFFIX="run/run_base_refspeed_${label}-64.0000"
 export GEM5_RUNNER=$BASE/myScripts/run_gem5
-export GEM5_BUILD_PATH=$BASE/mygem5/build/X86
-export GEM5_CONFIG_PATH=$BASE/mygem5/configs
+export GEM5_SRC_DIR="gem5_ghostminion-v20.0" # onnly dir name not full path
+export GEM5_ARCH="ARM" # | "X86"
+export GEM5_FLAVOUR="ghost" # vanilla | ghost | mirage
+export GEM5_BUILD_PATH=$BASE/${GEM5_SRC_DIR}/build/${GEM5_ARCH}
+export GEM5_CONFIG_PATH=$BASE/${GEM5_SRC_DIR}/configs
 export PLOTS_DIR=$BASE/myScripts/run_plot
 export MAX_INSTS=$max_insts_arg
 export WARMUP_INSTS=$warmup_insts_arg
@@ -57,9 +61,9 @@ M=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 G=$(expr $M / 8192000)
 P=$((G < N ? G : N))
 
-# export BENCHMARK_ITEMS=(perlbench gcc mcf omnetpp xalancbmk x264 deepsjeng leela exchange2 xz bwaves cactuBSSN lbm wrf cam4 pop2 imagick nab fotonik3d roms)
-export BENCHMARK_ITEMS=(perlbench gcc mcf omnetpp xalancbmk x264 deepsjeng leela exchange2 xz bwaves cactuBSSN lbm pop2 imagick nab fotonik3d)
-# export BENCHMARK_ITEMS=(gcc mcf imagick xz)
+export BENCHMARK_ITEMS=(perlbench gcc mcf omnetpp xalancbmk x264 deepsjeng leela exchange2 xz bwaves cactuBSSN lbm imagick nab fotonik3d roms)
+# export BENCHMARK_ITEMS=(gcc)
+
 echo_yellow "------------------------"
 echo_yellow "🗃️  Directories Found:"
 echo_blue "BASE                      = \033[0m $BASE"
