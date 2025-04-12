@@ -1,4 +1,4 @@
-set terminal pngcairo enhanced font "Arial,12" size 800,600
+set terminal pngcairo enhanced font "Arial,12" size 1200,600
 set output output_png
 
 set xtics out nomirror rotate by 25 right 1, 4, 9 format ",16"

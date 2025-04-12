@@ -1,6 +1,6 @@
 # mpki.gp - uses input_file and output_png from command line
 
-set terminal pngcairo enhanced font "Arial,12" size 800,600
+set terminal pngcairo enhanced font "Arial,12" size 1200,600
 set output output_png
 
 set style data histogram
