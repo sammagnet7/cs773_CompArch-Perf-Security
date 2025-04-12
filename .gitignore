@@ -44,3 +44,7 @@ PA2/Given/traces/**
 Final_Project/resources_gem5/**
 Final_Project/speccpu17_gem5/**
 Final_Project/Workspace/SPEC17_workloads/**
+
+# ingore temporary plots and data
+Final_Project/Workspace/myScripts/run_plot/data/
+Final_Project/Workspace/myScripts/run_plot/plots/

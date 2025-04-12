@@ -96,8 +96,8 @@ mpki_l2_modded=()
 
 for bench in "${BENCHMARK_ITEMS[@]}"; do
   benchmark_dir=$(find "$SPEC17_DIR" -maxdepth 1 -type d -name '*'"$bench"'_s' 2>/dev/null)/${SPEC_RUN_DIR_SUFFIX}
-  base_stats="$benchmark_dir/ghost_base/stats.txt"
-  modded_stats="$benchmark_dir/ghost_ghost/stats.txt"
+  base_stats="$benchmark_dir/$BASE_DIR/stats.txt"
+  modded_stats="$benchmark_dir/$MODE_DIR/stats.txt"
 
   if [[ ! -f "$base_stats" || ! -f "$modded_stats" ]]; then
     echo "🚨 Stats file missing for benchmark $bench. Skipping..."
@@ -157,8 +157,8 @@ echo "gmean $(geo_mean "${mpki_l1_base[@]}") $(geo_mean "${mpki_l1_modded[@]}")"
 echo "gmean $(geo_mean "${mpki_l2_base[@]}") $(geo_mean "${mpki_l2_modded[@]}")" >>"$mpki_l2_file"
 
 commands=(
-  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/slowdown.stat'\" -e \"output_png='plots/slowdown.png'\" -e  \"var_title='Slowdown (simSeconds) [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Slowdown'\" slowdown.gp"
-  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/slowdown_ipc.stat'\" -e \"output_png='plots/slowdown_ipc.png'\" -e  \"var_title='Slowdown (IPC) [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Slowdown'\" slowdown.gp"
+  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/slowdown.stat'\" -e \"output_png='plots/slowdown.png'\" -e  \"var_title='Speedup compared to non-secure baseline [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Speedup'\" slowdown.gp"
+  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/slowdown_ipc.stat'\" -e \"output_png='plots/slowdown_ipc.png'\" -e  \"var_title='peedup compared to non-secure baseline (IPC) [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Speedup'\" slowdown.gp"
   "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/ipc.stat'\" -e \"output_png='plots/ipc.png'\" -e  \"var_title='IPC [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='IPC'\" double_bar.gp"
   "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/mpki_l1.stat'\" -e \"output_png='plots/mpki_l1.png'\" -e  \"var_title='MPKI L1 [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='MPKI (L1)'\" double_bar.gp"
   "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/mpki_l2.stat'\" -e \"output_png='plots/mpki_l2.png'\" -e  \"var_title='MPKI L2 [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='MPKI (L2)'\" double_bar.gp"
