@@ -1,9 +1,7 @@
 perlbench .9774
 gcc .9863
 mcf .9202
-omnetpp .9647
 xalancbmk .9686
-x264 .8637
 deepsjeng .9960
 leela .9994
 exchange2 .9932
@@ -11,6 +9,5 @@ bwaves .9540
 lbm .9780
 imagick .9978
 nab .9606
-fotonik3d .9994
 roms .9999
-gmean 0.9699
+gmean 0.9773
