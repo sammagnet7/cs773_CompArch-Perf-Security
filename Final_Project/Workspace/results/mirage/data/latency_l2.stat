@@ -1,0 +1,13 @@
+perlbench .900
+gcc .988
+mcf 1.011
+xalancbmk 1.011
+deepsjeng .985
+leela 1.021
+exchange2 1.026
+bwaves .789
+lbm .677
+imagick .909
+nab .821
+roms .739
+gmean 0.8983
