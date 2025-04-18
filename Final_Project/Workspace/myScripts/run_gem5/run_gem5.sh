@@ -21,6 +21,9 @@ MODE_ARGS="$4"
 BIN_ARGS="$5"
 BIN_IN="$6"
 PWD="$(pwd)"
+CHECKPOINT_OUT_DIR="$CHECKPOINT_ROOT/$BENCHMARK_NAME"
+
+mkdir -p "$CHECKPOINT_OUT_DIR"
 
 spinner() {
     local pid=$1
@@ -46,22 +49,40 @@ fi
 
 mkdir -p "$MODE"
 eval "mode_args_array=($MODE_ARGS)"
-cmd_args=(
-    "$GEM5_BUILD_PATH/gem5.opt"
-    --outdir="$MODE"
-    "$GEM5_CONFIG_PATH/se.py"
-    --cmd "$BIN_EXE"
-    --option "$BIN_ARGS"
-    -i "$BIN_IN"
-    --num-cpus=1 --mem-size=8GB --mem-type=DDR4_2400_8x8
-    --cpu-type DerivO3CPU
-    --caches --l2cache
-    --l1d_size=32kB --l1i_size=32kB --l2_size=8MB
-    --l1d_assoc=8 --l1i_assoc=8 --l2_assoc=16
-    --warmup-insts=$WARMUP_INSTS --maxinsts=$MAX_INSTS
-    "${mode_args_array[@]}"
-    --prog-interval=100Hz
-)
+if [ "$CHECKPOINT_CREATE" -eq 1 ]; then
+    cmd_args=(
+        "$GEM5_BUILD_PATH/gem5.opt"
+        --outdir="$MODE"
+        "$GEM5_CONFIG_PATH/se.py"
+        --cmd "$BIN_EXE"
+        --option "$BIN_ARGS"
+        -i "$BIN_IN"
+        --checkpoint-dir=$CHECKPOINT_OUT_DIR
+        --take-checkpoint=$CHECKPOINT_INSTRUCTIONS --at-instruction
+        --num-cpus=1 --mem-size=8GB --mem-type=SimpleMemory
+        --maxinsts=$MAX_INSTS
+        --prog-interval=100Hz
+    )
+else
+    cmd_args=(
+        "$GEM5_BUILD_PATH/gem5.opt"
+        --outdir="$MODE"
+        "$GEM5_CONFIG_PATH/se.py"
+        --cmd "$BIN_EXE"
+        --option "$BIN_ARGS"
+        -i "$BIN_IN"
+        --checkpoint-dir=$CHECKPOINT_OUT_DIR
+        --checkpoint-restore=$CHECKPOINT_INSTRUCTIONS --at-instruction
+        --num-cpus=1 --mem-size=8GB --mem-type=DDR4_2400_8x8
+        --cpu-type DerivO3CPU
+        --caches --l2cache
+        --l1d_size=32kB --l1i_size=32kB --l2_size=8MB
+        --l1d_assoc=8 --l1i_assoc=8 --l2_assoc=16
+        --warmup-insts=$WARMUP_INSTS --maxinsts=$MAX_INSTS
+        "${mode_args_array[@]}"
+        --prog-interval=100Hz
+    )
+fi
 
 echo_cyan "📈📈📈  Running $MODE Gem5 on $BENCHMARK_NAME 📈📈📈"
 echo_cyan "-----------------------------------------------------------"
@@ -89,11 +110,11 @@ if [ $exit_status -ne 0 ] || tail -n 1 "$PWD/$MODE/run_base.log" | grep -q "Simu
     echo_red "\n❌  Failed $MODE Gem5 on $BENCHMARK_NAME ❌" >&2
     echo_red "Logs can be found in $PWD/$MODE/run_base.log" >&2
     echo_red "-----------------------------------------------------------" >&2
-    echo "$BENCHMARK_NAME $MODE" >> "$BENCHMARK_FAILED_FILE"
+    echo "$BENCHMARK_NAME $MODE" >>"$BENCHMARK_FAILED_FILE"
 else
     echo_green "\n✅✅✅  Completed $MODE Gem5 on $BENCHMARK_NAME ✅✅✅"
     echo_green "Logs saved in $PWD/$MODE/run_base.log"
     echo_green "Stats saved in $PWD/$MODE/stats.txt"
     echo_green "-----------------------------------------------------------"
-    echo "$BENCHMARK_NAME $MODE" >> "$BENCHMARK_SUCCESS_FILE"
+    echo "$BENCHMARK_NAME $MODE" >>"$BENCHMARK_SUCCESS_FILE"
 fi

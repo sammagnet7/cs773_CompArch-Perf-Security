@@ -43,6 +43,10 @@ export PLOTS_DIR=$BASE/myScripts/run_plot
 export MAX_INSTS=$max_insts_arg
 export WARMUP_INSTS=$warmup_insts_arg
 
+export CHECKPOINT_CREATE=0 # 1-only create checkpoint; 0-use the created checkpoints; do not change here;
+export CHECKPOINT_ROOT="$BASE/SPEC17_workloads/checkpoints"
+export CHECKPOINT_INSTRUCTIONS=10000000000 # 10B
+
 export BENCHMARK_SUCCESS_FILE="/tmp/success.txt"
 export BENCHMARK_FAILED_FILE="/tmp/failed.txt"
 
