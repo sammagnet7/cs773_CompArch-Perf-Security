@@ -34,13 +34,16 @@ for bench in ${BENCHMARK_ITEMS[*]}; do
 
     case "${GEM5_FLAVOUR}" in
     "vanilla")
-      $GEM5_RUNNER/run_vanilla.sh "$bench" "$BINA" "$ARGS" "$IN" > /dev/null
+      $GEM5_RUNNER/run_vanilla.sh "$bench" "$BINA" "$ARGS" "$IN" >/dev/null
       ;;
     "ghost")
-      $GEM5_RUNNER/run_ghostminion.sh "$bench" "$BINA" "$ARGS" "$IN" > /dev/null
+      $GEM5_RUNNER/run_ghostminion.sh "$bench" "$BINA" "$ARGS" "$IN" >/dev/null
       ;;
     "mirage")
-      $GEM5_RUNNER/run_mirage.sh "$bench" "$BINA" "$ARGS" "$IN" > /dev/null
+      $GEM5_RUNNER/run_mirage.sh "$bench" "$BINA" "$ARGS" "$IN" >/dev/null
+      ;;
+    "create_ckpt")
+      $GEM5_RUNNER/create_checkpoint.sh "$bench" "$BINA" "$ARGS" "$IN" >/dev/null
       ;;
     *)
       echo "🚨 Unknown GEM5_FLAVOUR: ${GEM5_FLAVOUR}"
