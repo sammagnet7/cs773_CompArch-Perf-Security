@@ -626,6 +626,7 @@ if main['USE_PYTHON']:
     # scons with the appropriate PATH set.
 
     python_config = main.Detect(main['PYTHON_CONFIG'])
+    python_config = "python3.8-config"
     if python_config is None:
         error("Can't find a suitable python-config, tried %s" % \
               main['PYTHON_CONFIG'])
@@ -700,6 +701,7 @@ if not conf.CheckLibWithHeader(None, 'sys/socket.h', 'C++', 'accept(0,0,0);'):
 
 # Check for zlib.  If the check passes, libz will be automatically
 # added to the LIBS environment variable.
+marshal_env.Append(LIBS=['z'])
 if not conf.CheckLibWithHeader('z', 'zlib.h', 'C++','zlibVersion();'):
     error('Did not find needed zlib compression library '
           'and/or zlib.h header file.\n'
