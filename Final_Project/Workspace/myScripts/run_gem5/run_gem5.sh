@@ -43,37 +43,40 @@ spinner() {
     tput cnorm
 }
 
-if [ -d "$MODE" ]; then
-    echo_magenta "⚠️ $MODE directory already exists. Previous results will be overwritten."
+OUTDIR="${MODE}_${SESSION}"
+if [ -d "$OUTDIR" ]; then
+    echo_magenta "⚠️ $OUTDIR directory already exists. Previous results will be overwritten."
 fi
 
-mkdir -p "$MODE"
+mkdir -p "$OUTDIR"
 eval "mode_args_array=($MODE_ARGS)"
 if [ "$CHECKPOINT_CREATE" -eq 1 ]; then
+    MAX_INSTS=$((CHECKPOINT_INSTRUCTIONS + 1))
     cmd_args=(
         "$GEM5_BUILD_PATH/gem5.opt"
-        --outdir="$MODE"
+        --outdir="$OUTDIR"
         "$GEM5_CONFIG_PATH/se.py"
         --cmd "$BIN_EXE"
         --option "$BIN_ARGS"
         -i "$BIN_IN"
+        --num-cpus=1 --mem-size=16384MB 
         --checkpoint-dir=$CHECKPOINT_OUT_DIR
         --take-checkpoint=$CHECKPOINT_INSTRUCTIONS --at-instruction
-        --num-cpus=1 --mem-size=8GB --mem-type=SimpleMemory
+        --mem-type=DDR4_2400_8x8
         --maxinsts=$MAX_INSTS
         --prog-interval=100Hz
     )
 else
     cmd_args=(
         "$GEM5_BUILD_PATH/gem5.opt"
-        --outdir="$MODE"
+        --outdir="$OUTDIR"
         "$GEM5_CONFIG_PATH/se.py"
         --cmd "$BIN_EXE"
         --option "$BIN_ARGS"
         -i "$BIN_IN"
         --checkpoint-dir=$CHECKPOINT_OUT_DIR
         --checkpoint-restore=$CHECKPOINT_INSTRUCTIONS --at-instruction
-        --num-cpus=1 --mem-size=8GB --mem-type=DDR4_2400_8x8
+        --num-cpus=1 --mem-size=16384MB --mem-type=DDR4_2400_8x8
         --cpu-type DerivO3CPU
         --caches --l2cache
         --l1d_size=32kB --l1i_size=32kB --l2_size=8MB
@@ -96,25 +99,25 @@ echo_blue "BIN_IN = \033[0m $BIN_IN"
 echo_blue "PWD = \033[0m $PWD"
 echo_blue "CMD = \033[0m "
 printf '  %q' "${cmd_args[@]}"
-printf ' > %q\n' "$MODE/run_base.log"
+printf ' > %q\n' "$OUTDIR/run_base.log"
 echo_cyan "-----------------------------------------------------------"
 
 # Run the command with redirection
-"${cmd_args[@]}" >"$MODE/run_base.log" 2>&1 &
+"${cmd_args[@]}" >"$OUTDIR/run_base.log" 2>&1 &
 gem5_pid=$!
 # spinner $gem5_pid
 
 wait $gem5_pid
 exit_status=$?
-if [ $exit_status -ne 0 ] || tail -n 1 "$PWD/$MODE/run_base.log" | grep -q "Simulated exit code not 0!"; then
+if [ $exit_status -ne 0 ] || tail -n 1 "$PWD/$OUTDIR/run_base.log" | grep -q "Simulated exit code not 0!"; then
     echo_red "\n❌  Failed $MODE Gem5 on $BENCHMARK_NAME ❌" >&2
-    echo_red "Logs can be found in $PWD/$MODE/run_base.log" >&2
+    echo_red "Logs can be found in $PWD/$OUTDIR/run_base.log" >&2
     echo_red "-----------------------------------------------------------" >&2
     echo "$BENCHMARK_NAME $MODE" >>"$BENCHMARK_FAILED_FILE"
 else
     echo_green "\n✅✅✅  Completed $MODE Gem5 on $BENCHMARK_NAME ✅✅✅"
-    echo_green "Logs saved in $PWD/$MODE/run_base.log"
-    echo_green "Stats saved in $PWD/$MODE/stats.txt"
+    echo_green "Logs saved in $PWD/$OUTDIR/run_base.log"
+    echo_green "Stats saved in $PWD/$OUTDIR/stats.txt"
     echo_green "-----------------------------------------------------------"
     echo "$BENCHMARK_NAME $MODE" >>"$BENCHMARK_SUCCESS_FILE"
 fi
