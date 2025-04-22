@@ -99,3 +99,11 @@ class WeightedLRURP(BaseReplacementPolicy):
     type = "WeightedLRURP"
     cxx_class = "WeightedLRUPolicy"
     cxx_header = "mem/cache/replacement_policies/weighted_lru_rp.hh"
+
+# For MIRAGE
+class RandomSkewfairRP(BaseReplacementPolicy):
+    type = 'RandomSkewfairRP'
+    cxx_class = 'RandomSkewfairRP' # MODIFIED Add proper scope
+    cxx_header = "mem/cache/replacement_policies/random_skewfair_rp.hh"
+    numSkews = Param.Unsigned(Parent.numSkews,"Number of Skews")
+    assoc = Param.Int(Parent.tags.assoc, "Number of victim candidates")
