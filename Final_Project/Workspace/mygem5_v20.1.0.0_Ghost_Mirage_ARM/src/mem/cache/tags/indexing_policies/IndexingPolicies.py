@@ -54,3 +54,15 @@ class SkewedAssociative(BaseIndexingPolicy):
     type = 'SkewedAssociative'
     cxx_class = 'SkewedAssociative'
     cxx_header = "mem/cache/tags/indexing_policies/skewed_associative.hh"
+
+class SkewedAssocRand(BaseIndexingPolicy):
+    type = 'SkewedAssocRand'
+    cxx_class = 'SkewedAssocRand' # MODIFIED Add proper scope
+    cxx_header = "mem/cache/tags/indexing_policies/skewed_assoc_randomized.hh"
+
+    mem_size = Param.MemorySize(Parent.size,"Memory capacity")
+    # Get the entry size from the parent (tags)
+    entry_size = Param.Int(Parent.entry_size, "entry size in bytes")
+    randomizedIndexing = Param.Bool(Parent.randomizedIndexing, "Enables Randomized Indexing with PRINCE")
+    skewedCache = Param.Bool(Parent.skewedCache, "Enables skewed cache design")
+    numSkews = Param.Unsigned(Parent.numSkews, "Number of skews")

@@ -89,7 +89,7 @@ class BaseTags : public ClockedObject
      * The number of tags that need to be touched to meet the warmup
      * percentage.
      */
-    const unsigned warmupBound;
+    unsigned warmupBound;
     /** Marked true when the cache is warmed up. */
     bool warmedUp;
 
@@ -159,6 +159,15 @@ class BaseTags : public ClockedObject
         Stats::Scalar tagAccesses;
         /** Number of data blocks consulted over all accesses. */
         Stats::Scalar dataAccesses;
+
+        /**MIRAGE: Types of repl in vway tags.*/
+
+        /** Invalid Tag-Data **/
+        Stats::Scalar replInvtagdata;
+        /** Local Repl **/
+        Stats::Scalar replLocal;
+        /** Global Repl **/
+        Stats::Scalar replGlobal;
     } stats;
 
   public:

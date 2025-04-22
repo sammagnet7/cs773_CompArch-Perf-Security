@@ -226,7 +226,10 @@ BaseTags::BaseTagStats::BaseTagStats(BaseTags &_tags)
     percentOccsTaskId(this, "occ_task_id_percent",
                       "Percentage of cache occupancy per task id"),
     tagAccesses(this, "tag_accesses", "Number of tag accesses"),
-    dataAccesses(this, "data_accesses", "Number of data accesses")
+    dataAccesses(this, "data_accesses", "Number of data accesses"),
+    replInvtagdata(this, "repl_invalid", "Number of initial replacements" ),
+    replLocal(this, "repl_valid_tag", "Number of local replacements" ),
+    replGlobal(this, "repl_valid_data", "Number of global replacements" )
 {
 }
 

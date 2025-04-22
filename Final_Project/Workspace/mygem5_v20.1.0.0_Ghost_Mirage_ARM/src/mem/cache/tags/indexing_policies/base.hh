@@ -62,99 +62,117 @@ class ReplaceableEntry;
  */
 class BaseIndexingPolicy : public SimObject
 {
-  protected:
-    /**
-     * The associativity.
-     */
-    const unsigned assoc;
+protected:
+  /**
+   * The associativity.
+   */
+  const unsigned assoc;
 
-    /**
-     * The number of sets in the cache.
-     */
-    const uint32_t numSets;
+  /**
+   * The number of sets in the cache.
+   */
+  const uint32_t numSets;
 
-    /**
-     * The amount to shift the address to get the set.
-     */
-    const int setShift;
+  /**
+   * The amount to shift the address to get the set.
+   */
+  const int setShift;
 
-    /**
-     * Mask out all bits that aren't part of the set index.
-     */
-    const unsigned setMask;
+  /**
+   * Mask out all bits that aren't part of the set index.
+   */
+  const unsigned setMask;
 
-    /**
-     * The cache sets.
-     */
-    std::vector<std::vector<ReplaceableEntry*>> sets;
+  /**
+   * The cache sets.
+   */
+  std::vector<std::vector<ReplaceableEntry *>> sets;
 
-    /**
-     * The amount to shift the address to get the tag.
-     */
-    const int tagShift;
+  /**
+   * The amount to shift the address to get the tag.
+   */
+  const int tagShift;
 
-  public:
-    /**
-     * Convenience typedef.
-     */
-    typedef BaseIndexingPolicyParams Params;
+public:
+  /**
+   * Convenience typedef.
+   */
+  typedef BaseIndexingPolicyParams Params;
 
-    /**
-     * Construct and initialize this policy.
-     */
-    BaseIndexingPolicy(const Params *p);
+  /**
+   * Construct and initialize this policy.
+   */
+  BaseIndexingPolicy(const Params *p);
 
-    /**
-     * Destructor.
-     */
-    ~BaseIndexingPolicy() {};
+  /**
+   * Destructor.
+   */
+  ~BaseIndexingPolicy() {};
 
-    /**
-     * Associate a pointer to an entry to its physical counterpart.
-     *
-     * @param entry The entry pointer.
-     * @param index An unique index for the entry.
-     */
-    void setEntry(ReplaceableEntry* entry, const uint64_t index);
+  /**
+   * Associate a pointer to an entry to its physical counterpart.
+   *
+   * @param entry The entry pointer.
+   * @param index An unique index for the entry.
+   */
+  void setEntry(ReplaceableEntry *entry, const uint64_t index);
 
-    /**
-     * Get an entry based on its set and way. All entries must have been set
-     * already before calling this function.
-     *
-     * @param set The set of the desired entry.
-     * @param way The way of the desired entry.
-     * @return entry The entry pointer.
-     */
-    ReplaceableEntry* getEntry(const uint32_t set, const uint32_t way) const;
+  /**
+   * Get an entry based on its set and way. All entries must have been set
+   * already before calling this function.
+   *
+   * @param set The set of the desired entry.
+   * @param way The way of the desired entry.
+   * @return entry The entry pointer.
+   */
+  ReplaceableEntry *getEntry(const uint32_t set, const uint32_t way) const;
 
-    /**
-     * Generate the tag from the given address.
-     *
-     * @param addr The address to get the tag from.
-     * @return The tag of the address.
-     */
-    virtual Addr extractTag(const Addr addr) const;
+  /**
+   * Generate the tag from the given address.
+   *
+   * @param addr The address to get the tag from.
+   * @return The tag of the address.
+   */
+  virtual Addr extractTag(const Addr addr) const;
 
-    /**
-     * Find all possible entries for insertion and replacement of an address.
-     * Should be called immediately before ReplacementPolicy's findVictim()
-     * not to break cache resizing.
-     *
-     * @param addr The addr to a find possible entries for.
-     * @return The possible entries.
-     */
-    virtual std::vector<ReplaceableEntry*> getPossibleEntries(const Addr addr, const uint64_t timestamp = 0)
-                                                                    const = 0;
+  /**
+   * If set-associative, apply a hash function to calculate address set.
+   *
+   * @param addr The address to calculate the set for.
+   * @param way The way of the block to calculate the set for.
+   * @return The set index for given combination of address and way.
+   */
+  virtual uint32_t extractSet(const Addr addr) const
+  {
+    panic("Should not be called, Unless a derived class re-defines this function (i.e. set-assoc indexing used.!\n");
+    return 0;
+  }
+  virtual uint32_t extractSet(const Addr addr, const uint32_t way) const
+  {
+    panic("Should not be called, Unless a derived class re-defines this function (i.e. set-assoc indexing used.!\n");
+    return 0;
+  }
 
-    /**
-     * Regenerate an entry's address from its tag and assigned indexing bits.
-     *
-     * @param tag The tag bits.
-     * @param entry The entry.
-     * @return the entry's original address.
-     */
-    virtual Addr regenerateAddr(const Addr tag, const ReplaceableEntry* entry)
-                                                                    const = 0;
+  /**
+   * Find all possible entries for insertion and replacement of an address.
+   * Should be called immediately before ReplacementPolicy's findVictim()
+   * not to break cache resizing.
+   *
+   * @param addr The addr to a find possible entries for.
+   * @return The possible entries.
+   */
+  virtual std::vector<ReplaceableEntry *> getPossibleEntries(const Addr addr, const uint64_t timestamp = 0)
+      const = 0;
+
+  /**
+   * Regenerate an entry's address from its tag and assigned indexing bits.
+   *
+   * @param tag The tag bits.
+   * @param entry The entry.
+   * @return the entry's original address.
+   */
+  virtual Addr regenerateAddr(const Addr tag, const ReplaceableEntry *entry)
+      const = 0;
 };
 
 #endif //__MEM_CACHE_INDEXING_POLICIES_BASE_HH__

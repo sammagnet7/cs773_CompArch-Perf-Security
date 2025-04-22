@@ -150,6 +150,22 @@ class BaseCache(ClockedObject):
     # data cache.
     write_allocator = Param.WriteAllocator(NULL, "Write allocator")
 
+    #Variables for MIRAGE
+    #Skewed Assoc Randomized Cache
+    mem_size = Param.MemorySize('0B',"Memory capacity")
+    randomizedIndexing = Param.Bool(False, "Enables randomized-indexing with QARMA")
+    skewedCache = Param.Bool(False, "Enables skewed randomized-caches")
+    numSkews = Param.Unsigned(1,"Number of Skews")
+
+    #V-way cache
+    vwayCache  = Param.Bool(False, "Enables v-way cache with with decoupled tag-store")
+    TDR =  Param.Float(1.5, "Specifies the Tag-to-Data ratio for V-way cache")
+    
+    #Skewed Randomized V-way cache
+    p2_on_conflict = Param.Bool(False, "Enables preferential choice of skew on conflict")
+    cuckoo_on_conflict = Param.Bool(False, "Enables refill on conflict")
+
+
 class Cache(BaseCache):
     type = 'Cache'
     cxx_header = 'mem/cache/cache.hh'

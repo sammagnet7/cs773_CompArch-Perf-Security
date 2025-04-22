@@ -75,6 +75,14 @@ class BaseTags(ClockedObject):
     # Set the indexing entry size as the block size
     entry_size = Param.Int(Parent.cache_line_size,
                            "Indexing entry size in bytes")
+    
+    # Config for Skewed Associative Randomized Caches
+    mem_size = Param.MemorySize(Parent.mem_size,"Memory capacity (only for skewed assoc rand caches)")
+    randomizedIndexing = Param.Bool(Parent.randomizedIndexing, "Enables Randomized Indexing with QARMA")
+    skewedCache = Param.Bool(Parent.skewedCache, "Enables skewed cache design")
+    numSkews = Param.Unsigned(Parent.numSkews, "Number of skews (only for skewed assoc rand caches)")
+
+
 
 class BaseSetAssoc(BaseTags):
     type = 'BaseSetAssoc'
@@ -130,3 +138,35 @@ class FALRU(BaseTags):
 
     # This tag uses its own embedded indexing
     indexing_policy = NULL
+
+
+class VwayTags(BaseTags):
+    type = 'VwayTags'
+    cxx_header = "mem/cache/tags/vway_tags.hh"
+    cxx_class = "VwayTags"
+
+    #Get the TDR (tag-dat ratio) for over-provisioning tags
+    TDR = Param.Float(Parent.TDR, "Tag-to-Data ratio")
+
+    # Get the cache associativity from the parent (cache)
+    cache_assoc = Param.Int(Parent.assoc, "cache associativity")
+    
+    # Get the tag-store associativity
+    assoc = Param.Int(Parent.assoc, "tag-store associativity")
+
+    # Get the cache size from the parent (cache)
+    cache_size = Param.MemorySize(Parent.size, "cache capacity in bytes")
+
+    # Get the tag-store size
+    #size = Param.MemorySize(Parent.size, "tag-store capacity in bytes")
+    
+    # Get local replacement policy from the parent (cache)
+    replacement_policy = Param.BaseReplacementPolicy(
+        Parent.replacement_policy, "Replacement policy")
+    
+    #Get Flags for handling local-conflicts [Skewed Randomized V-way cache]
+    p2_on_conflict = Param.Bool(Parent.p2_on_conflict, "Enables 2 Power-of-Choices Replacement on Local Conflict")
+    cuckoo_on_conflict = Param.Bool(Parent.cuckoo_on_conflict, "Enables Cuckoo based Re-fill on Local Conflict")
+
+    #Data-Replacement policy
+    data_repl_policy = Param.String("random","Can be [random,reuse]")

@@ -41,19 +41,18 @@
 #include "base/bitfield.hh"
 #include "base/intmath.hh"
 #include "base/logging.hh"
+#include "mem/cache/replacement_policies/replaceable_entry.hh"
+#include "debug/Cache.hh"
 #include "mem/cache/tags/indexing_policies/prince_ref.hh"
 #include "mem/cache/tags/indexing_policies/qarma64.hh"
 
-namespace gem5 
+SkewedAssocRand::SkewedAssocRand(const Params *p)
+  : BaseIndexingPolicy(p),NUM_SKEWING_FUNCTIONS(p->numSkews),
+    NUM_WAYS_PER_SKEW(assoc/p->numSkews), mem_size(p->mem_size),
+    randomizedIndexing(p->randomizedIndexing), skewedCache(p->skewedCache)
 {
 
-SkewedAssocRand::SkewedAssocRand(const Params &p)
-  : TaggedIndexingPolicy(p, p.mem_size / p.entry_size, floorLog2(p.entry_size)),
-    NUM_SKEWING_FUNCTIONS(p.numSkews),
-    NUM_WAYS_PER_SKEW(assoc/p.numSkews), mem_size(p.mem_size),
-    randomizedIndexing(p.randomizedIndexing), skewedCache(p.skewedCache)
-{
-  DPRINTFN("Size of Tag-Store for Skewed-Assoc-Randomized - Sets:%d, with Assoc:%d \n",numSets,assoc);
+  //DPRINTFN("Size of Tag-Store for Skewed-Assoc-Randomized - Sets:%d, with Assoc:%d \n",numSets,assoc);
   
   fatal_if( (assoc % NUM_SKEWING_FUNCTIONS) != 0, "Ways per skew "  \
             "needs to an integer."  );
@@ -80,44 +79,49 @@ SkewedAssocRand::extractSet(const Addr addr, const uint32_t way) const
 
   // Cacheset is modulo setMask (num_sets -1)
   int64_t cacheset = encrypted_line_num & setMask;
-  DPRINTF(Cache, "extractSet=> Skew:%d, Address %lld, Line-Addr: %lld, PLN %lld, ELN %lld, Set %lld \n", \
+  //DPRINTF(Cache, "extractSet=> Skew:%d, Address %lld, Line-Addr: %lld, PLN %lld, ELN %lld, Set %lld \n", \
           skew_id, addr,phy_lineaddress, physical_line_num,encrypted_line_num,cacheset);
   
   return  cacheset;
 }
 
 Addr
-SkewedAssocRand::regenerateAddr(const KeyType &key,
+SkewedAssocRand::regenerateAddr(const Addr tag,
                                 const ReplaceableEntry* entry) const
 {
   //Check that tag stores physical line address.
-  Addr addr = key.address << setShift ; // MODIFIED to key.address 
-  assert( (extractTag(addr) == key.address) && \
+  Addr addr = tag << setShift ; 
+  assert( (extractTag(addr) == tag) && \
           "Check that tag stores physical line address ");
   return addr;
 }
 
 std::vector<ReplaceableEntry*>
-SkewedAssocRand::getPossibleEntries(const KeyType &key) const
+SkewedAssocRand::getPossibleEntries(const Addr addr, const uint64_t timestamp) const
 {
   std::vector<ReplaceableEntry*> entries;
     
   // Parse all ways
   for (uint32_t way = 0; way < assoc; ++way) {
     // Apply hash to get set, and get way entry in it
-    entries.push_back(sets[extractSet(key.address, way)][way]);
+    entries.push_back(sets[extractSet(addr, way)][way]);
   }
     
   return entries;
 }
 
+SkewedAssocRand *
+SkewedAssocRandParams::create()
+{
+  return new SkewedAssocRand(this);
+}
 
 
 // [Skewed Randomized Cache]: Initialize the cache indexing
 void SkewedAssocRand::init_cache_indexing (){
   // Set the max-physical cachelines in memory
   lines_in_mem = (mem_size >> setShift);
-  DPRINTF(Cache,"For LLC: Mem_Size %ld, MaxLines in Memory %ld",mem_size, lines_in_mem);
+  //DPRINTF(Cache,"For LLC: Mem_Size %ld, MaxLines in Memory %ld",mem_size, lines_in_mem);
   assert(lines_in_mem > 0);
         
   // Allocate size for the rand-table vector.
@@ -205,5 +209,4 @@ uint64_t SkewedAssocRand::calcPRINCE64(uint64_t phy_line_num,uint64_t seed){
 
   return enc64_hash;    
 }
-// MODIFIED - Removed create() definition as it is redundant
-} // namespace gem5
+

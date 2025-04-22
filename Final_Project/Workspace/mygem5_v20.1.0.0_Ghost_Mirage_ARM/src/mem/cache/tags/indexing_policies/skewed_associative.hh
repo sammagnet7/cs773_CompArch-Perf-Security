@@ -125,7 +125,7 @@ class SkewedAssociative : public BaseIndexingPolicy
      * @return The deskewed address.
      */
     Addr deskew(const Addr addr, const uint32_t way) const;
-
+  public:
     /**
      * Apply a skewing function to calculate address' set given a way.
      *
@@ -135,7 +135,7 @@ class SkewedAssociative : public BaseIndexingPolicy
      */
     uint32_t extractSet(const Addr addr, const uint32_t way) const;
 
-  public:
+  
     /** Convenience typedef. */
      typedef SkewedAssociativeParams Params;
 

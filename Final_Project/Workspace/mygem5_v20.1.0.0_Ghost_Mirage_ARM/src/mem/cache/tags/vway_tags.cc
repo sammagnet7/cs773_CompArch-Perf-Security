@@ -46,101 +46,99 @@
  */
 
 #include "mem/cache/tags/vway_tags.hh"
+
 #include <string>
 
 #include "base/intmath.hh"
 
-namespace gem5
+VwayTags::VwayTags(const Params *p)
+    : BaseTags(p),
+      TDR(p->TDR), assoc(p->assoc), cache_assoc(p->cache_assoc),
+      cache_size(p->cache_size),
+      blks(p->size / p->block_size),
+      blk_dataID(p->size / p->block_size),
+      datablk_tagID(p->cache_size / p->block_size),
+      datablk_reuse(p->cache_size / p->block_size),
+      datablk_reuse_victimID(0),
+      numDataBlocks(p->cache_size / p->block_size),
+      sequentialAccess(p->sequential_access),
+      replacementPolicy(p->replacement_policy),
+      mt_rand(42)
 {
 
-VwayTags::VwayTags(const Params &p)
-    :BaseTags(p),
-     TDR(p.TDR), assoc(p.assoc), cache_assoc(p.cache_assoc),
-     cache_size(p.cache_size),
-     blks(p.size / p.block_size),
-     blk_dataID(p.size / p.block_size),
-     datablk_tagID(p.cache_size / p.block_size),
-     datablk_reuse(p.cache_size / p.block_size),
-     datablk_reuse_victimID(0),
-     numDataBlocks(p.cache_size / p.block_size),
-     sequentialAccess(p.sequential_access),
-     replacementPolicy(p.replacement_policy),
-     mt_rand(42)
-{
-
-  //Initialize the data-replacement policy
-  if(p.data_repl_policy == "random")
+  // Initialize the data-replacement policy
+  if (p->data_repl_policy == "random")
     data_repl_policy = DATA_REPL_RANDOM;
-  else if(p.data_repl_policy == "reuse")
+  else if (p->data_repl_policy == "reuse")
     data_repl_policy = DATA_REPL_REUSE;
   else
     panic("Undefined Data Replacement Policy\n");
-  
+
   // Re-initialize dataBlks size according to cache_size
-  dataBlks =  std::unique_ptr<uint8_t[]>(new uint8_t[p.cache_size]);
+  dataBlks = std::unique_ptr<uint8_t[]>(new uint8_t[p->cache_size]);
 
   // Reset warmup bounds initialized in base.cc (not really used).
-  warmupBound = (p.warmup_percentage/100.0) * (p.cache_size / p.block_size);
-    
+  warmupBound = (p->warmup_percentage / 100.0) * (p->cache_size / p->block_size);
+
   // Check parameters
-  if (blkSize < 4 || !isPowerOf2(blkSize)) {
+  if (blkSize < 4 || !isPowerOf2(blkSize))
+  {
     fatal("Block size must be at least 4 and a power of 2");
   }
-        
-  DPRINTFN("Size of Tag-Store for Vway-Tags is %d lines, with assoc:%d and size %d Bytes\n",numBlocks,assoc,size);
-  DPRINTFN("Actual Size of Cache seen from Vway-Tags is %d lines, with assoc:%d and size %d Bytes\n",numDataBlocks,cache_assoc,cache_size);
-  DPRINTFN("Data Repl Policy: %d (0-Random,1-Reuse).\n",data_repl_policy);
-  
+
+  DPRINTFN("Size of Tag-Store for Vway-Tags is %d lines, with assoc:%d and size %d Bytes\n", numBlocks, assoc, size);
+  DPRINTFN("Actual Size of Cache seen from Vway-Tags is %d lines, with assoc:%d and size %d Bytes\n", numDataBlocks, cache_assoc, cache_size);
+  DPRINTFN("Data Repl Policy: %d (0-Random,1-Reuse).\n", data_repl_policy);
+
   // Check that TDR*capAssoc == assoc.
-  assert(((double)((double)TDR*(double)cache_assoc) == (double)assoc) && \
+  assert(((double)((double)TDR * (double)cache_assoc) == (double)assoc) &&
          "Ensure that TDR increases the assoc by a whole number ");
-  assert(((double)((double)TDR*(double)cache_size) == (double)size) && \
+  assert(((double)((double)TDR * (double)cache_size) == (double)size) &&
          "Ensure that TDR increases the size by a whole number ");
 
-  assert( ((TDR >= 1.0) && (TDR <=2.0)) &&                            \
-          "Ensure that TDR does not increase assoc beyond reasonable number of ways");
-    
-  // TODO: Set data-latency=1 and sequential access so that stats are correct and latency is too. 
+  assert(((TDR >= 1.0) && (TDR <= 2.0)) &&
+         "Ensure that TDR does not increase assoc beyond reasonable number of ways");
+
+  // TODO: Set data-latency=1 and sequential access so that stats are correct and latency is too.
   // assert(sequentialAccess && "V-Way Cache needs to be sequential access. \n");
 }
 
-void
-VwayTags::tagsInit()
+void VwayTags::tagsInit()
 {
   // Initialize all blocks
-  for (unsigned blk_index = 0; blk_index < numBlocks; blk_index++) {
+  for (unsigned blk_index = 0; blk_index < numBlocks; blk_index++)
+  {
     // Locate next cache block
-    CacheBlk* blk = &blks[blk_index];
+    CacheBlk *blk = &blks[blk_index];
 
     // Link block to indexing policy
     indexingPolicy->setEntry(blk, blk_index);
-    assert((get_blk_tagID(blk) == blk_index)  &&                    \
+    assert((get_blk_tagID(blk) == blk_index) &&
            "Ensuring math of tagID to set/way is correct\n");
-        
-    //Associate a data chunk to the block
-    //blk->data = &dataBlks[blkSize*blk_index];
+
+    // Associate a data chunk to the block
+    // blk->data = &dataBlks[blkSize*blk_index];
     //**DONE-TODO**: Initialize the data-chunk in block
     blk->data = NULL;
     blk_dataID[blk_index] = (uint64_t)-1;
-        
+
     // Associate a replacement data entry to the block
     blk->replacementData = replacementPolicy->instantiateEntry();
-    blk->registerTagExtractor(genTagExtractor(indexingPolicy)); // MODIFIED register tag extractor
   }
 
-  for (unsigned datablk_index = 0; datablk_index < numDataBlocks; datablk_index++) {
-        
+  for (unsigned datablk_index = 0; datablk_index < numDataBlocks; datablk_index++)
+  {
+
     //**DONE-TODO**:Initialize the dataBlk_tagID to -1.
     datablk_tagID[datablk_index] = (uint64_t)-1;
-    datablk_reuse[datablk_index] = DATAREUSE_MIN ;
+    datablk_reuse[datablk_index] = DATAREUSE_MIN;
 
     //**DONE-TODO**:Initialize the dataBlk_repl class to ensure all data-blocks are currently available.
     datarepl_add_vacant(datablk_index);
   }
 }
 
-void
-VwayTags::invalidate(CacheBlk *blk)
+void VwayTags::invalidate(CacheBlk *blk)
 {
   BaseTags::invalidate(blk);
 
@@ -152,17 +150,24 @@ VwayTags::invalidate(CacheBlk *blk)
 
   uint64_t tagID = get_blk_tagID(blk);
   uint64_t dataID = blk_dataID[tagID];
-    
+
   //**DONE-TODO**: reset the blk-> data.
   blk->data = NULL;
   blk_dataID[tagID] = (uint64_t)-1;
-    
+
   //**DONE-TODO**: reset the tag-pointer in data-store (corrsponding to blk->data)
   datablk_tagID[dataID] = (uint64_t)-1;
-  datablk_reuse[dataID] = DATAREUSE_MIN ;
+  datablk_reuse[dataID] = DATAREUSE_MIN;
 
   //**DONE-TODO**: signal that this data blk is vacant.
   datarepl_add_vacant(dataID);
 }
-// MODIFIED - Removed create() definition as it is redundant
-} // namespace gem5
+
+VwayTags *
+VwayTagsParams::create()
+{
+  // There must be a indexing policy
+  fatal_if(!indexing_policy, "An indexing policy is required");
+
+  return new VwayTags(this);
+}
