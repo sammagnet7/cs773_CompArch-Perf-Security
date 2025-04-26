@@ -50,8 +50,8 @@ class DRAMInterface(MemInterface):
     cxx_header = "mem/mem_interface.hh"
 
     # scheduler page policy
-    addr_mapping = Param.AddrMap('RoCoRaBaCh', "Address mapping policy")
-    page_policy = Param.PageManage('close', "Page management policy")
+    # addr_mapping = Param.AddrMap('RoCoRaBaCh', "Address mapping policy")
+    page_policy = Param.PageManage('open_adaptive', "Page management policy")
 
 
     # enforce a limit on the number of accesses per row

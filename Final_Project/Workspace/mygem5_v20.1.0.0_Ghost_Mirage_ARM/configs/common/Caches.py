@@ -74,7 +74,7 @@ class L2Cache(Cache):
     mshrs = 20
     tgts_per_mshr = 12
     write_buffers = 8
-    #clusivity = 'mostly_excl'
+    clusivity = 'mostly_incl'
     prefetcher = StridePrefetcher(degree=8, latency = 1)
 
 class IOCache(Cache):

@@ -308,7 +308,7 @@ public:
      */
 
     //**TODO**: make blk passed by reference!
-    void insertBlock(const PacketPtr pkt, CacheBlk *blk) override
+    void insertBlock(const PacketPtr pkt, CacheBlk *&blk) override
     {
         //**DONE-TODO** Scenario-C: GLOBAL-REPL (blk=Data-Victim), Cache-Fill occurs in saved-tag-blk, not victim-blk
         if (saved_repl_tag_victim != NULL)

@@ -115,7 +115,7 @@ class CompressedTags : public SectorTags
      * @param pkt Packet holding the address to update
      * @param blk The block to update.
      */
-    void insertBlock(const PacketPtr pkt, CacheBlk *blk) override;
+    void insertBlock(const PacketPtr pkt, CacheBlk *&blk) override;
 
     /**
      * Visit each sub-block in the tags and apply a visitor.

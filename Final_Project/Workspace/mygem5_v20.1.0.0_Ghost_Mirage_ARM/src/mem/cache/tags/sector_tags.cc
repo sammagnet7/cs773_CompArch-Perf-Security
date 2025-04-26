@@ -169,7 +169,7 @@ SectorTags::accessBlock(Addr addr, bool is_secure, Cycles &lat)
 }
 
 void
-SectorTags::insertBlock(const PacketPtr pkt, CacheBlk *blk)
+SectorTags::insertBlock(const PacketPtr pkt, CacheBlk *&blk)
 {
     // Get block's sector
     SectorSubBlk* sub_blk = static_cast<SectorSubBlk*>(blk);

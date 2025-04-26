@@ -166,7 +166,7 @@ CompressedTags::findVictim(Addr addr, const bool is_secure,
 }
 
 void
-CompressedTags::insertBlock(const PacketPtr pkt, CacheBlk *blk)
+CompressedTags::insertBlock(const PacketPtr pkt, CacheBlk *&blk)
 {
     // We check if block can co-allocate before inserting, because this check
     // assumes the block is still invalid

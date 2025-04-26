@@ -54,7 +54,7 @@
 
 BaseIndexingPolicy::BaseIndexingPolicy(const Params *p)
     : SimObject(p), assoc(p->ghost? p->ghostAssoc : p->assoc),
-      numSets((p->ghost? p->ghostSize: p->size) / (p->entry_size * p->assoc)),
+      numSets((p->ghost? p->ghostSize: p->size) / (p->entry_size * assoc)),
       setShift(floorLog2(p->entry_size)), setMask(numSets - 1), sets(numSets),
       tagShift(setShift + floorLog2(numSets))
 {
@@ -81,7 +81,7 @@ BaseIndexingPolicy::setEntry(ReplaceableEntry* entry, const uint64_t index)
     const std::lldiv_t div_result = std::div((long long)index, assoc);
     const uint32_t set = div_result.quot;
     const uint32_t way = div_result.rem;
-
+    
     // Sanity check
     assert(set < numSets);
 

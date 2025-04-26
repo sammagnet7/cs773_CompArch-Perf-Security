@@ -205,7 +205,7 @@ FALRU::findVictim(Addr addr, const bool is_secure, const std::size_t size,
 }
 
 void
-FALRU::insertBlock(const PacketPtr pkt, CacheBlk *blk)
+FALRU::insertBlock(const PacketPtr pkt, CacheBlk *&blk)
 {
     FALRUBlk* falruBlk = static_cast<FALRUBlk*>(blk);
 

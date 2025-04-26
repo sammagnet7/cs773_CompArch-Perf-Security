@@ -107,7 +107,7 @@ def config_cache(options, system):
         system.l2.cpu_side = system.tol2bus.master
         system.l2.mem_side = system.membus.slave
 
-        l2latency = 24
+        l2latency = 20
         if options.mirage_mode:
             if options.mirage_mode == "Baseline":
                 system.l2.tag_latency     = l2latency

@@ -98,7 +98,7 @@ BaseTags::findBlock(Addr addr, bool is_secure) const
 }
 
 void
-BaseTags::insertBlock(const PacketPtr pkt, CacheBlk *blk)
+BaseTags::insertBlock(const PacketPtr pkt, CacheBlk *&blk)
 {
     assert(!blk->isValid());
 	blk->inGhost = isGhost;

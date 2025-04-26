@@ -145,7 +145,7 @@ class SectorTags : public BaseTags
      * @param pkt Packet holding the address to update
      * @param blk The block to update.
      */
-    void insertBlock(const PacketPtr pkt, CacheBlk *blk) override;
+    void insertBlock(const PacketPtr pkt, CacheBlk *&blk) override;
 
     /**
      * Finds the given address in the cache, do not update replacement data.
