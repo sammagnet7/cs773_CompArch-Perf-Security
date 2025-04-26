@@ -1,0 +1,59 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/mygem5_v20.1.0.0_Ghost_Mirage_ARM/build/ARM/gem5.opt",
+            "args": [
+                "${workspaceFolder}/mygem5_v20.1.0.0_Ghost_Mirage_ARM/configs/se.py",
+                "--cmd=${workspaceFolder}/SPEC17_workloads/benchspec/CPU/602.gcc_s/exe/sgcc_base.mytest-64",
+                "--options=\"${workspaceFolder}/SPEC17_workloads/benchspec/CPU/602.gcc_s/run/run_base_refspeed_mytest-64.0000/gcc-pp.c",
+                "-O5",
+                "-fipa-pta",
+                "-o",
+                "gcc-pp.opts-O5_-fipa-pta.s\"",
+                "--num-cpus=1",
+                "--mem-size=8GiB", 
+                "--mem-type=DDR4_2400_8x8",
+                "--cpu-type=DerivO3CPU",
+                "--caches",
+                "--l2cache",
+                "--maxinsts=10000000",
+                "--l1d_size=32kB",
+                "--l1i_size=32kB",
+                "--l2_size=8MB",
+                "--l1d_assoc=8",
+                "--l1i_assoc=8",
+                "--l2_assoc=16",
+                "--mirage_mode=\"skew-vway-rand\"",
+                "--l2_numSkews=2",
+                "--l2_TDR=1.75",
+                "--l2_EncrLat=3",
+                "--prog-interval=300Hz"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+
+    ]
+}

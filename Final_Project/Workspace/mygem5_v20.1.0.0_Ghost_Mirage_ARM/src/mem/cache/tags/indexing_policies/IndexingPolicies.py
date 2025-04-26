@@ -62,7 +62,6 @@ class SkewedAssocRand(BaseIndexingPolicy):
 
     mem_size = Param.MemorySize(Parent.size,"Memory capacity")
     # Get the entry size from the parent (tags)
-    entry_size = Param.Int(Parent.entry_size, "entry size in bytes")
     randomizedIndexing = Param.Bool(Parent.randomizedIndexing, "Enables Randomized Indexing with PRINCE")
     skewedCache = Param.Bool(Parent.skewedCache, "Enables skewed cache design")
     numSkews = Param.Unsigned(Parent.numSkews, "Number of skews")
