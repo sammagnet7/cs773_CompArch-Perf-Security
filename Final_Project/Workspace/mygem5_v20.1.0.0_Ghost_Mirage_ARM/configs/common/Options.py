@@ -492,3 +492,15 @@ def addFSOptions(parser):
     parser.add_option("--command-line-file", action="store",
                       default=None, type="string",
                       help="File with a template for the kernel command line")
+    
+# Add options for Mirage
+def addMirageOptions(parser):
+    parser.add_option("--mirage_mode", action="store", type="string", default="Baseline",
+                      help="[Baseline,BaselineRRIP,scatter-cache,skew-vway-rand]")
+    parser.add_option("--l2_numSkews", type="int", default=1)
+    parser.add_option("--l2_TDR", type="float", default=1.5)
+    parser.add_option("--l2_EncrLat", type="int", default=3)
+
+def addMultiprogramOptions(parser):
+    parser.add_option("--rate-mode", action="store_true", help="Enable rate-mode execution of single WL")
+    parser.add_option("--mix-mode", action="store_true", help="Enable mix-mode execution of multiple WL")

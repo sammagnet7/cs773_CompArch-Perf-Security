@@ -47,6 +47,8 @@ import m5
 from m5.objects import *
 from common.Caches import *
 from common import ObjectList
+from m5.objects.IndexingPolicies import *
+from m5.objects.ReplacementPolicies import *
 
 def config_cache(options, system):
     if options.external_memory_system and (options.caches or options.l2cache):
@@ -104,6 +106,69 @@ def config_cache(options, system):
         system.tol2bus = L2XBar(clk_domain = system.cpu_clk_domain)
         system.l2.cpu_side = system.tol2bus.master
         system.l2.mem_side = system.membus.slave
+
+        l2latency = 24
+        if options.mirage_mode:
+            if options.mirage_mode == "Baseline":
+                system.l2.tag_latency     = l2latency
+            elif options.mirage_mode == "BaselineRRIP":
+                system.l2.tag_latency     = l2latency
+                system.l2.replacement_policy = RRIPRP()
+            elif options.mirage_mode == "BaselineBRRIP":
+                system.l2.tag_latency     = l2latency
+                system.l2.replacement_policy = BRRIPRP()
+                system.l2.replacement_policy.btp = 5;
+            elif options.mirage_mode == "scatter-cache":
+                system.l2.skewedCache = True
+                system.l2.randomizedIndexing = True
+            elif options.mirage_mode == "vway-rand":
+                system.l2.vwayCache = True
+                system.l2.randomizedIndexing = True
+            elif ((options.mirage_mode == "skew-vway-rand") or (options.mirage_mode == "skew-vway-rand-datareuserepl")):
+                system.l2.vwayCache = True
+                system.l2.randomizedIndexing = True
+                system.l2.skewedCache = True
+            elif options.mirage_mode == "cuckoo-skew-vway-rand":
+                system.l2.vwayCache = True
+                system.l2.randomizedIndexing = True
+                system.l2.skewedCache = True
+                system.l2.p2_on_conflict = True
+                system.l2.cuckoo_on_conflict = True
+            else:
+                fatal("Used a mirage_mode that is not supported")
+            if system.l2.vwayCache:
+                assert system.l2.randomizedIndexing, "Randomized Indexing must be used with VwayCache"
+                system.l2.TDR = options.l2_TDR #Set Tag-Data ratio for Vway
+                system.l2.tags = VwayTags()    #Select tag design as Vway
+                system.l2.tags.assoc = options.l2_TDR*system.l2.tags.assoc          
+                system.l2.tags.size = str(int(float(str(options.l2_TDR*system.l2.size)))) + "B"
+                if(options.mirage_mode == "skew-vway-rand"):
+                    system.l2.tags.data_repl_policy = "random"
+                elif(options.mirage_mode == "skew-vway-rand-datareuserepl"):
+                    system.l2.tags.data_repl_policy = "reuse"
+                else:
+                    fatal("Used a mirage_mode that is not supported")
+            if system.l2.randomizedIndexing:                
+                system.l2.numSkews = options.l2_numSkews #Configure number of skews
+                system.l2.mem_size = str(getMaxMemAddr(system.mem_ranges)+1) + "B"
+                print("MEM SIZE ", system.l2.mem_size)
+                system.l2.tags.indexing_policy = SkewedAssocRand()
+                if ( (int(system.l2.numSkews) > 1) and system.l2.vwayCache ) :
+                    system.l2.replacement_policy = RandomSkewfairRP() 
+                elif ( (int(system.l2.numSkews) > 1) ) :
+                    system.l2.replacement_policy = RandomRP() #For more than 1 skew, use Random Repl
+            #Set Cache Lookup Latency
+            if ((str(system.l2.vwayCache) == "True") and (str(system.l2.randomizedIndexing) == "True")): # Lookup Latency is 24 for Vway + Rand (MIRAGE)
+                system.l2.tag_latency      = l2latency + options.l2_EncrLat + 1 #4
+                system.l2.tags.tag_latency = l2latency + options.l2_EncrLat + 1 #4
+                ##TODO: sequentialAccess = True & Data_latency = 1. Then tag_latency will be 25.
+            elif (str(system.l2.randomizedIndexing) == "True"): # Lookup Latency is 25 for Skewed Rand (Scatter-Cache)
+                system.l2.tag_latency     = l2latency + options.l2_EncrLat #3
+                system.l2.tags.tag_latency = l2latency + options.l2_EncrLat #3
+            elif (str(system.l2.vwayCache) == "True"): # Lookup Latency is 21 for only Vway-Cache
+                system.l2.tag_latency     = l2latency + 1
+                system.l2.tags.tag_latency = l2latency + 1
+
         if options.l2_hwp_type:
             hwpClass = ObjectList.hwp_list.get(options.l2_hwp_type)
             if system.l2.prefetcher != "Null":
@@ -223,3 +288,12 @@ def ExternalCacheFactory(port_type):
         return ExternalCache(port_data=name, port_type=port_type,
                              addr_ranges=[AllMemory])
     return make
+
+# Get the maximum memory address possible from the
+# address ranges specified in the system.mem_ranges
+def getMaxMemAddr(addr_ranges):
+    max_addr = 0
+    for r in addr_ranges:
+        if max_addr < int(r.end):
+            max_addr = int(r.end)
+    return max_addr

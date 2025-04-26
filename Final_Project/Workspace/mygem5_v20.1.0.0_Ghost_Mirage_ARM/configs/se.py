@@ -121,6 +121,7 @@ def get_processes(options):
 parser = optparse.OptionParser()
 Options.addCommonOptions(parser)
 Options.addSEOptions(parser)
+Options.addMirageOptions(parser)
 
 if '--ruby' in sys.argv:
     Ruby.define_options(parser)
