@@ -71,9 +71,11 @@ N=$(expr $(grep 'processor' /proc/cpuinfo | wc -l) - 8)
 M=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 G=$(expr $M / 8192000)
 P=$((G < N ? G : N))
+P=2
 
 export BENCHMARK_ITEMS=(perlbench gcc mcf omnetpp xalancbmk x264 deepsjeng leela exchange2 xz bwaves cactuBSSN lbm imagick nab fotonik3d roms)
-# export BENCHMARK_ITEMS=(gcc)
+# export BENCHMARK_ITEMS=(deepsjeng bwaves lbm)
+export BENCHMARK_ITEMS=(gcc)
 
 echo_yellow "------------------------"
 echo_yellow "🗃️  Directories Found:"

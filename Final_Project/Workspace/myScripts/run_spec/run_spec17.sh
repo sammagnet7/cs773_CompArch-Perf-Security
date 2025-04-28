@@ -42,6 +42,9 @@ for bench in ${BENCHMARK_ITEMS[*]}; do
     "mirage")
       $GEM5_RUNNER/run_mirage.sh "$bench" "$BINA" "$ARGS" "$IN" >/dev/null
       ;;
+    "merged")
+      $GEM5_RUNNER/run_merged.sh "$bench" "$BINA" "$ARGS" "$IN" >/dev/null
+      ;;
     "create_ckpt")
       $GEM5_RUNNER/create_checkpoint.sh "$bench" "$BINA" "$ARGS" "$IN" >/dev/null
       ;;
@@ -86,6 +89,9 @@ case "${GEM5_FLAVOUR}" in
   ;;
 "mirage")
   eval "$PLOTS_DIR/plot_spec17.sh" Mirage mirage_base mirage_mirage
+  ;;
+"merged")
+  eval "$PLOTS_DIR/plot_spec17.sh" Merge merge_base mirage_merge
   ;;
 *)
   echo "🚨 Unknown GEM5_FLAVOUR: ${GEM5_FLAVOUR}"
