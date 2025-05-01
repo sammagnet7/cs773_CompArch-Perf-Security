@@ -1,0 +1,88 @@
+Global frequency set at 1000000000000 ticks per second
+      0: system.l2.tags: Size of Tag-Store for Vway-Tags is 229376 lines, with assoc:28 and size 14680064 Bytes
+      0: system.l2.tags: Actual Size of Cache seen from Vway-Tags is 131072 lines, with assoc:16 and size 8388608 Bytes
+      0: system.l2.tags: Data Repl Policy: 0 (0-Random,1-Reuse).
+warn: Sockets disabled, not accepting gdb connections
+warn: Checkpoints for file descriptors currently do not work.
+gem5 Simulator System.  http://gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 20.1.0.0
+gem5 compiled Apr 26 2025 23:16:55
+gem5 started Apr 30 2025 15:18:12
+gem5 executing on Legion, pid 113668
+command line: /home/arif/cs773_CompArch-Perf-Security/Final_Project/Workspace/mygem5_v20.1.0.0_Ghost_Mirage_ARM/build/ARM/gem5.opt --outdir=merge_merge_250430-15_18_11945 /home/arif/cs773_CompArch-Perf-Security/Final_Project/Workspace/mygem5_v20.1.0.0_Ghost_Mirage_ARM/configs/se.py --cmd ../../exe/deepsjeng_s_base.mytest-64 --option ref.txt -i '' --checkpoint-dir=/home/arif/cs773_CompArch-Perf-Security/Final_Project/Workspace/SPEC17_workloads/checkpoints/deepsjeng --checkpoint-restore=10000000000 --at-instruction --num-cpus=1 --mem-size=16GB --mem-type=DDR4_2400_8x8 --cpu-type DerivO3CPU --caches --l2cache --l1d_size=32kB --l1i_size=32kB --l2_size=8MB --l1d_assoc=8 --l1i_assoc=8 --l2_assoc=16 --warmup-insts=5000000 --maxinsts=2000000000 --ghostminion --cache_coher --ghost_size=2kB --iminion --prefetch_ordered --mirage_mode=skew-vway-rand --l2_numSkews=2 --l2_TDR=1.75 --l2_EncrLat=3 --prog-interval=100Hz
+
+info: Standard input is not a terminal, disabling listeners.
+MEM SIZE  17179869185
+Switch at curTick count:10000
+warn: membus.slave is deprecated. `slave` is now called `cpu_side_ports`
+warn: tol2bus.master is deprecated. `master` is now called `mem_side_ports`
+warn: membus.slave is deprecated. `slave` is now called `cpu_side_ports`
+warn: tol2bus.slave is deprecated. `slave` is now called `cpu_side_ports`
+warn: tol2bus.slave is deprecated. `slave` is now called `cpu_side_ports`
+warn: tol2bus.slave is deprecated. `slave` is now called `cpu_side_ports`
+warn: tol2bus.slave is deprecated. `slave` is now called `cpu_side_ports`
+warn: membus.master is deprecated. `master` is now called `mem_side_ports`
+info: Entering event queue @ 5336283087000.  Starting simulation...
+warn: PowerState: Already in the requested power state, request ignored
+warn: User mode does not have SPSR
+warn: User mode does not have SPSR
+Switched CPUS @ tick 5336283097000
+switching cpus
+**** REAL SIMULATION ****
+info: Entering event queue @ 5336283097000.  Starting simulation...
+5346283087000: Event_126: system.switch_cpus progress event, total committed:41407493, progress insts committed: 41407493, IPC: 02.07037
+5356283087000: Event_126: system.switch_cpus progress event, total committed:83075114, progress insts committed: 41667621, IPC: 02.08338
+5366283087000: Event_126: system.switch_cpus progress event, total committed:125139896, progress insts committed: 42064782, IPC: 02.10324
+5376283087000: Event_126: system.switch_cpus progress event, total committed:168012236, progress insts committed: 42872340, IPC: 02.14362
+5386283087000: Event_126: system.switch_cpus progress event, total committed:210363906, progress insts committed: 42351670, IPC: 02.11758
+5396283087000: Event_126: system.switch_cpus progress event, total committed:251804170, progress insts committed: 41440264, IPC: 02.07201
+12    -163     0  2247001  Qd4 c3 Bxc3 Nxc3 Qxc3 Bxe4 Bxe4 Rxe4 Rxe4 Qxe4 Nxh6 Qb1+ Kh2 Re8 Nf7+ Kg8 Nh6+ Kh7 Nf7 Re1 
+5406283087000: Event_126: system.switch_cpus progress event, total committed:293181790, progress insts committed: 41377620, IPC: 02.06888
+5416283087000: Event_126: system.switch_cpus progress event, total committed:333738806, progress insts committed: 40557016, IPC: 02.02785
+5426283087000: Event_126: system.switch_cpus progress event, total committed:374870666, progress insts committed: 41131860, IPC: 02.05659
+5436283087000: Event_126: system.switch_cpus progress event, total committed:416013345, progress insts committed: 41142679, IPC: 02.05713
+5446283087000: Event_126: system.switch_cpus progress event, total committed:456539093, progress insts committed: 40525748, IPC: 02.02629
+5456283087000: Event_126: system.switch_cpus progress event, total committed:497490195, progress insts committed: 40951102, IPC: 02.04756
+5466283087000: Event_126: system.switch_cpus progress event, total committed:539165678, progress insts committed: 41675483, IPC: 02.08377
+5476283087000: Event_126: system.switch_cpus progress event, total committed:580790068, progress insts committed: 41624390, IPC: 02.08122
+5486283087000: Event_126: system.switch_cpus progress event, total committed:621675536, progress insts committed: 40885468, IPC: 02.04427
+5496283087000: Event_126: system.switch_cpus progress event, total committed:662622929, progress insts committed: 40947393, IPC: 02.04737
+5506283087000: Event_126: system.switch_cpus progress event, total committed:704065059, progress insts committed: 41442130, IPC: 02.07211
+5516283087000: Event_126: system.switch_cpus progress event, total committed:744739969, progress insts committed: 40674910, IPC: 02.03375
+5526283087000: Event_126: system.switch_cpus progress event, total committed:785457242, progress insts committed: 40717273, IPC: 02.03586
+12    -163     0  2367865  Qd4 c3 Bxc3 Nxc3 Qxc3 Bxe4 Bxe4 Rxe4 Rxe4 Qxe4 Nxh6 Qb1+ Kh2 Re8 Nf7+ Kg8 Nh6+ Kh7 Nf7 Re1 
+5536283087000: Event_126: system.switch_cpus progress event, total committed:827144561, progress insts committed: 41687319, IPC: 02.08437
+5546283087000: Event_126: system.switch_cpus progress event, total committed:869056537, progress insts committed: 41911976, IPC: 002.0956
+5556283087000: Event_126: system.switch_cpus progress event, total committed:910580875, progress insts committed: 41524338, IPC: 02.07622
+5566283087000: Event_126: system.switch_cpus progress event, total committed:952114843, progress insts committed: 41533968, IPC: 002.0767
+5576283087000: Event_126: system.switch_cpus progress event, total committed:993952585, progress insts committed: 41837742, IPC: 02.09189
+5586283087000: Event_126: system.switch_cpus progress event, total committed:1036090213, progress insts committed: 42137628, IPC: 02.10688
+5596283087000: Event_126: system.switch_cpus progress event, total committed:1077966365, progress insts committed: 41876152, IPC: 02.09381
+5606283087000: Event_126: system.switch_cpus progress event, total committed:1119748422, progress insts committed: 41782057, IPC: 002.0891
+5616283087000: Event_126: system.switch_cpus progress event, total committed:1160929969, progress insts committed: 41181547, IPC: 02.05908
+5626283087000: Event_126: system.switch_cpus progress event, total committed:1203192248, progress insts committed: 42262279, IPC: 02.11311
+5636283087000: Event_126: system.switch_cpus progress event, total committed:1244625732, progress insts committed: 41433484, IPC: 02.07167
+5646283087000: Event_126: system.switch_cpus progress event, total committed:1285891761, progress insts committed: 41266029, IPC: 002.0633
+5656283087000: Event_126: system.switch_cpus progress event, total committed:1326895094, progress insts committed: 41003333, IPC: 02.05017
+5666283087000: Event_126: system.switch_cpus progress event, total committed:1367289526, progress insts committed: 40394432, IPC: 02.01972
+5676283087000: Event_126: system.switch_cpus progress event, total committed:1407901372, progress insts committed: 40611846, IPC: 02.03059
+5686283087000: Event_126: system.switch_cpus progress event, total committed:1450867282, progress insts committed: 42965910, IPC: 002.1483
+5696283087000: Event_126: system.switch_cpus progress event, total committed:1493869064, progress insts committed: 43001782, IPC: 02.15009
+5706283087000: Event_126: system.switch_cpus progress event, total committed:1535953956, progress insts committed: 42084892, IPC: 02.10424
+5716283087000: Event_126: system.switch_cpus progress event, total committed:1578298546, progress insts committed: 42344590, IPC: 02.11723
+5726283087000: Event_126: system.switch_cpus progress event, total committed:1621000444, progress insts committed: 42701898, IPC: 02.13509
+5736283087000: Event_126: system.switch_cpus progress event, total committed:1664233162, progress insts committed: 43232718, IPC: 02.16164
+5746283087000: Event_126: system.switch_cpus progress event, total committed:1707416503, progress insts committed: 43183341, IPC: 02.15917
+5756283087000: Event_126: system.switch_cpus progress event, total committed:1749983411, progress insts committed: 42566908, IPC: 02.12835
+5766283087000: Event_126: system.switch_cpus progress event, total committed:1792078587, progress insts committed: 42095176, IPC: 02.10476
+5776283087000: Event_126: system.switch_cpus progress event, total committed:1834006131, progress insts committed: 41927544, IPC: 02.09638
+5786283087000: Event_126: system.switch_cpus progress event, total committed:1876502186, progress insts committed: 42496055, IPC: 002.1248
+5796283087000: Event_126: system.switch_cpus progress event, total committed:1918872182, progress insts committed: 42369996, IPC: 002.1185
+5806283087000: Event_126: system.switch_cpus progress event, total committed:1960947929, progress insts committed: 42075747, IPC: 02.10379
+5816283087000: Event_126: system.switch_cpus progress event, total committed:2002941445, progress insts committed: 41993516, IPC: 02.09968
+5826283087000: Event_126: system.switch_cpus progress event, total committed:2044461308, progress insts committed: 41519863, IPC: 02.07599
+5836283087000: Event_126: system.switch_cpus progress event, total committed:2086695843, progress insts committed: 42234535, IPC: 02.11173
+5846283087000: Event_126: system.switch_cpus progress event, total committed:2128696638, progress insts committed: 42000795, IPC: 02.10004
+Exiting @ tick 5851112166500 because a thread reached the max instruction count
