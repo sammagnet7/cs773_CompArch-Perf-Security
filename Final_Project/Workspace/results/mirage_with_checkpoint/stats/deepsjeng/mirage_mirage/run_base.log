@@ -1,0 +1,297 @@
+warn: Base 10 memory/cache size 16384MB will be cast to base 2 size 16384MiB.
+warn: Base 10 memory/cache size 8MB will be cast to base 2 size 8MiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 32kB will be cast to base 2 size 32KiB.
+warn: Base 10 memory/cache size 8MB will be cast to base 2 size 8MiB.
+Global frequency set at 1000000000000 ticks per second
+src/base/statistics.hh:279: warn: One of the stats is a legacy stat. Legacy stat is a stat that does not belong to any statistics::Group. Legacy stat is deprecated.
+      0: system.l2.tags.indexing_policy: Size of Tag-Store for Skewed-Assoc-Randomized - Sets:8192, with Assoc:28 
+      0: system.l2.tags: Size of Tag-Store for Vway-Tags is 229376 lines, with assoc:28 and size 14680064 Bytes
+      0: system.l2.tags: Actual Size of Cache seen from Vway-Tags is 131072 lines, with assoc:16 and size 8388608 Bytes
+      0: system.l2.tags: Data Repl Policy: 0 (0-Random,1-Reuse).
+src/base/remote_gdb.cc:418: warn: Sockets disabled, not accepting gdb connections
+src/sim/process.cc:396: warn: Checkpoints for pipes, device drivers and sockets do not work.
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.1.0.2
+gem5 compiled Apr 11 2025 20:05:30
+gem5 started Apr 19 2025 17:50:26
+gem5 executing on kabini, pid 1988583
+command line: /home/maintainer/cs773_CompArch-Perf-Security/Final_Project/Workspace/gem5-mirage-v24.0/build/ARM/gem5.opt --outdir=mirage_mirage_250419-17_50_25560 /home/maintainer/cs773_CompArch-Perf-Security/Final_Project/Workspace/gem5-mirage-v24.0/configs/se.py --cmd ../../exe/deepsjeng_s_base.spec-64 --option ref.txt -i '' --checkpoint-dir=/home/maintainer/cs773_CompArch-Perf-Security/Final_Project/Workspace/SPEC17_workloads/checkpoints/deepsjeng --checkpoint-restore=10000000000 --at-instruction --num-cpus=1 --mem-size=16384MB --mem-type=DDR4_2400_8x8 --cpu-type DerivO3CPU --caches --l2cache --l1d_size=32kB --l1i_size=32kB --l2_size=8MB --l1d_assoc=8 --l1i_assoc=8 --l2_assoc=16 --warmup-insts=10000000000 --maxinsts=10000000000 --mirage_mode=skew-vway-rand --l2_numSkews=2 --l2_TDR=1.75 --l2_EncrLat=3 --prog-interval=100Hz
+
+info: Standard input is not a terminal, disabling listeners.
+MEM SIZE  17179869185
+Switch at curTick count:10000
+src/sim/simulate.cc:199: info: Entering event queue @ 5336283085500.  Starting simulation...
+src/sim/power_state.cc:105: warn: PowerState: Already in the requested power state, request ignored
+src/arch/arm/isa.hh:214: warn: User mode does not have SPSR
+src/arch/arm/isa.hh:214: warn: User mode does not have SPSR
+Switched CPUS @ tick 5336283095500
+switching cpus
+**** REAL SIMULATION ****
+src/sim/simulate.cc:199: info: Entering event queue @ 5336283095500.  Starting simulation...
+5346283085500: Event_144: system.switch_cpus progress event, total committed:40694641, progress insts committed: 40694641, IPC: 02.03473
+5356283085500: Event_144: system.switch_cpus progress event, total committed:81527004, progress insts committed: 40832363, IPC: 02.04162
+5366283085500: Event_144: system.switch_cpus progress event, total committed:122864723, progress insts committed: 41337719, IPC: 02.06689
+5376283085500: Event_144: system.switch_cpus progress event, total committed:165166071, progress insts committed: 42301348, IPC: 02.11507
+5386283085500: Event_144: system.switch_cpus progress event, total committed:207410169, progress insts committed: 42244098, IPC: 002.1122
+5396283085500: Event_144: system.switch_cpus progress event, total committed:248032962, progress insts committed: 40622793, IPC: 02.03114
+12    -163     0  2247001  Qd4 c3 Bxc3 Nxc3 Qxc3 Bxe4 Bxe4 Rxe4 Rxe4 Qxe4 Nxh6 Qb1+ Kh2 Re8 Nf7+ Kg8 Nh6+ Kh7 Nf7 Re1 
+5406283085500: Event_144: system.switch_cpus progress event, total committed:289094385, progress insts committed: 41061423, IPC: 02.05307
+5416283085500: Event_144: system.switch_cpus progress event, total committed:329162702, progress insts committed: 40068317, IPC: 02.00342
+5426283085500: Event_144: system.switch_cpus progress event, total committed:369679796, progress insts committed: 40517094, IPC: 02.02585
+5436283085500: Event_144: system.switch_cpus progress event, total committed:410214895, progress insts committed: 40535099, IPC: 02.02675
+5446283085500: Event_144: system.switch_cpus progress event, total committed:450334402, progress insts committed: 40119507, IPC: 02.00598
+5456283085500: Event_144: system.switch_cpus progress event, total committed:490678903, progress insts committed: 40344501, IPC: 02.01723
+5466283085500: Event_144: system.switch_cpus progress event, total committed:531524964, progress insts committed: 40846061, IPC: 002.0423
+5476283085500: Event_144: system.switch_cpus progress event, total committed:572790043, progress insts committed: 41265079, IPC: 02.06325
+5486283085500: Event_144: system.switch_cpus progress event, total committed:613074916, progress insts committed: 40284873, IPC: 02.01424
+5496283085500: Event_144: system.switch_cpus progress event, total committed:653607385, progress insts committed: 40532469, IPC: 02.02662
+5506283085500: Event_144: system.switch_cpus progress event, total committed:694695613, progress insts committed: 41088228, IPC: 02.05441
+5516283085500: Event_144: system.switch_cpus progress event, total committed:734697465, progress insts committed: 40001852, IPC: 02.00009
+5526283085500: Event_144: system.switch_cpus progress event, total committed:774882381, progress insts committed: 40184916, IPC: 02.00925
+12    -163     0  2367865  Qd4 c3 Bxc3 Nxc3 Qxc3 Bxe4 Bxe4 Rxe4 Rxe4 Qxe4 Nxh6 Qb1+ Kh2 Re8 Nf7+ Kg8 Nh6+ Kh7 Nf7 Re1 
+5536283085500: Event_144: system.switch_cpus progress event, total committed:815495094, progress insts committed: 40612713, IPC: 02.03064
+5546283085500: Event_144: system.switch_cpus progress event, total committed:857446345, progress insts committed: 41951251, IPC: 02.09756
+5556283085500: Event_144: system.switch_cpus progress event, total committed:898330510, progress insts committed: 40884165, IPC: 02.04421
+5566283085500: Event_144: system.switch_cpus progress event, total committed:939099797, progress insts committed: 40769287, IPC: 02.03846
+5576283085500: Event_144: system.switch_cpus progress event, total committed:980447879, progress insts committed: 41348082, IPC: 002.0674
+5586283085500: Event_144: system.switch_cpus progress event, total committed:1021380451, progress insts committed: 40932572, IPC: 02.04663
+5596283085500: Event_144: system.switch_cpus progress event, total committed:1063055610, progress insts committed: 41675159, IPC: 02.08376
+5606283085500: Event_144: system.switch_cpus progress event, total committed:1104303903, progress insts committed: 41248293, IPC: 02.06241
+5616283085500: Event_144: system.switch_cpus progress event, total committed:1144510699, progress insts committed: 40206796, IPC: 02.01034
+5626283085500: Event_144: system.switch_cpus progress event, total committed:1185912560, progress insts committed: 41401861, IPC: 02.07009
+5636283085500: Event_144: system.switch_cpus progress event, total committed:1227609209, progress insts committed: 41696649, IPC: 02.08483
+5646283085500: Event_144: system.switch_cpus progress event, total committed:1267755259, progress insts committed: 40146050, IPC: 002.0073
+5656283085500: Event_144: system.switch_cpus progress event, total committed:1308177723, progress insts committed: 40422464, IPC: 02.02112
+5666283085500: Event_144: system.switch_cpus progress event, total committed:1348348184, progress insts committed: 40170461, IPC: 02.00852
+5676283085500: Event_144: system.switch_cpus progress event, total committed:1388188381, progress insts committed: 39840197, IPC: 01.99201
+5686283085500: Event_144: system.switch_cpus progress event, total committed:1428650079, progress insts committed: 40461698, IPC: 02.02308
+5696283085500: Event_144: system.switch_cpus progress event, total committed:1471568344, progress insts committed: 42918265, IPC: 02.14591
+5706283085500: Event_144: system.switch_cpus progress event, total committed:1513450424, progress insts committed: 41882080, IPC: 002.0941
+5716283085500: Event_144: system.switch_cpus progress event, total committed:1554967813, progress insts committed: 41517389, IPC: 02.07587
+5726283085500: Event_144: system.switch_cpus progress event, total committed:1596357679, progress insts committed: 41389866, IPC: 02.06949
+5736283085500: Event_144: system.switch_cpus progress event, total committed:1638671301, progress insts committed: 42313622, IPC: 02.11568
+5746283085500: Event_144: system.switch_cpus progress event, total committed:1681435806, progress insts committed: 42764505, IPC: 02.13823
+5756283085500: Event_144: system.switch_cpus progress event, total committed:1723639391, progress insts committed: 42203585, IPC: 02.11018
+5766283085500: Event_144: system.switch_cpus progress event, total committed:1765279869, progress insts committed: 41640478, IPC: 02.08202
+5776283085500: Event_144: system.switch_cpus progress event, total committed:1806638131, progress insts committed: 41358262, IPC: 02.06791
+5786283085500: Event_144: system.switch_cpus progress event, total committed:1847932435, progress insts committed: 41294304, IPC: 02.06472
+5796283085500: Event_144: system.switch_cpus progress event, total committed:1889574212, progress insts committed: 41641777, IPC: 02.08209
+5806283085500: Event_144: system.switch_cpus progress event, total committed:1931508844, progress insts committed: 41934632, IPC: 02.09673
+5816283085500: Event_144: system.switch_cpus progress event, total committed:1972690723, progress insts committed: 41181879, IPC: 02.05909
+5826283085500: Event_144: system.switch_cpus progress event, total committed:2013970423, progress insts committed: 41279700, IPC: 02.06399
+5836283085500: Event_144: system.switch_cpus progress event, total committed:2054943556, progress insts committed: 40973133, IPC: 02.04866
+5846283085500: Event_144: system.switch_cpus progress event, total committed:2096373836, progress insts committed: 41430280, IPC: 02.07151
+5856283085500: Event_144: system.switch_cpus progress event, total committed:2137704341, progress insts committed: 41330505, IPC: 02.06653
+5866283085500: Event_144: system.switch_cpus progress event, total committed:2178553231, progress insts committed: 40848890, IPC: 02.04244
+5876283085500: Event_144: system.switch_cpus progress event, total committed:2219815617, progress insts committed: 41262386, IPC: 02.06312
+5886283085500: Event_144: system.switch_cpus progress event, total committed:2261076430, progress insts committed: 41260813, IPC: 02.06304
+5896283085500: Event_144: system.switch_cpus progress event, total committed:2301715074, progress insts committed: 40638644, IPC: 02.03193
+5906283085500: Event_144: system.switch_cpus progress event, total committed:2342016904, progress insts committed: 40301830, IPC: 02.01509
+5916283085500: Event_144: system.switch_cpus progress event, total committed:2382334478, progress insts committed: 40317574, IPC: 02.01588
+5926283085500: Event_144: system.switch_cpus progress event, total committed:2423249511, progress insts committed: 40915033, IPC: 02.04575
+5936283085500: Event_144: system.switch_cpus progress event, total committed:2463809820, progress insts committed: 40560309, IPC: 02.02802
+5946283085500: Event_144: system.switch_cpus progress event, total committed:2503656237, progress insts committed: 39846417, IPC: 01.99232
+5956283085500: Event_144: system.switch_cpus progress event, total committed:2544269201, progress insts committed: 40612964, IPC: 02.03065
+5966283085500: Event_144: system.switch_cpus progress event, total committed:2585821056, progress insts committed: 41551855, IPC: 02.07759
+5976283085500: Event_144: system.switch_cpus progress event, total committed:2626738832, progress insts committed: 40917776, IPC: 02.04589
+5986283085500: Event_144: system.switch_cpus progress event, total committed:2667538992, progress insts committed: 40800160, IPC: 02.04001
+5996283085500: Event_144: system.switch_cpus progress event, total committed:2708488206, progress insts committed: 40949214, IPC: 02.04746
+6006283085500: Event_144: system.switch_cpus progress event, total committed:2749130996, progress insts committed: 40642790, IPC: 02.03214
+6016283085500: Event_144: system.switch_cpus progress event, total committed:2789654472, progress insts committed: 40523476, IPC: 02.02617
+6026283085500: Event_144: system.switch_cpus progress event, total committed:2830731583, progress insts committed: 41077111, IPC: 02.05386
+6036283085500: Event_144: system.switch_cpus progress event, total committed:2872738373, progress insts committed: 42006790, IPC: 02.10034
+6046283085500: Event_144: system.switch_cpus progress event, total committed:2913518894, progress insts committed: 40780521, IPC: 02.03903
+6056283085500: Event_144: system.switch_cpus progress event, total committed:2954807804, progress insts committed: 41288910, IPC: 02.06445
+6066283085500: Event_144: system.switch_cpus progress event, total committed:2995864833, progress insts committed: 41057029, IPC: 02.05285
+6076283085500: Event_144: system.switch_cpus progress event, total committed:3037087233, progress insts committed: 41222400, IPC: 02.06112
+6086283085500: Event_144: system.switch_cpus progress event, total committed:3078668730, progress insts committed: 41581497, IPC: 02.07907
+6096283085500: Event_144: system.switch_cpus progress event, total committed:3119196412, progress insts committed: 40527682, IPC: 02.02638
+6106283085500: Event_144: system.switch_cpus progress event, total committed:3160356726, progress insts committed: 41160314, IPC: 02.05802
+6116283085500: Event_144: system.switch_cpus progress event, total committed:3201335983, progress insts committed: 40979257, IPC: 02.04896
+6126283085500: Event_144: system.switch_cpus progress event, total committed:3242584692, progress insts committed: 41248709, IPC: 02.06244
+6136283085500: Event_144: system.switch_cpus progress event, total committed:3283458858, progress insts committed: 40874166, IPC: 02.04371
+6146283085500: Event_144: system.switch_cpus progress event, total committed:3324506787, progress insts committed: 41047929, IPC: 002.0524
+6156283085500: Event_144: system.switch_cpus progress event, total committed:3365114182, progress insts committed: 40607395, IPC: 02.03037
+6166283085500: Event_144: system.switch_cpus progress event, total committed:3405833736, progress insts committed: 40719554, IPC: 02.03598
+6176283085500: Event_144: system.switch_cpus progress event, total committed:3446598488, progress insts committed: 40764752, IPC: 02.03824
+6186283085500: Event_144: system.switch_cpus progress event, total committed:3486688124, progress insts committed: 40089636, IPC: 02.00448
+6196283085500: Event_144: system.switch_cpus progress event, total committed:3527886028, progress insts committed: 41197904, IPC: 002.0599
+6206283085500: Event_144: system.switch_cpus progress event, total committed:3568077812, progress insts committed: 40191784, IPC: 02.00959
+6216283085500: Event_144: system.switch_cpus progress event, total committed:3608977499, progress insts committed: 40899687, IPC: 02.04498
+6226283085500: Event_144: system.switch_cpus progress event, total committed:3649908854, progress insts committed: 40931355, IPC: 02.04657
+6236283085500: Event_144: system.switch_cpus progress event, total committed:3691213415, progress insts committed: 41304561, IPC: 02.06523
+6246283085500: Event_144: system.switch_cpus progress event, total committed:3731705275, progress insts committed: 40491860, IPC: 02.02459
+6256283085500: Event_144: system.switch_cpus progress event, total committed:3773057595, progress insts committed: 41352320, IPC: 02.06762
+6266283085500: Event_144: system.switch_cpus progress event, total committed:3813519605, progress insts committed: 40462010, IPC: 002.0231
+6276283085500: Event_144: system.switch_cpus progress event, total committed:3854200045, progress insts committed: 40680440, IPC: 02.03402
+6286283085500: Event_144: system.switch_cpus progress event, total committed:3895259778, progress insts committed: 41059733, IPC: 02.05299
+6296283085500: Event_144: system.switch_cpus progress event, total committed:3935834323, progress insts committed: 40574545, IPC: 02.02873
+6306283085500: Event_144: system.switch_cpus progress event, total committed:3976367629, progress insts committed: 40533306, IPC: 02.02667
+6316283085500: Event_144: system.switch_cpus progress event, total committed:4016749534, progress insts committed: 40381905, IPC: 002.0191
+6326283085500: Event_144: system.switch_cpus progress event, total committed:4057114807, progress insts committed: 40365273, IPC: 02.01826
+6336283085500: Event_144: system.switch_cpus progress event, total committed:4098445473, progress insts committed: 41330666, IPC: 02.06653
+6346283085500: Event_144: system.switch_cpus progress event, total committed:4139278084, progress insts committed: 40832611, IPC: 02.04163
+6356283085500: Event_144: system.switch_cpus progress event, total committed:4180506979, progress insts committed: 41228895, IPC: 02.06144
+6366283085500: Event_144: system.switch_cpus progress event, total committed:4221317665, progress insts committed: 40810686, IPC: 02.04053
+6376283085500: Event_144: system.switch_cpus progress event, total committed:4262165227, progress insts committed: 40847562, IPC: 02.04238
+6386283085500: Event_144: system.switch_cpus progress event, total committed:4302934135, progress insts committed: 40768908, IPC: 02.03845
+6396283085500: Event_144: system.switch_cpus progress event, total committed:4343457262, progress insts committed: 40523127, IPC: 02.02616
+6406283085500: Event_144: system.switch_cpus progress event, total committed:4384396144, progress insts committed: 40938882, IPC: 02.04694
+6416283085500: Event_144: system.switch_cpus progress event, total committed:4425540403, progress insts committed: 41144259, IPC: 02.05721
+6426283085500: Event_144: system.switch_cpus progress event, total committed:4466085576, progress insts committed: 40545173, IPC: 02.02726
+6436283085500: Event_144: system.switch_cpus progress event, total committed:4507717713, progress insts committed: 41632137, IPC: 02.08161
+6446283085500: Event_144: system.switch_cpus progress event, total committed:4549189644, progress insts committed: 41471931, IPC: 002.0736
+6456283085500: Event_144: system.switch_cpus progress event, total committed:4590569936, progress insts committed: 41380292, IPC: 02.06901
+6466283085500: Event_144: system.switch_cpus progress event, total committed:4632033155, progress insts committed: 41463219, IPC: 02.07316
+6476283085500: Event_144: system.switch_cpus progress event, total committed:4671610997, progress insts committed: 39577842, IPC: 01.97889
+6486283085500: Event_144: system.switch_cpus progress event, total committed:4712722553, progress insts committed: 41111556, IPC: 02.05558
+6496283085500: Event_144: system.switch_cpus progress event, total committed:4753467317, progress insts committed: 40744764, IPC: 02.03724
+6506283085500: Event_144: system.switch_cpus progress event, total committed:4794189242, progress insts committed: 40721925, IPC: 002.0361
+6516283085500: Event_144: system.switch_cpus progress event, total committed:4834657117, progress insts committed: 40467875, IPC: 02.02339
+6526283085500: Event_144: system.switch_cpus progress event, total committed:4875085346, progress insts committed: 40428229, IPC: 02.02141
+6536283085500: Event_144: system.switch_cpus progress event, total committed:4915807635, progress insts committed: 40722289, IPC: 02.03611
+6546283085500: Event_144: system.switch_cpus progress event, total committed:4955903122, progress insts committed: 40095487, IPC: 02.00477
+6556283085500: Event_144: system.switch_cpus progress event, total committed:4996958754, progress insts committed: 41055632, IPC: 02.05278
+6566283085500: Event_144: system.switch_cpus progress event, total committed:5037626690, progress insts committed: 40667936, IPC: 002.0334
+6576283085500: Event_144: system.switch_cpus progress event, total committed:5077009355, progress insts committed: 39382665, IPC: 01.96913
+12     -91     0  3383392  Ne3 Nxe3 Rgxe3 Nd5 R3e2 Nf4 Re3 Qf7 Qd4 d5 Nc5 Bxc5 Qxc5 Rxe3 Rxe3 d4 Bxd4 Bxg2 
+6586283085500: Event_144: system.switch_cpus progress event, total committed:5117052871, progress insts committed: 40043516, IPC: 02.00218
+6596283085500: Event_144: system.switch_cpus progress event, total committed:5157498297, progress insts committed: 40445426, IPC: 02.02227
+6606283085500: Event_144: system.switch_cpus progress event, total committed:5198851690, progress insts committed: 41353393, IPC: 02.06767
+6616283085500: Event_144: system.switch_cpus progress event, total committed:5240067293, progress insts committed: 41215603, IPC: 02.06078
+6626283085500: Event_144: system.switch_cpus progress event, total committed:5280997227, progress insts committed: 40929934, IPC: 002.0465
+6636283085500: Event_144: system.switch_cpus progress event, total committed:5322081903, progress insts committed: 41084676, IPC: 02.05423
+6646283085500: Event_144: system.switch_cpus progress event, total committed:5363302700, progress insts committed: 41220797, IPC: 02.06104
+6656283085500: Event_144: system.switch_cpus progress event, total committed:5404212232, progress insts committed: 40909532, IPC: 02.04548
+6666283085500: Event_144: system.switch_cpus progress event, total committed:5445406840, progress insts committed: 41194608, IPC: 02.05973
+6676283085500: Event_144: system.switch_cpus progress event, total committed:5485873953, progress insts committed: 40467113, IPC: 02.02336
+6686283085500: Event_144: system.switch_cpus progress event, total committed:5526977501, progress insts committed: 41103548, IPC: 02.05518
+6696283085500: Event_144: system.switch_cpus progress event, total committed:5567318554, progress insts committed: 40341053, IPC: 02.01705
+6706283085500: Event_144: system.switch_cpus progress event, total committed:5607793038, progress insts committed: 40474484, IPC: 02.02372
+6716283085500: Event_144: system.switch_cpus progress event, total committed:5648834629, progress insts committed: 41041591, IPC: 02.05208
+6726283085500: Event_144: system.switch_cpus progress event, total committed:5689556536, progress insts committed: 40721907, IPC: 002.0361
+6736283085500: Event_144: system.switch_cpus progress event, total committed:5730899615, progress insts committed: 41343079, IPC: 02.06715
+6746283085500: Event_144: system.switch_cpus progress event, total committed:5772255184, progress insts committed: 41355569, IPC: 02.06778
+6756283085500: Event_144: system.switch_cpus progress event, total committed:5814064445, progress insts committed: 41809261, IPC: 02.09046
+6766283085500: Event_144: system.switch_cpus progress event, total committed:5855557877, progress insts committed: 41493432, IPC: 02.07467
+6776283085500: Event_144: system.switch_cpus progress event, total committed:5896638688, progress insts committed: 41080811, IPC: 02.05404
+6786283085500: Event_144: system.switch_cpus progress event, total committed:5938002146, progress insts committed: 41363458, IPC: 02.06817
+6796283085500: Event_144: system.switch_cpus progress event, total committed:5979715146, progress insts committed: 41713000, IPC: 02.08565
+6806283085500: Event_144: system.switch_cpus progress event, total committed:6021365012, progress insts committed: 41649866, IPC: 02.08249
+6816283085500: Event_144: system.switch_cpus progress event, total committed:6062236133, progress insts committed: 40871121, IPC: 02.04356
+6826283085500: Event_144: system.switch_cpus progress event, total committed:6104260151, progress insts committed: 42024018, IPC: 002.1012
+6836283085500: Event_144: system.switch_cpus progress event, total committed:6146456234, progress insts committed: 42196083, IPC: 002.1098
+6846283085500: Event_144: system.switch_cpus progress event, total committed:6188841703, progress insts committed: 42385469, IPC: 02.11927
+6856283085500: Event_144: system.switch_cpus progress event, total committed:6231109251, progress insts committed: 42267548, IPC: 02.11338
+6866283085500: Event_144: system.switch_cpus progress event, total committed:6273473890, progress insts committed: 42364639, IPC: 02.11823
+6876283085500: Event_144: system.switch_cpus progress event, total committed:6316180455, progress insts committed: 42706565, IPC: 02.13533
+6886283085500: Event_144: system.switch_cpus progress event, total committed:6358063252, progress insts committed: 41882797, IPC: 02.09414
+6896283085500: Event_144: system.switch_cpus progress event, total committed:6400040098, progress insts committed: 41976846, IPC: 02.09884
+6906283085500: Event_144: system.switch_cpus progress event, total committed:6441769037, progress insts committed: 41728939, IPC: 02.08645
+6916283085500: Event_144: system.switch_cpus progress event, total committed:6483442930, progress insts committed: 41673893, IPC: 02.08369
+6926283085500: Event_144: system.switch_cpus progress event, total committed:6524777076, progress insts committed: 41334146, IPC: 02.06671
+6936283085500: Event_144: system.switch_cpus progress event, total committed:6565884389, progress insts committed: 41107313, IPC: 02.05537
+6946283085500: Event_144: system.switch_cpus progress event, total committed:6607251314, progress insts committed: 41366925, IPC: 02.06835
+6956283085500: Event_144: system.switch_cpus progress event, total committed:6648987085, progress insts committed: 41735771, IPC: 02.08679
+6966283085500: Event_144: system.switch_cpus progress event, total committed:6689987429, progress insts committed: 41000344, IPC: 02.05002
+6976283085500: Event_144: system.switch_cpus progress event, total committed:6731865156, progress insts committed: 41877727, IPC: 02.09389
+6986283085500: Event_144: system.switch_cpus progress event, total committed:6774501432, progress insts committed: 42636276, IPC: 02.13181
+6996283085500: Event_144: system.switch_cpus progress event, total committed:6816012318, progress insts committed: 41510886, IPC: 02.07554
+7006283085500: Event_144: system.switch_cpus progress event, total committed:6858829415, progress insts committed: 42817097, IPC: 02.14085
+7016283085500: Event_144: system.switch_cpus progress event, total committed:6901497022, progress insts committed: 42667607, IPC: 02.13338
+7026283085500: Event_144: system.switch_cpus progress event, total committed:6943430141, progress insts committed: 41933119, IPC: 02.09666
+7036283085500: Event_144: system.switch_cpus progress event, total committed:6985571725, progress insts committed: 42141584, IPC: 02.10708
+7046283085500: Event_144: system.switch_cpus progress event, total committed:7027077668, progress insts committed: 41505943, IPC: 002.0753
+7056283085500: Event_144: system.switch_cpus progress event, total committed:7068727794, progress insts committed: 41650126, IPC: 02.08251
+7066283085500: Event_144: system.switch_cpus progress event, total committed:7109923899, progress insts committed: 41196105, IPC: 02.05981
+7076283085500: Event_144: system.switch_cpus progress event, total committed:7151713638, progress insts committed: 41789739, IPC: 02.08949
+7086283085500: Event_144: system.switch_cpus progress event, total committed:7192905504, progress insts committed: 41191866, IPC: 02.05959
+7096283085500: Event_144: system.switch_cpus progress event, total committed:7235430520, progress insts committed: 42525016, IPC: 02.12625
+7106283085500: Event_144: system.switch_cpus progress event, total committed:7277423916, progress insts committed: 41993396, IPC: 02.09967
+7116283085500: Event_144: system.switch_cpus progress event, total committed:7318791008, progress insts committed: 41367092, IPC: 02.06835
+7126283085500: Event_144: system.switch_cpus progress event, total committed:7361983528, progress insts committed: 43192520, IPC: 02.15963
+7136283085500: Event_144: system.switch_cpus progress event, total committed:7404250623, progress insts committed: 42267095, IPC: 02.11335
+7146283085500: Event_144: system.switch_cpus progress event, total committed:7446942609, progress insts committed: 42691986, IPC: 002.1346
+7156283085500: Event_144: system.switch_cpus progress event, total committed:7489824351, progress insts committed: 42881742, IPC: 02.14409
+7166283085500: Event_144: system.switch_cpus progress event, total committed:7531652032, progress insts committed: 41827681, IPC: 02.09138
+7176283085500: Event_144: system.switch_cpus progress event, total committed:7572692862, progress insts committed: 41040830, IPC: 02.05204
+7186283085500: Event_144: system.switch_cpus progress event, total committed:7614780228, progress insts committed: 42087366, IPC: 02.10437
+7196283085500: Event_144: system.switch_cpus progress event, total committed:7656392497, progress insts committed: 41612269, IPC: 02.08061
+7206283085500: Event_144: system.switch_cpus progress event, total committed:7698171539, progress insts committed: 41779042, IPC: 02.08895
+7216283085500: Event_144: system.switch_cpus progress event, total committed:7739257113, progress insts committed: 41085574, IPC: 02.05428
+7226283085500: Event_144: system.switch_cpus progress event, total committed:7781403863, progress insts committed: 42146750, IPC: 02.10734
+7236283085500: Event_144: system.switch_cpus progress event, total committed:7822928829, progress insts committed: 41524966, IPC: 02.07625
+7246283085500: Event_144: system.switch_cpus progress event, total committed:7864496870, progress insts committed: 41568041, IPC: 002.0784
+7256283085500: Event_144: system.switch_cpus progress event, total committed:7905729690, progress insts committed: 41232820, IPC: 02.06164
+7266283085500: Event_144: system.switch_cpus progress event, total committed:7946910090, progress insts committed: 41180400, IPC: 02.05902
+7276283085500: Event_144: system.switch_cpus progress event, total committed:7988347353, progress insts committed: 41437263, IPC: 02.07186
+7286283085500: Event_144: system.switch_cpus progress event, total committed:8029302521, progress insts committed: 40955168, IPC: 02.04776
+7296283085500: Event_144: system.switch_cpus progress event, total committed:8071221079, progress insts committed: 41918558, IPC: 02.09593
+7306283085500: Event_144: system.switch_cpus progress event, total committed:8113410232, progress insts committed: 42189153, IPC: 02.10946
+7316283085500: Event_144: system.switch_cpus progress event, total committed:8155414209, progress insts committed: 42003977, IPC: 002.1002
+7326283085500: Event_144: system.switch_cpus progress event, total committed:8198366589, progress insts committed: 42952380, IPC: 02.14762
+7336283085500: Event_144: system.switch_cpus progress event, total committed:8240395737, progress insts committed: 42029148, IPC: 02.10146
+7346283085500: Event_144: system.switch_cpus progress event, total committed:8281256332, progress insts committed: 40860595, IPC: 02.04303
+7356283085500: Event_144: system.switch_cpus progress event, total committed:8322187293, progress insts committed: 40930961, IPC: 02.04655
+7366283085500: Event_144: system.switch_cpus progress event, total committed:8363576834, progress insts committed: 41389541, IPC: 02.06948
+7376283085500: Event_144: system.switch_cpus progress event, total committed:8405234628, progress insts committed: 41657794, IPC: 02.08289
+7386283085500: Event_144: system.switch_cpus progress event, total committed:8447374966, progress insts committed: 42140338, IPC: 02.10702
+7396283085500: Event_144: system.switch_cpus progress event, total committed:8487740177, progress insts committed: 40365211, IPC: 02.01826
+7406283085500: Event_144: system.switch_cpus progress event, total committed:8529132503, progress insts committed: 41392326, IPC: 02.06962
+7416283085500: Event_144: system.switch_cpus progress event, total committed:8571071138, progress insts committed: 41938635, IPC: 02.09693
+7426283085500: Event_144: system.switch_cpus progress event, total committed:8613976378, progress insts committed: 42905240, IPC: 02.14526
+7436283085500: Event_144: system.switch_cpus progress event, total committed:8656358709, progress insts committed: 42382331, IPC: 02.11912
+7446283085500: Event_144: system.switch_cpus progress event, total committed:8697614428, progress insts committed: 41255719, IPC: 02.06279
+7456283085500: Event_144: system.switch_cpus progress event, total committed:8739240981, progress insts committed: 41626553, IPC: 02.08133
+7466283085500: Event_144: system.switch_cpus progress event, total committed:8780800409, progress insts committed: 41559428, IPC: 02.07797
+7476283085500: Event_144: system.switch_cpus progress event, total committed:8822025519, progress insts committed: 41225110, IPC: 02.06126
+7486283085500: Event_144: system.switch_cpus progress event, total committed:8863751123, progress insts committed: 41725604, IPC: 02.08628
+7496283085500: Event_144: system.switch_cpus progress event, total committed:8905063874, progress insts committed: 41312751, IPC: 02.06564
+7506283085500: Event_144: system.switch_cpus progress event, total committed:8947176344, progress insts committed: 42112470, IPC: 02.10562
+7516283085500: Event_144: system.switch_cpus progress event, total committed:8989233521, progress insts committed: 42057177, IPC: 02.10286
+7526283085500: Event_144: system.switch_cpus progress event, total committed:9031454852, progress insts committed: 42221331, IPC: 02.11107
+7536283085500: Event_144: system.switch_cpus progress event, total committed:9073256387, progress insts committed: 41801535, IPC: 02.09008
+7546283085500: Event_144: system.switch_cpus progress event, total committed:9114895161, progress insts committed: 41638774, IPC: 02.08194
+7556283085500: Event_144: system.switch_cpus progress event, total committed:9155727993, progress insts committed: 40832832, IPC: 02.04164
+7566283085500: Event_144: system.switch_cpus progress event, total committed:9197302083, progress insts committed: 41574090, IPC: 002.0787
+7576283085500: Event_144: system.switch_cpus progress event, total committed:9238623573, progress insts committed: 41321490, IPC: 02.06607
+7586283085500: Event_144: system.switch_cpus progress event, total committed:9280855306, progress insts committed: 42231733, IPC: 02.11159
+7596283085500: Event_144: system.switch_cpus progress event, total committed:9322532314, progress insts committed: 41677008, IPC: 02.08385
+7606283085500: Event_144: system.switch_cpus progress event, total committed:9364398906, progress insts committed: 41866592, IPC: 02.09333
+7616283085500: Event_144: system.switch_cpus progress event, total committed:9405590877, progress insts committed: 41191971, IPC: 002.0596
+7626283085500: Event_144: system.switch_cpus progress event, total committed:9447790051, progress insts committed: 42199174, IPC: 02.10996
+7636283085500: Event_144: system.switch_cpus progress event, total committed:9490341581, progress insts committed: 42551530, IPC: 02.12758
+7646283085500: Event_144: system.switch_cpus progress event, total committed:9533007146, progress insts committed: 42665565, IPC: 02.13328
+7656283085500: Event_144: system.switch_cpus progress event, total committed:9575043684, progress insts committed: 42036538, IPC: 02.10183
+7666283085500: Event_144: system.switch_cpus progress event, total committed:9616834523, progress insts committed: 41790839, IPC: 02.08954
+7676283085500: Event_144: system.switch_cpus progress event, total committed:9657958613, progress insts committed: 41124090, IPC: 002.0562
+7686283085500: Event_144: system.switch_cpus progress event, total committed:9699769299, progress insts committed: 41810686, IPC: 02.09053
+7696283085500: Event_144: system.switch_cpus progress event, total committed:9741316318, progress insts committed: 41547019, IPC: 02.07735
+7706283085500: Event_144: system.switch_cpus progress event, total committed:9783045316, progress insts committed: 41728998, IPC: 02.08645
+7716283085500: Event_144: system.switch_cpus progress event, total committed:9824052218, progress insts committed: 41006902, IPC: 02.05035
+7726283085500: Event_144: system.switch_cpus progress event, total committed:9865583430, progress insts committed: 41531212, IPC: 02.07656
+7736283085500: Event_144: system.switch_cpus progress event, total committed:9906966206, progress insts committed: 41382776, IPC: 02.06914
+7746283085500: Event_144: system.switch_cpus progress event, total committed:9947968575, progress insts committed: 41002369, IPC: 02.05012
+7756283085500: Event_144: system.switch_cpus progress event, total committed:9989450088, progress insts committed: 41481513, IPC: 02.07408
+7766283085500: Event_144: system.switch_cpus progress event, total committed:10030863383, progress insts committed: 41413295, IPC: 02.07066
+7776283085500: Event_144: system.switch_cpus progress event, total committed:10071833702, progress insts committed: 40970319, IPC: 02.04852
+7786283085500: Event_144: system.switch_cpus progress event, total committed:10113514481, progress insts committed: 41680779, IPC: 02.08404
+7796283085500: Event_144: system.switch_cpus progress event, total committed:10154356162, progress insts committed: 40841681, IPC: 02.04208
+7806283085500: Event_144: system.switch_cpus progress event, total committed:10196483347, progress insts committed: 42127185, IPC: 02.10636
+7816283085500: Event_144: system.switch_cpus progress event, total committed:10238050524, progress insts committed: 41567177, IPC: 02.07836
+7826283085500: Event_144: system.switch_cpus progress event, total committed:10279419080, progress insts committed: 41368556, IPC: 02.06843
+7836283085500: Event_144: system.switch_cpus progress event, total committed:10321486833, progress insts committed: 42067753, IPC: 02.10339
+7846283085500: Event_144: system.switch_cpus progress event, total committed:10362786877, progress insts committed: 41300044, IPC: 0002.065
+7856283085500: Event_144: system.switch_cpus progress event, total committed:10404124407, progress insts committed: 41337530, IPC: 02.06688
+7866283085500: Event_144: system.switch_cpus progress event, total committed:10445057225, progress insts committed: 40932818, IPC: 02.04664
+7876283085500: Event_144: system.switch_cpus progress event, total committed:10485659788, progress insts committed: 40602563, IPC: 02.03013
+7886283085500: Event_144: system.switch_cpus progress event, total committed:10527016037, progress insts committed: 41356249, IPC: 02.06781
+7896283085500: Event_144: system.switch_cpus progress event, total committed:10568138384, progress insts committed: 41122347, IPC: 02.05612
+7906283085500: Event_144: system.switch_cpus progress event, total committed:10608996593, progress insts committed: 40858209, IPC: 02.04291
+7916283085500: Event_144: system.switch_cpus progress event, total committed:10649606414, progress insts committed: 40609821, IPC: 02.03049
+7926283085500: Event_144: system.switch_cpus progress event, total committed:10690691330, progress insts committed: 41084916, IPC: 02.05425
+7936283085500: Event_144: system.switch_cpus progress event, total committed:10730618855, progress insts committed: 39927525, IPC: 01.99638
+Exiting @ tick 7943178864000 because a thread reached the max instruction count

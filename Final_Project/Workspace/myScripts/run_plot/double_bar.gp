@@ -19,7 +19,11 @@ set xtics rotate by 45 right
 stats input_file using 2:3 nooutput
 set yrange [0:STATS_max_y * 1.2]
 
+set boxwidth 0.6 absolute
+set style fill solid border -1
+
 plot input_file using 2:xtic(1) title "Baseline", \
      '' using 3 title gem_flavour, \
-     '' using 0:2:(sprintf("%.3f", column(2))) with labels font "Arial,14" offset -1.0,1.8 rotate by 90 tc rgb "#B030B0" notitle, \
-     '' using 0:3:(sprintf("%.3f", column(3))) with labels font "Arial,14" offset 1.0,1.8 rotate by 90 tc rgb "#30D5C8" notitle
+     '' using 0:2:(sprintf("%.3f", column(2))) with labels font "Arial,14" offset -1.3,1.8 rotate by 90 tc rgb "#B030B0" notitle, \
+     '' using 0:3:(sprintf("%.3f", column(3))) with labels font "Arial,14" offset 1.3,1.8 rotate by 90 tc rgb "#30D5C8" notitle
+

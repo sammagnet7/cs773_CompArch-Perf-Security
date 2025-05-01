@@ -10,7 +10,8 @@ kill_all_gem5() {
   echo "✅ Done."
 }
 
-TOTAL_INSTS=10000000000;
+TOTAL_INSTS=2000000000;
+last_elapsed_time="00";
 watch_all_gem5() {
   echo "👀 Watching gem5.opt processes... (Press Ctrl+C to exit early)"
   while true; do
@@ -29,6 +30,7 @@ watch_all_gem5() {
       benchmark_mode=$(echo $benchmark | cut -d' ' -f 2)
 
       log_last_line=$(cat $file | tail -1)
+      last_last_line="$log_last_line"
       if [[ "$log_last_line" =~ ^Exiting\ @\ tick\ [0-9]+.*max\ instruction\ count$ ]]; then
         commited=$TOTAL_INSTS
       else
@@ -37,6 +39,12 @@ watch_all_gem5() {
       completed=$(echo "scale=1; $commited*100/$TOTAL_INSTS" | bc -l);
       pid=$(echo $pids | grep -v ${benchmark_mode}_${SESSION} | awk '{print $2}')
       elapsed_time=$(ps -p $pid -o etime= | tr -d '[:space:]')
+      if [[ "$last_last_line" != "$log_last_line" ]]; then
+        last_elapsed_time=$elapsed_time
+      elif [[ "$last_elapsed_time" == "00" ]]; then
+        last_elapsed_time=$elapsed_time
+      fi
+      elapsed_time=$last_elapsed_time
 
       elapsed_seconds=0
       if [[ "$elapsed_time" =~ ([0-9]+)-([0-9]+):([0-9]+):([0-9]+) ]]; then

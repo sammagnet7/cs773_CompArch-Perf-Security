@@ -55,9 +55,11 @@ ATTR_IPC='system.cpu.ipc'
 if [[ "$OLD_STATS" == true ]]; then
   # gem5 v20.0
   ATTR_SIM_SECONDS='sim_seconds'
-  ATTR_L2MISS_TOTAL='system.cpu.dcache.overall_misses::total'
-  ATTR_L1MISS_TOTAL='system.l2.overall_misses::total'
+  ATTR_L2MISS_TOTAL='system.l2.overall_misses::total'
+  ATTR_L1MISS_TOTAL='system.cpu.dcache.overall_misses::total'
   ATTR_SIM_INSTS='sim_insts'
+  AATR_L1MISS_LATENCY='system.cpu.dcache.overall_avg_miss_latency::total'
+  AATR_L2MISS_LATENCY='system.l2.overall_avg_miss_latency::total'
 else
   # Gem5 v24.0
   ATTR_SIM_SECONDS='simSeconds'
@@ -109,7 +111,8 @@ l1_latency_ratios=()
 l2_latency_ratios=()
 
 for bench in "${BENCHMARK_ITEMS[@]}"; do
-  benchmark_dir=$(find "$SPEC17_DIR" -maxdepth 1 -type d -name '*'"$bench"'_s' 2>/dev/null)/${SPEC_RUN_DIR_SUFFIX}
+  # benchmark_dir=$(find "$SPEC17_DIR" -maxdepth 1 -type d -name '*'"$bench"'_s' 2>/dev/null)/${SPEC_RUN_DIR_SUFFIX}
+  benchmark_dir="$(pwd)/stats/${bench}"
   base_stats="$benchmark_dir/$BASE_DIR/stats.txt"
   modded_stats="$benchmark_dir/$MODE_DIR/stats.txt"
 
@@ -129,6 +132,8 @@ for bench in "${BENCHMARK_ITEMS[@]}"; do
     continue
   fi
 
+  # echo $bench $base_data $modded_data
+
   read base_ipc base_simseconds base_mpki_l1 base_mpki_l2  base_l1_latency base_l2_latency<<<$(echo "$base_data" | tail -1)
   read modded_ipc modded_simseconds modded_mpki_l1 modded_mpki_l2 modded_l1_latency modded_l2_latency <<<$(echo "$modded_data" | tail -1)
 
@@ -136,8 +141,6 @@ for bench in "${BENCHMARK_ITEMS[@]}"; do
   slowdown_ipc=$(echo "scale=4; $modded_ipc / $base_ipc" | bc -l)
   l1_latency_ratio=$(echo "scale=3; $modded_l1_latency/$base_l1_latency" | bc -l)
   l2_latency_ratio=$(echo "scale=3; $modded_l2_latency/$base_l2_latency" | bc -l)
-
-  echo "$bench $base_l1_latency $modded_l1_latency";
 
   slowdowns+=("$slowdown")
   slowdown_ipcs+=("$slowdown_ipc")
@@ -149,7 +152,7 @@ for bench in "${BENCHMARK_ITEMS[@]}"; do
   mpki_l2_modded+=("$modded_mpki_l2")
   l1_latency_base+=("$base_l1_latency")
   l1_latency_modded+=("$modded_l1_latency")
-  l2_latency_base+=("$modded_l2_latency")
+  l2_latency_base+=("$base_l2_latency")
   l2_latency_modded+=("$modded_l2_latency")
   l1_latency_ratios+=("$l1_latency_ratio")
   l2_latency_ratios+=("$l2_latency_ratio")
@@ -159,8 +162,8 @@ for bench in "${BENCHMARK_ITEMS[@]}"; do
   echo "$bench $base_ipc $modded_ipc" >>"$ipc_file"
   echo "$bench $base_mpki_l1 $modded_mpki_l1" >>"$mpki_l1_file"
   echo "$bench $base_mpki_l2 $modded_mpki_l2" >>"$mpki_l2_file"
-  echo "$bench $l1_latency_ratio" >>"$latency_l1_file"
-  echo "$bench $l2_latency_ratio" >>"$latency_l2_file"
+  echo "$bench $base_l1_latency $modded_l1_latency" >>"$latency_l1_file"
+  echo "$bench $base_l2_latency $modded_l2_latency" >>"$latency_l2_file"
 done
 
 geo_mean() {
@@ -181,17 +184,15 @@ echo "gmean $(geo_mean "${slowdown_ipcs[@]}")" >>"$slowdown_ipc_file"
 echo "gmean $(geo_mean "${ipcs_base[@]}") $(geo_mean "${ipcs_modded[@]}")" >>"$ipc_file"
 echo "gmean $(geo_mean "${mpki_l1_base[@]}") $(geo_mean "${mpki_l1_modded[@]}")" >>"$mpki_l1_file"
 echo "gmean $(geo_mean "${mpki_l2_base[@]}") $(geo_mean "${mpki_l2_modded[@]}")" >>"$mpki_l2_file"
-echo "gmean $(geo_mean "${l1_latency_ratios[@]}")" >>"$latency_l1_file"
-echo "gmean $(geo_mean "${l2_latency_ratios[@]}")" >>"$latency_l2_file"
+echo "gmean $(geo_mean "${l1_latency_base[@]}") $(geo_mean "${l1_latency_modded[@]}")" >>"$latency_l1_file"
+echo "gmean $(geo_mean "${l2_latency_base[@]}") $(geo_mean "${l2_latency_modded[@]}")" >>"$latency_l2_file"
 
 commands=(
   "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/slowdown.stat'\" -e \"output_png='plots/slowdown.png'\" -e  \"var_title='Speedup compared to non-secure baseline [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Speedup'\" slowdown.gp"
-  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/slowdown_ipc.stat'\" -e \"output_png='plots/slowdown_ipc.png'\" -e  \"var_title='peedup compared to non-secure baseline (IPC) [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Speedup'\" slowdown.gp"
-  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/ipc.stat'\" -e \"output_png='plots/ipc.png'\" -e  \"var_title='IPC [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='IPC'\" double_bar.gp"
   "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/mpki_l1.stat'\" -e \"output_png='plots/mpki_l1.png'\" -e  \"var_title='MPKI L1 [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='MPKI (L1)'\" double_bar.gp"
   "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/mpki_l2.stat'\" -e \"output_png='plots/mpki_l2.png'\" -e  \"var_title='MPKI L2 [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='MPKI (L2)'\" double_bar.gp"
-  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/latency_l1.stat'\" -e \"output_png='plots/l1_latency.png'\" -e  \"var_title='L1 latency [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Latency (L1)'\" slowdown.gp"
-  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/latency_l2.stat'\" -e \"output_png='plots/l2_latency.png'\" -e  \"var_title='L2 latency [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Latency (L2)'\" slowdown.gp"
+  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/latency_l1.stat'\" -e \"output_png='plots/l1_latency.png'\" -e  \"var_title='L1 latency [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Latency [x1k cycles] (L1)'\" double_bar.gp"
+  "gnuplot -e \"gem_flavour='${FLAVOUR}'\" -e \"input_file='data/latency_l2.stat'\" -e \"output_png='plots/l2_latency.png'\" -e  \"var_title='L2 latency [${FLAVOUR}]'\" -e \"var_xlabel='Benchmarks'\" -e \"var_ylabel='Latency [x1k cycles] (L2)'\" double_bar.gp"
 )
 
 for cmd in "${commands[@]}"; do
