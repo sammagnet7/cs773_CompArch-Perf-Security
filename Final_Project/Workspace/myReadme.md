@@ -61,7 +61,7 @@ export BASE=$(pwd)
 ```bash
 ./myScripts/dependencies.sh
 ```
-1. To build gem5 with x86 architecture, from **{BASE}*: install scons by `pip install SCons`
+4. To build gem5 with x86 architecture, from **{BASE}*: install scons by `pip install SCons`
 ```bash
 cd mygem5
 
@@ -76,12 +76,12 @@ cd $BASE
   
 6. To run all the benchmarks and get and comparative stats: 
 ```bash
-cd $BASE
-
-./myScripts/run_spec/run_spec17.sh
-
+./run_spec/run_spec17.sh [num_instructions] [num_warmup_instructions] <gem5_source_folder> <flavour>
+eg. ./run_spec/run_spec17.sh 10000000000 5000000 mygem5_v20.1.0.0_Ghost_Mirage_ARM merged
 ```
->Note: Find the stats files created inside **$BASE/SPEC17_workloads/benchspec/CPU/{becnhmark_folder: r for freq and s for speed}/run/{*base*}.mm64.0000/m5out**
+  - All the variables are defined in `myScripts/vars.sh`. Modify the values as required.
+  - To check the progress, run `./myScripts/run_spec/run_utils.sh -w <SESSION>`. This `SESSION` value will be presetnt in run_spec17.sh output.
+>Note: Find the stats files created inside **$BASE/SPEC17_workloads/benchspec/CPU/{becnhmark_folder: r for freq and s for speed}/run/{*base*}.mm64.0000/flavour_session**
 
 7. To plot graphs:
 ```bash
@@ -90,4 +90,38 @@ cd $BASE
 ./myScripts/run_plot/plot_spec17.sh
 ```
 > Note: Find the generated plots inside: **$BASE/myScripts/run_plot/plots**
----
+
+
+## Scripts Overview [`myScripts/`]
+
+1. **`dependencies.sh`**  
+  - Installs all necessary software dependencies for the project.  
+  - Must be executed from the `BASE` directory.
+
+2. **`build_iso/build_spec17_x86.sh`**  
+  - Automates the setup and installation of the SpecCPU 2017 benchmark suite.  
+  - Mounts the `cpu2017-*.iso` file, installs the benchmarks, and configures the environment.
+
+3. **`vars.sh`**  
+  - Contains global variables used throughout the project.  
+  - Includes paths, benchmark configurations, gem5 architecture, flavour settings, and runtime parameters like `GEM5_SRC_DIR`, `GEM5_ARCH`, and `PLOTS_DIR`.
+
+4. **`run_spec/run_spec17.sh`**  
+  - Executes SpecCPU benchmarks with configurable parameters such as instruction count, warmup instructions, gem5 source folder, and flavour.  
+  - Outputs benchmark statistics to designated directories.
+
+5. **`run_spec/run_utils.sh`**  
+  - Provides tools to monitor benchmark execution progress.  
+  - Requires a `SESSION` identifier from the output of `run_spec17.sh`.
+
+6. **`run_plot/plot_spec17.sh`**  
+  - Generates visual plots from benchmark results.  
+  - Saves the plots in the `myScripts/run_plot/plots` directory.
+
+7. **`run_gem5/run_gem5.sh`**  
+  - Executes the `gem5` binary with specified parameters and arguments.  
+  - Modifications to this script apply to all flavour versions.
+
+8. **`run_gem5/run_{mirage,vanilla,ghostminion}.sh`**  
+  - Specialized scripts for running `gem5` with flavour-specific configurations.  
+  - Changes to these scripts affect only the respective flavour.
